@@ -6,16 +6,15 @@ import {
   Typography,
   Box,
   Button,
-  TextField,
+ 
   Stack,
   Chip,
 } from "@mui/material";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
-import PaymentIcon from "@mui/icons-material/Payment";
+
 import AppleIcon from "@mui/icons-material/Apple";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import { Formik, Field, Form } from "formik";
+import { Formik,  Form } from "formik";
 import * as Yup from "yup";
 import { useSendPayment } from "../hooks/usePayment";
 import { useDispatch, useSelector } from "react-redux";

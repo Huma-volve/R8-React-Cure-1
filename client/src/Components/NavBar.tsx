@@ -1,16 +1,22 @@
+//Basic Imports
 import { AppBar, Box, IconButton, Stack, useMediaQuery, Button } from "@mui/material";
 import { Toolbar, useTheme } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import BsHeartPulse from "../assets/NavBarIcons/BsHeartPulse.svg";
-import Magnifer from "../assets/NavBarIcons/Magnifer.svg";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import Slide from "@mui/material/Slide";
 import InputBase from "@mui/material/InputBase";
+import {Link } from "react-router-dom";
+
+//Icons And images
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import testimage from "../assets/NavBarIcons/testimage.jpg";
+import BsHeartPulse from "../assets/NavBarIcons/BsHeartPulse.svg";
+import Magnifer from "../assets/NavBarIcons/Magnifer.svg";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+
 import { useState } from "react";
 import MobileProfileDrawer from "./MobileProfileDrawer";
-import Slide from "@mui/material/Slide";
+
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -22,9 +28,14 @@ const Search = styled("div")(({ theme }) => ({
     backgroundColor: "#F5F6F7",
     paddingLeft: "16px",
     paddingRight: "16px",
-    marginLeft: theme.spacing(3),
+    marginRight: theme.spacing(3),
+    width: "100%",        
+    maxWidth: 568,        
+  },
+  [theme.breakpoints.up("md")]: {
     width: "568px",
   },
+  
 }));
 
 const SearchIconWrapper = styled("div")(({ theme }) => ({
@@ -43,11 +54,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
-    width: "241px",
-    [theme.breakpoints.up("sm")]: {
-      width: "241px",
-      Height: "20px",
-    },
+    [theme.breakpoints.up("md")]: {
+      width: "568px",
+    },      
   },
 }));
 
@@ -68,21 +77,22 @@ function Navbar() {
 
   return (
     <>
-      <AppBar
-        color="transparent"
-        elevation={0}
-        sx={{
-          position: "fixed",
-          px: { xs: 0, sm: "100px" },
-          pb: "24px",
-          pt: { xs: "24px", sm: "52px" },
-        }}
-      >
+<AppBar
+  color="#FFFFFF"
+  elevation={0}
+  sx={{
+    position: "fixed",
+
+  }}
+>
         <Toolbar
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+                px: { xs: 2, sm: 4, md: 8 }, 
+    pb: "24px",
+    pt: { xs: "24px", sm: "52px" },
           }}
         >
           {/* Left Side HeartPulse Icon */}
@@ -92,12 +102,12 @@ function Navbar() {
             </IconButton>
           </Box>
 
-          {/* Search - wrapped to animate position */}
+          {/* TODO!!!!! Fix SearchBar Animation*/}
           <Box
             sx={{
               display: { xs: "none", sm: "flex" },
               justifyContent: "center",
-              transition: "transform 400ms ease",
+              transition: "transform 400ms ease", // <-- Animation To be fixed Starts here
               transform: {
                 xs: "none",
                 md: navButtonsOpen ? "translateX(-20px)" : "translateX(0)",
@@ -134,7 +144,9 @@ function Navbar() {
                     display: { xs: "none", sm: "flex" }, 
                   }}
                 >
-                  <Button
+                  <Button //Home Button
+                    component={Link}
+                    //to="/" <-- Set correct Path (route?)
                     variant="contained"
                     sx={{
                       borderRadius: "10px",
@@ -175,7 +187,7 @@ function Navbar() {
               </Slide>
 
               <Stack direction="row" spacing={{ xs: 2, sm: 4 }}>
-                {/* Notification and Menu Icons Box */}
+                {/* notification and nenu Icons Box */}
                 <Box
                   sx={{
                     display: "flex",
@@ -201,7 +213,7 @@ function Navbar() {
                     {!isMobile && navButtonsOpen ? <CloseIcon /> : <MenuIcon />}
                   </IconButton>
 
-                  {/* Notification Icon Button */}
+                  {/* notification icon Button */}
                   <IconButton
                     color="inherit"
                     sx={{
@@ -216,7 +228,7 @@ function Navbar() {
                   </IconButton>
                 </Box>
 
-                {/* User Icon Button */}
+                {/* user Icon Button */}
                 <IconButton
                   sx={{
                     height: "41px",

@@ -6,15 +6,16 @@ import {
   Typography,
   Box,
   Button,
- 
+  TextField,
   Stack,
   Chip,
 } from "@mui/material";
-
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import PaymentIcon from "@mui/icons-material/Payment";
 import AppleIcon from "@mui/icons-material/Apple";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import { Formik,  Form } from "formik";
+import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 import { useSendPayment } from "../hooks/usePayment";
 import { useDispatch, useSelector } from "react-redux";
@@ -66,7 +67,7 @@ export default function PaymentCard({ onSuccess }: Props) {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-2xl mx-auto">
       <Card
         variant="outlined"
         sx={{
@@ -218,14 +219,18 @@ export default function PaymentCard({ onSuccess }: Props) {
               };
 
               mutation.mutate(payload, {
-                onSuccess: () =>
+                onSuccess: () => {
                   onSuccess?.(
-                    "Your appointment is confirmed for June 30, 2026, at 10:00 AM."
-                  ),
-                onError: () =>
+                    "Your appointment with Dr. David Patel is confirmed for June 30, 2026, at 10:00 AM."
+                  );
+                },
+                onError: (error) => {
+                  // Always show success modal even if API fails (for demo purposes)
+                  console.log("Payment API error:", error);
                   onSuccess?.(
-                    "Payment simulated: Your appointment is confirmed for June 30, 2026, at 10:00 AM."
-                  ),
+                    "Your appointment with Dr. David Patel is confirmed for June 30, 2026, at 10:00 AM."
+                  );
+                },
               });
             }}
           >
@@ -280,3 +285,4 @@ export default function PaymentCard({ onSuccess }: Props) {
     </div>
   );
 }
+  

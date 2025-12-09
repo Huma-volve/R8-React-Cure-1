@@ -8,10 +8,20 @@ export type PaymentPayload = {
 };
 
 async function sendPayment(payload: PaymentPayload) {
-  const { data } = await api.post("/payments", payload);
-  return data;
+  // Simulate API call for development/testing
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ success: true, message: "Payment successful" });
+    }, 500);
+  });
+
+  // Original API call (uncomment when API is ready)
+  // const { data } = await api.post("/payments", payload);
+  // return data;
 }
 
 export function useSendPayment() {
-  return useMutation(sendPayment);
+  return useMutation({
+    mutationFn: sendPayment,
+  });
 }

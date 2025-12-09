@@ -1,9 +1,5 @@
-import PaymentCard from "./components/PaymentCard";
+import PaymentPage from "./pages/PaymentPage";
 
 export default function App() {
-  return (
-      <div>
-          <PaymentCard/>
-    </div>
-  )
+  return <PaymentPage />;
 }

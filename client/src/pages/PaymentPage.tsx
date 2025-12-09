@@ -6,15 +6,17 @@ import { Typography } from "@mui/material";
 export default function PaymentPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [message, setMessage] = useState(
-    "Your appointment with Dr. David Patel is confirmed for June 30, 2023, at 10:00 AM."
+    "Your appointment with Dr. David Patel is confirmed for June 30, 2026, at 10:00 AM."
   );
 
   function handleSuccess(msg?: string) {
+    console.log("handleSuccess called, opening modal");
     setMessage(
       msg ||
-        "Your appointment with Dr. David Patel is confirmed for June 30, 2023, at 10:00 AM."
+        "Your appointment with Dr. David Patel is confirmed for June 30, 2026, at 10:00 AM."
     );
     setModalOpen(true);
+    console.log("modalOpen set to:", true);
   }
 
   return (
@@ -35,7 +37,10 @@ export default function PaymentPage() {
 
       <ConfirmModal
         open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => {
+          console.log("Closing modal");
+          setModalOpen(false);
+        }}
         message={message}
       />
     </div>

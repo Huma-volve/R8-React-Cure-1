@@ -27,7 +27,8 @@ export default function ContactUs() {
             color="text.secondary"
             sx={{ mb: 3, maxWidth: 340, fontSize: "15px" }}
           >
-            We are committed to processing your information to contact you and address your questions
+            We are committed to processing your information to contact you and
+            address your questions
           </Typography>
 
           <Stack spacing={1.6}>

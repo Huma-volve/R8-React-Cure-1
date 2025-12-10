@@ -1,4 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
+@theme{
+  --font-montserrat: 'Montserrat', sans-serif; ;
+}
+@utility container {
+    margin-inline : auto;
+    padding-inline : 2rem;
+
+    @media (width >= 640px) {
+        max-width : 640px;
+    }
+    @media (width >= 768px) {
+        max-width : 768px;
+    }
+    @media (width >= 1024px) {
+        max-width : 1024px;
+    }
+    @media (width >= 1280px) {
+        max-width : 1280px;
+    }
+    @media (width >= 1400px) {
+        max-width : 1400px;}
+}
 
 :root {
   font-family: "Inter", system-ui, -apple-system, sans-serif;
@@ -11,11 +34,13 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
+body{
   margin: 0;
-  background-color: #f3f4f6;
-}
-
-#root {
+  padding: 0;
+  min-width: 320px;
   min-height: 100vh;
-}
+  box-sizing: border-box;
+  background-color: #FFFFFF;
+} 
+
+

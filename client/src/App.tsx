@@ -7,12 +7,32 @@ import DoctorDetails from "./pages/DoctorDetails";
 
 export default function App() {
   return (
-    <div className="app-shell">
-      <div className="temp-nav">
-        <Link to="/map">Map</Link>
-        <Link to="/payment">Payment</Link>
-        <Link to="/contact">Contact</Link>
-        <Link to="/doctor">Doctor</Link>
+    <div className="min-h-screen">
+      <div className="flex gap-3 py-3 px-4 bg-[#1f2937]">
+        <Link
+          to="/map"
+          className="text-[#e5e7eb] no-underline font-semibold py-1.5 px-2.5 rounded-lg hover:bg-[rgba(255,255,255,0.08)]"
+        >
+          Map
+        </Link>
+        <Link
+          to="/payment"
+          className="text-[#e5e7eb] no-underline font-semibold py-1.5 px-2.5 rounded-lg hover:bg-[rgba(255,255,255,0.08)]"
+        >
+          Payment
+        </Link>
+        <Link
+          to="/contact"
+          className="text-[#e5e7eb] no-underline font-semibold py-1.5 px-2.5 rounded-lg hover:bg-[rgba(255,255,255,0.08)]"
+        >
+          Contact
+        </Link>
+        <Link
+          to="/doctor"
+          className="text-[#e5e7eb] no-underline font-semibold py-1.5 px-2.5 rounded-lg hover:bg-[rgba(255,255,255,0.08)]"
+        >
+          Doctor
+        </Link>
       </div>
 
       <Routes>

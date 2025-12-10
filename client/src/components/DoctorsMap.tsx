@@ -127,21 +127,23 @@ export default function DoctorsMap() {
   if (!isLoaded) return <p>Loading…</p>;
 
   return (
-    <section className="map-section">
-      <div className="map-header">
+    <section className="p-8 bg-[#f5f6fb] font-['Montserrat',sans-serif]">
+      <div className="flex items-center justify-between mb-4">
         <div>
-          <p className="map-title">The Map</p>
-          <p className="map-subtitle">
+          <p className="m-0 text-[#2f2f2f] font-bold text-lg">The Map</p>
+          <p className="mt-1 mb-0 text-[#6b7280] text-[13px]">
             Select a doctor and you will be guided on the map with distance and
             route
           </p>
         </div>
-        <span className="result-pill">{doctors.length} Results</span>
+        <span className="bg-[#eef2ff] text-[#4f46e5] py-2 px-3.5 rounded-xl font-semibold text-[13px]">
+          {doctors.length} Results
+        </span>
       </div>
 
-      <div className="map-card">
-        <div className="results-column">
-          <div className="results-list">
+      <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-4.5 bg-white rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.06)] p-4.5">
+        <div className="border-r border-[#e5e7eb] pr-2.5 lg:pr-0">
+          <div className="max-h-[520px] overflow-y-auto flex flex-col gap-2.5 pr-1.5">
             {doctors.map((d) => {
               const isActive = selectedDoctor?.id === d.id;
               return (
@@ -149,15 +151,25 @@ export default function DoctorsMap() {
                   type="button"
                   key={d.id}
                   onClick={() => handleSelectDoctor(d)}
-                  className={`doctor-card ${isActive ? "active" : ""}`}
+                  className={`flex gap-3 items-center w-full p-2.5 px-3 border rounded-[14px] bg-white cursor-pointer transition-all text-left ${
+                    isActive
+                      ? "border-[#2d9cdb] shadow-[0_10px_20px_rgba(45,156,219,0.14)]"
+                      : "border-[#e5e7eb] hover:border-[#cdd7ff] hover:shadow-[0_6px_15px_rgba(45,156,219,0.08)]"
+                  }`}
                 >
-                  <img src={d.image} alt={d.name} className="doctor-avatar" />
-                  <div className="doctor-info">
-                    <p className="doctor-name">{d.name}</p>
-                    <p className="doctor-specialty">{d.specialty}</p>
-                    <div className="doctor-meta">
-                      <span className="doctor-rating">★ {d.rating}</span>
-                      <span className="doctor-time">{d.times}</span>
+                  <img
+                    src={d.image}
+                    alt={d.name}
+                    className="w-12 h-12 rounded-xl object-cover"
+                  />
+                  <div className="flex-1">
+                    <p className="m-0 font-bold text-[#1f2937]">{d.name}</p>
+                    <p className="my-0.5 mb-1.5 text-[13px] text-[#6b7280]">{d.specialty}</p>
+                    <div className="flex gap-2 items-center text-xs text-[#4b5563]">
+                      <span className="bg-[#fff7ed] text-[#ea580c] py-0.5 px-2 rounded-[10px] font-semibold">
+                        ★ {d.rating}
+                      </span>
+                      <span className="text-[#111827] font-semibold">{d.times}</span>
                     </div>
                   </div>
                 </button>
@@ -166,8 +178,8 @@ export default function DoctorsMap() {
           </div>
         </div>
 
-        <div className="map-column">
-          <div className="map-shell">
+        <div className="relative">
+          <div className="relative rounded-2xl overflow-hidden shadow-[inset_0_0_0_1px_#e5e7eb]">
             <GoogleMap
               mapContainerStyle={containerStyle}
               zoom={13}
@@ -230,20 +242,20 @@ export default function DoctorsMap() {
               )}
             </GoogleMap>
 
-            <div className="map-floating">
+            <div className="absolute left-4.5 right-4.5 bottom-4.5 bg-[rgba(255,255,255,0.95)] rounded-[14px] p-3 px-3.5 flex items-center justify-between gap-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
               <div>
-                <p className="floating-title">
+                <p className="m-0 font-bold text-[#111827]">
                   {selectedDoctor
                     ? selectedDoctor.name
                     : "Select a doctor from the list"}
                 </p>
-                <p className="floating-sub">
+                <p className="mt-0.5 mb-0 text-xs text-[#6b7280]">
                   {selectedDoctor
                     ? selectedDoctor.specialty
                     : "Click on a doctor to display the distance and route"}
                 </p>
               </div>
-              <div className="floating-meta">
+              <div className="flex items-center gap-2 font-bold text-[#2563eb] whitespace-nowrap">
                 {distance && <span>{distance}</span>}
                 {duration && <span>· {duration}</span>}
                 {loadingRoute && <span>Calculating route…</span>}

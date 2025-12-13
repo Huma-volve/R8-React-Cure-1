@@ -3,6 +3,7 @@ import LogIn from "./auth/LogIn"
 import SignUp from "./auth/SignUp"
 import Verification from "./auth/Verification"
 import PrivacyPolicy from "./pages/PrivacyPolicy"
+import Profile from "./pages/Profile"
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Route path="/signup" element={<SignUp/>}/>
       <Route path="/verify" element={<Verification/>}/>
       <Route path="/privacy" element={<PrivacyPolicy/>}/>
+      <Route path="/profile" element={<Profile/>}/>
     </Routes>
    </div>
   )

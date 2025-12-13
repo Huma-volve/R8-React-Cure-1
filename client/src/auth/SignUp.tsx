@@ -33,16 +33,17 @@ const SignUp = () => {
 
       {/* البطاقة - مقصّرة ومريحة للعين */}
       <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none px-4">
-        <div
+       <div
           className="bg-white rounded-2xl shadow-2xl 
-                     w-full max-w-md 
-                     p-5 md:p-7       
-                     pointer-events-auto
-                     animate-in fade-in zoom-in-95 duration-300
-                     md:-translate-x-20 lg:-translate-x-32"
+                    w-full max-w-md 
+                    h-[65vh] md:h-[80vh] lg:h-[75vh]  
+                    overflow-y-auto             
+                    p-6 md:p-8 lg:p-10            
+                    pointer-events-auto
+                    animate-in fade-in zoom-in-95 duration-300
+                    md:-translate-x-20 lg:-translate-x-32 "
         >
-          <div className="flex flex-col gap-6 md:gap-8 ">  
-
+          <div className="flex flex-col gap-6 md:gap-8 h-full ">
             <div className="text-center -space-y-1">
               <h1 className="text-2xl md:text-3xl font-bold text-[#05162C]">
                 Sign Up
@@ -52,8 +53,8 @@ const SignUp = () => {
               </p>
             </div>
 
-            {/* الحقول - مسافات أقل */}
-            <div className="space-y-4">  {/* من 5 → 4 */}
+           
+            <div className="space-y-4"> 
               <div>
                 <label className="block text-xs font-medium text-[#05162C] mb-1">Full Name</label>
                 <input
@@ -76,10 +77,10 @@ const SignUp = () => {
                   placeholder="Enter your password"
                   className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg 
                             focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                            transition outline-none pr-12" // pr-12 عشان نعمل مكان للأيقونة
+                            transition outline-none pr-12" 
                 />
                 
-                {/* أيقونة العين - تظهر فقط لما الحقل مش فاضي */}
+               
                 {email && (
                   <button
                     type="button"
@@ -110,9 +111,9 @@ const SignUp = () => {
               </div>
             </div>
 
-            {/* الأزرار - مسافات أقل */}
-            <div className="space-y-3">  {/* من gap-y-5 → gap-y-3 */}
-              <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 rounded-lg transition text-sm">
+           
+            <div className="space-y-3">  
+              <button className="w-full cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 rounded-lg transition text-sm">
                 Create Account
               </button>
 
@@ -122,16 +123,16 @@ const SignUp = () => {
                 <hr className="flex-1 border-gray-300" />
               </div>
 
-              <button className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-[#05162C] font-medium py-3 border border-gray-300 rounded-lg transition text-sm">
-                <img src="src/assets/flat-color-icons_google.png" alt="google" className="w-5 h-5" />
+              <button className="w-full flex items-center cursor-pointer justify-center gap-3 bg-white hover:bg-gray-50 text-[#05162C] font-medium py-3 border border-gray-300 rounded-lg transition text-sm">
+                <img src="src/assets/flat-color-icons_google.png" alt="google" className=" w-5 h-5" />
                 Continue with Google
               </button>
             </div>
 
             {/* رابط تسجيل الدخول */}
-            <p className="text-center text-xs text-gray-600">
+            <p className="text-center text-xs text-gray-600 ">
               Already have an account?{' '}
-              <a href="/login" className="text-blue-500 hover:underline font-medium">
+              <a href="/login" className="text-blue-500 hover:underline font-medium ">
                 Sign in
               </a>
             </p>

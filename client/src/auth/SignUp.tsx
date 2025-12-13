@@ -3,7 +3,6 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { Eye, EyeOff } from 'lucide-react';
 
-
 const SignUp = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

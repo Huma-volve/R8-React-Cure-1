@@ -7,7 +7,7 @@ const LogIn = () => {
   
   return (
     <div className="flex min-h-screen relative overflow-hidden">
-        {/* الصور الخلفية - محسنة للموبايل والديسكتوب */}
+        
       <img 
         className="absolute top-0 right-0 w-full h-full object-right md:w-[948px] "
         src="src/assets/wave bg.png" 

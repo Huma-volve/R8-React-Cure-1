@@ -5,7 +5,7 @@ const Verification = () => {
   const [timer, setTimer] = useState(55);
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
-  // العداد التنازلي
+
   useEffect(() => {
     if (timer > 0) {
       const interval = setInterval(() => {

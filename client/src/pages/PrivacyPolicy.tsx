@@ -3,16 +3,16 @@ import { ArrowLeft } from 'lucide-react';
 const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header - يعمل 100% على كل الشاشات */}
+     
       <header className="sticky top-0 z-10 bg-white border-b border-gray-200">
         
       </header>
 
-      {/* المحتوى */}
+      
       <main className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto py-8">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="relative flex items-center justify-center h-16">
-            {/* زر الرجوع - يسار تمامًا */}
+          
             <button
               onClick={() => window.history.back()}
               className="absolute left-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
@@ -21,16 +21,16 @@ const PrivacyPolicy = () => {
               <ArrowLeft className="w-6 h-6 text-gray-700" />
             </button>
 
-            {/* العنوان في المنتصف بدقة متناهية */}
+       
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
               Privacy Policy
             </h1>
 
-            {/* مساحة فارغة على اليمين للتوازن التام (نفس حجم الزر) */}
+          
             <div className="absolute right-4 w-10 h-10" />
           </div>
         </div>
-        {/* المقدمة + Last Updated */}
+       
         <section className="rounded-2xl p-6 sm:p-8 mb-6">
           <p className="text-sm text-gray-500 text-start mb-3">
             Last Updated: 19/11/2024

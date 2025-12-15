@@ -10,11 +10,20 @@ import SignUp from "./auth/SignUp"
 import Verification from "./auth/Verification"
 import PrivacyPolicy from "./pages/PrivacyPolicy"
 import Profile from "./pages/Profile"
+import PaymentPage from "./pages/PaymentPage";
+import ContactUs from "./components/ContactUs";
+import DoctorsMap from "./components/DoctorsMap";
+import DoctorDetails from "./pages/DoctorDetails";
 
 function App() {
   return (
         <Navbar />
-    <Routes>
+    <Routes>       
+      <Route path="/map" element={<DoctorsMap />} />
+      <Route path="/payment" element={<PaymentPage />} />
+      <Route path="/contact" element={<ContactUs />} />
+      <Route path="/doctor" element={<DoctorDetails />} />
+      <Route path="*" element={<Navigate to="/map" replace />} />
       <Route path="/login" element={<LogIn/>}/>
       <Route path="/signup" element={<SignUp/>}/>
       <Route path="/verify" element={<Verification/>}/>

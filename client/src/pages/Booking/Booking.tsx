@@ -74,7 +74,7 @@ export default function Booking() {
   return <>
   
 <div className="w-[100]">
-     <div className="md:hidden w-100 m-auto  py-1.5">
+     <div className="sm:hidden w-100 m-auto  py-1.5">
         <h2 className="p-5 font-bold">My Booking</h2>
         <Slider    {...settings}>
 
@@ -93,7 +93,7 @@ export default function Booking() {
        </div>
 
     
-    <div className="container p-4 m-auto">
+    <div className=" p-4 m-auto">
 
 
       <div className="hidden sm:flex justify-between items-center p-1 ">

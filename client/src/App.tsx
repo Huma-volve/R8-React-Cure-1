@@ -4,11 +4,13 @@ import "./App.css";
 import ContactUs from "./components/ContactUs";
 import DoctorsMap from "./components/DoctorsMap";
 import DoctorDetails from "./pages/DoctorDetails";
+import NotificationDropdown from "./components/NotificationDropdown";
 
 export default function App() {
   return (
     <div className="min-h-screen">
-      <div className="flex gap-3 py-3 px-4 bg-[#1f2937]">
+      <div className="flex gap-3 py-3 px-4 bg-[#1f2937] items-center justify-between">
+        <div className="flex gap-3">
         <Link
           to="/map"
           className="text-[#e5e7eb] no-underline font-semibold py-1.5 px-2.5 rounded-lg hover:bg-[rgba(255,255,255,0.08)]"
@@ -33,6 +35,8 @@ export default function App() {
         >
           Doctor
         </Link>
+        </div>
+        <NotificationDropdown />
       </div>
 
       <Routes>

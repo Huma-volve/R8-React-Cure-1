@@ -110,14 +110,13 @@ const Hero = () => {
         direction="row"
         spacing={2}
         justifyContent="center"
-        sx={{ flexWrap: "wrap" }}
       >
         <Button
           variant="contained"
           sx={{
             px: 4,
             py: 1.2,
-            borderRadius: "999px",
+            borderRadius: "10px",
             textTransform: "none",
             fontWeight: 600,
           }}
@@ -130,7 +129,7 @@ const Hero = () => {
           sx={{
             px: 4,
             py: 1.2,
-            borderRadius: "999px",
+            borderRadius: "10px",
             textTransform: "none",
             fontWeight: 500,
             bgcolor: "background.paper",

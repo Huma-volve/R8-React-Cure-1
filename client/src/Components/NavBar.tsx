@@ -1,4 +1,5 @@
 import NavBarSearch from "@/Components/homePageComponents/NavBarSearchBar";
+import ProfilePopUp from "@/Components/homePageComponents/ProfilePopUp";
 
 //Basic Imports
 import {
@@ -258,7 +259,7 @@ function Navbar() {
                 </Box>
 
                 {/* user Icon Button */}
-                <IconButton
+                {/* <IconButton
                   sx={{
                     height: "41px",
                     width: "41px",
@@ -277,7 +278,12 @@ function Navbar() {
                       objectFit: "cover",
                     }}
                   />
-                </IconButton>
+                </IconButton> */}
+                <ProfilePopUp
+                  name="Seif Mohamed"
+                  address="129, El-Nasr Street, Cairo"
+                  avatarSrc={testimage}
+                />
               </Stack>
             </Box>
           </Box>

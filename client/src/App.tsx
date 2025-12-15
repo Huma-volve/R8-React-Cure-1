@@ -1,3 +1,9 @@
+import { Container, Box } from '@mui/material';
+import './App.css';
+import Navbar from './Components/NavBar';
+import Footer from './Components/Footer';
+import HomePage from './pages/Appointmentpage/Homepage';
+import { BrowserRouter } from 'react-router';
 import { Route, Routes } from "react-router-dom"
 import LogIn from "./auth/LogIn"
 import SignUp from "./auth/SignUp"
@@ -7,7 +13,7 @@ import Profile from "./pages/Profile"
 
 function App() {
   return (
-   <div>
+        <Navbar />
     <Routes>
       <Route path="/login" element={<LogIn/>}/>
       <Route path="/signup" element={<SignUp/>}/>
@@ -15,8 +21,9 @@ function App() {
       <Route path="/privacy" element={<PrivacyPolicy/>}/>
       <Route path="/profile" element={<Profile/>}/>
     </Routes>
-   </div>
-  )
+        <HomePage/>
+      <Footer />
+  );
 }
 
-export default App
+export default App;

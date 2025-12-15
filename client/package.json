@@ -22,7 +22,10 @@
     "react-dom": "^19.2.0",
     "react-phone-number-input": "^3.4.14",
     "react-router-dom": "^7.10.1",
-    "redux": "^5.0.1"
+    "redux": "^5.0.1",    
+    "yup": "^1.7.1",  
+    "date-fns": "^4.1.0",
+    "formik": "^2.4.9",
 
   },
   "devDependencies": {

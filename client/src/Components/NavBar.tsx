@@ -1,66 +1,75 @@
+import NavBarSearch from "@/Components/homePageComponents/NavBarSearchBar";
+import ProfilePopUp from "@/Components/homePageComponents/ProfilePopUp";
+
 //Basic Imports
-import { AppBar, Box, IconButton, Stack, useMediaQuery, Button } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  IconButton,
+  Stack,
+  useMediaQuery,
+  Button,
+} from "@mui/material";
 import { Toolbar, useTheme } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import Slide from "@mui/material/Slide";
-import InputBase from "@mui/material/InputBase";
-import {Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 //Icons And images
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import testimage from "../assets/NavBarIcons/testimage.jpg";
 import BsHeartPulse from "../assets/NavBarIcons/BsHeartPulse.svg";
-import Magnifer from "../assets/NavBarIcons/Magnifer.svg";
+//import Magnifer from "../assets/NavBarIcons/Magnifer.svg";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 
 import { useState } from "react";
 import MobileProfileDrawer from "./MobileProfileDrawer";
 
+// const Search = styled("div")(({ theme }) => ({
+//   position: "relative",
+//   width: "100%",
+//   display: "block",
+//   [theme.breakpoints.up("sm")]: {
+//     borderRadius: "10px",
+//     display: "block",
+//     backgroundColor: "#F5F6F7",
+//     paddingLeft: "16px",
+//     paddingRight: "16px",
+//     marginRight: theme.spacing(3),
+//     width: "100%",
+//     maxWidth: 568,
+//   },
+//   [theme.breakpoints.up("md")]: {
+//     width: "568px",
+//   },
+// }));
 
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  width: "100%",
-  display: "none",
-  [theme.breakpoints.up("sm")]: {
-    borderRadius: "10px",
-    display: "block",
-    backgroundColor: "#F5F6F7",
-    paddingLeft: "16px",
-    paddingRight: "16px",
-    marginRight: theme.spacing(3),
-    width: "100%",        
-    maxWidth: 568,        
-  },
-  [theme.breakpoints.up("md")]: {
-    width: "568px",
-  },
-  
-}));
+// const SearchIconWrapper = styled("div")(({ theme }) => ({
+//   padding: theme.spacing(0, 0),
+//   height: "100%",
+//   position: "absolute",
+//   pointerEvents: "none",
+//   display: "flex",
+//   alignItems: "center",
+//   justifyContent: "center",
+// }));
 
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 0),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    [theme.breakpoints.up("md")]: {
-      width: "568px",
-    },      
-  },
-}));
+// const StyledInputBase = styled(InputBase)(({ theme }) => ({
+//   color: "#99A2AB",
+//   "& .MuiInputBase-input": {
+//     padding: theme.spacing(1, 1, 1, 0),
+//     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+//     transition: theme.transitions.create("width"),
+//     [theme.breakpoints.up("md")]: {
+//       width: "568px",
+//     },
+//   },
+// }));
 
 function Navbar() {
+  const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navButtonsOpen, setNavButtonsOpen] = useState(false);
 
@@ -77,56 +86,54 @@ function Navbar() {
 
   return (
     <>
-<AppBar
-  color="#FFFFFF"
-  elevation={0}
+      <AppBar
+        elevation={0}
+        sx={{
+          position: "fixed",
+          bgcolor: "white",
+        }}
+      >
+<Toolbar
   sx={{
-    position: "fixed",
-
-  }}
->
-        <Toolbar
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-                px: { xs: 2, sm: 4, md: 8 }, 
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "space-between",
+    columnGap: 2,
+    rowGap: 2,
+    px: { xs: 2, sm: 4, md: 8 },
     pb: "24px",
     pt: { xs: "24px", sm: "52px" },
-          }}
-        >
+  }}
+>
           {/* Left Side HeartPulse Icon */}
-          <Box>
+          <Box sx={{ order: { xs: 1, sm: 1 } }}>
             <IconButton sx={{ width: "64px" }}>
               <img src={BsHeartPulse} alt="HearPulseIcon" />
             </IconButton>
           </Box>
-
-          {/* TODO!!!!! Fix SearchBar Animation*/}
           <Box
-            sx={{
-              display: { xs: "none", sm: "flex" },
-              justifyContent: "center",
-              transition: "transform 400ms ease", // <-- Animation To be fixed Starts here
-              transform: {
-                xs: "none",
-                md: navButtonsOpen ? "translateX(-20px)" : "translateX(0)",
-              },
-            }}
-          >
-            <Search>
-              <SearchIconWrapper>
-                <img src={Magnifer} alt="MaginfierIcon" />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search about speciality, doctor"
-                inputProps={{ "aria-label": "search" }}
-              />
-            </Search>
-          </Box>
+  sx={{
+    order: { xs: 3, md: 2 },
+    flexBasis: { xs: "100%", md: "auto" },
+    flexGrow: 1,
+    mx: { md: "auto" },
+    display: "flex",
+    justifyContent: "center",
+    transition: "transform 400ms ease",
+    transform: {
+      xs: "none",
+      md: navButtonsOpen ? "translateX(-20px)" : "translateX(0)",
+    },
+  }}
+>
+  <NavBarSearch onSelect={(v) => console.log("search:", v)} />
+</Box>
+
+
 
           {/* Right Side Icons Box */}
-          <Box>
+          <Box sx={{ order: { xs: 2, md: 3 } }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               {/* 3 nav buttons from menu button  */}
               <Slide
@@ -141,12 +148,12 @@ function Navbar() {
                   spacing={1.5}
                   sx={{
                     mr: 2,
-                    display: { xs: "none", sm: "flex" }, 
+                    display: { xs: "none", sm: "flex" },
                   }}
                 >
                   <Button //Home Button
                     component={Link}
-                    //to="/" <-- Set correct Path (route?)
+                    to="/" 
                     variant="contained"
                     sx={{
                       borderRadius: "10px",
@@ -160,6 +167,8 @@ function Navbar() {
                     Home
                   </Button>
                   <Button
+                                      component={Link}
+                    to="/map" 
                     sx={{
                       borderRadius: "10px",
                       textTransform: "none",
@@ -198,14 +207,16 @@ function Navbar() {
                 >
                   {/* Menu Icon Button */}
                   <IconButton
-                    color="inherit"
                     sx={{
                       border: 1,
                       borderRadius: "10px",
                       borderColor: "transparent",
+                      color: "#05162C",
                       bgcolor: "#F5F6F7",
-                      transition: "transform 200ms ease, background-color 200ms ease",
-                      transform: !isMobile && navButtonsOpen ? "rotate(90deg)" : "none",
+                      transition:
+                        "transform 200ms ease, background-color 200ms ease",
+                      transform:
+                        !isMobile && navButtonsOpen ? "rotate(90deg)" : "none",
                     }}
                     onClick={handleMenuClick}
                   >
@@ -215,11 +226,11 @@ function Navbar() {
 
                   {/* notification icon Button */}
                   <IconButton
-                    color="inherit"
                     sx={{
                       border: 1,
                       borderRadius: "10px",
                       borderColor: "transparent",
+                      color: "#05162C",
                       bgcolor: "#F5F6F7",
                       display: { xs: "none", sm: "flex" },
                     }}
@@ -229,22 +240,15 @@ function Navbar() {
                 </Box>
 
                 {/* user Icon Button */}
-                <IconButton
-                  sx={{
-                    height: "41px",
-                    width: "41px",
-                    border: 0,
-                    borderRadius: "50%",
-                    padding: "0",
-                    overflow: "hidden",
-                  }}
-                >
-                  <img
-                    src={testimage}
-                    alt="UserIcon"
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  />
-                </IconButton>
+                <ProfilePopUp
+                  name="Seif Mohamed"
+                  address="129, El-Nasr Street, Cairo"
+                  avatarSrc={testimage}
+                  onPaymentMethod={() => navigate("/payment")}
+      onFavorite={() => navigate("/favorites")}
+      onSettings={() => navigate("/profile")}
+      onPrivacy={() => navigate("/privacy")}
+                />
               </Stack>
             </Box>
           </Box>

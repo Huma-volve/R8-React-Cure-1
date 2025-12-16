@@ -1,5 +1,5 @@
 import { useState } from "react";
-import DateTimePicker from '@/components/Cards/DateTimePicker';
+import DateTimePicker from '@/Components/Cards/DateTimePicker';
 import StarRateIcon from '@mui/icons-material/StarRate';
 import human from '@/assets/images/human.png';
 import verify from '@/assets/images/verified.svg';
@@ -10,8 +10,8 @@ import profile from '@/assets/images/profile.svg';
 import messages from '@/assets/images/messages.svg';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ChatIcon from '@mui/icons-material/Chat';
-import ReviewCard from "@/components/Cards/ReviewCard";
-import PopUp from '@/components/Cards/PopUp';
+import ReviewCard from "@/Components/Cards/ReviewCard";
+import PopUp from '@/Components/Cards/PopUp';
 import Rating from '@mui/material/Rating';
 // import DatePicker from '@mui/x-date-pickers/DatePicker';
 

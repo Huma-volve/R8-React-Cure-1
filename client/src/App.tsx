@@ -12,10 +12,10 @@ import SignUp from "./auth/SignUp"
 import Verification from "./auth/Verification"
 import PrivacyPolicy from "./pages/PrivacyPolicy"
 import Profile from "./pages/Profile"
-import PaymentPage from "./pages/PaymentPage";
-import ContactUs from "./Components/ContactUs";
-import DoctorsMap from "./Components/DoctorsMap";
-import DoctorDetails from "./pages/DoctorDetails";
+import PaymentPage from "@/pages/PaymentPage";
+import ContactUs from "@/Components/ContactUs";
+import DoctorsMap from "@/Components/DoctorsMap";
+import DoctorDetails from "@/pages/DoctorDetails";
 import Booking from "@/pages/Booking/Booking";
 import Chat from "@/pages/Chat-Page/Chat"; 
 

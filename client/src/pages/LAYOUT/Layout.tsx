@@ -38,10 +38,10 @@ useEffect(() => {
      
         
          
-        <div className="md:flex p-1 ">
+        <div className="md:flex p-2">
 
-          <div className="  md:w-100 md:border border-gray-400 rounded-tl-2xl">
-         <h2 className="p-1  border border-l-0 border-t-0 border-gray-400 border-r-0  pl-1">{myStore.titlePage}</h2>
+          <div className="  md:w-100 md:border border-gray-400 rounded-l-2xl p-2 pt-1">
+         <h2 className="p-2 border border-l-0 border-t-0 border-gray-400 italic font-bold border-r-0 text-2xl border-b-0 pl-1">{myStore.titlePage}</h2>
           <Search/>
           <NavBarChat/> 
           <Outlet/>

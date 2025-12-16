@@ -17,7 +17,7 @@ export default function NavBarChat() {
 
   return <>
   
-   <div className="links ">
+   <div className="links">
     {["All" , "Unread" , "Favorite"].map((status)=>{
         return  <button onClick={()=> {setIsActive(status) ; dispatch(checkMesage(status))}} className={`p-2 m-1  px-3  rounded-[7px] cursor-pointer ${
             isActive == status ? "bg-blue-700 text-white" : "bg-[#f5f6f7]"

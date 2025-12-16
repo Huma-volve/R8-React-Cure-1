@@ -22,7 +22,8 @@ function App() {
     element: <Layout />,
     children: [
       { index: true, element: <Chat /> },       // الصفحة الافتراضية عند /chat
-      { path: "allChat", element: <Chat /> }
+      { path: "allChat", element: <Chat /> },
+      { path: "/chat/:id/:name/:img", element: <Chat /> }
     ]
   },
 

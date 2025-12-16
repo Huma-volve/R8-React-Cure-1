@@ -1,60 +1,58 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
+// import axios from "axios";
+
+//  createAsyncThunk,
 
 // توكنك
-const token = "7|MFmla0NmwKFUDNaJ3BqHYEpK4npbuG6yMHg6DM1Y082b2deb";
+// const token = "7|MFmla0NmwKFUDNaJ3BqHYEpK4npbuG6yMHg6DM1Y082b2deb";
 
 // AsyncThunk لجلب بيانات الـ chat
-export const getChatList = createAsyncThunk("chatSlice/getChatList", async () => {
-  const res = await axios.get(
-    "https://round8-cure-php-team-two.huma-volve.com/api/v1/user/chats",
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    }
-   );
-   return res.data.data || []; 
-});
+// export const getChatList = createAsyncThunk("chatSlice/getChatList", async () => {
+//   const res = await axios.get(
+//     "https://round8-cure-php-team-two.huma-volve.com/api/v1/user/chats",
+//     {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         Accept: "application/json",
+//       },
+//     }
+//    );
+//    return res.data.data || []; 
+// });
 
-// interface ChatState {
-//   msgUnread: string;
-//   titlePage: string;
-//   messageDr: string;
-//   allMessage: object[];
-//   search: string;
-//   chatList: object[];
-//   isError: boolean;
-//   isLoading: boolean;
-//   isSuccess: boolean;
-// }
+type Message = {
+  text: string;
+};
 
-// const initialState:  {
-//   msgUnread: "All",
-//   titlePage: "chat",
-//   messageDr: "",
-//   allMessage: [],
-//   search: "",
-//   chatList: [],
-//   isError: false,
-//   isLoading: false,
-//   isSuccess: false,
-// };
+type ChatState = {
+  msgUnread: string;
+  titlePage: string;
+  messageDr: string;
+  allMessages:{
+    [chatId: string] : Message[] 
+  },
+  search: string;
+  chatList: object[];
+  isError: boolean;
+  isLoading: boolean;
+  isSuccess: boolean;
+}
 
-const ChatSlice = createSlice({
-  name: "chatSlice",
-  initialState : {
+const initialState: ChatState =  {
   msgUnread: "All",
   titlePage: "chat",
   messageDr: "",
-  allMessage: [],
+  allMessages: {},
   search: "",
-  chatList: "",
+  chatList: [],
   isError: false,
   isLoading: false,
   isSuccess: false,
-},
+};
+
+const ChatSlice = createSlice({
+  name: "chatSlice",
+  initialState,
   reducers: {
     checkMesage: (state, action) => {
       state.msgUnread = action.payload;
@@ -66,38 +64,44 @@ const ChatSlice = createSlice({
       state.messageDr = action.payload;
     },
     setAllMessage: (state, action) => {
-      state.allMessage = action.payload;
-    },
+  const { chatId, message } = action.payload;
+  
+  if (!state.allMessages[chatId]) {
+    state.allMessages[chatId] = []; 
+  }
+
+  state.allMessages[chatId].push(message); 
+  },
     setSearch: (state, action) => {
       state.search = action.payload;
     },
   },
-  extraReducers: (builder) => {
+  // extraReducers: (builder) => {
     
-    builder.addCase(getChatList.pending, (state) => {
-      state.isLoading = true;
-      state.isError = false;
-      state.isSuccess = false;
-      console.log("mostafa");
+  //   builder.addCase(getChatList.pending, (state) => {
+  //     state.isLoading = true;
+  //     state.isError = false;
+  //     state.isSuccess = false;
+  //     console.log("mostafa");
       
-    });
+  //   });
 
-    builder.addCase(getChatList.fulfilled, (state, action) => {
-      state.chatList = action.payload
-      state.isSuccess = true;
-      console.log("ahmed");
+  //   builder.addCase(getChatList.fulfilled, (state, action) => {
+  //     state.chatList = action.payload
+  //     state.isSuccess = true;
+  //     console.log("ahmed");
       
-      state.isError = false;
-      state.isLoading = false;
-    });
-    builder.addCase(getChatList.rejected, (state) => {
-      state.isError = true;
-      console.log("hassan");
+  //     state.isError = false;
+  //     state.isLoading = false;
+  //   });
+  //   builder.addCase(getChatList.rejected, (state) => {
+  //     state.isError = true;
+  //     console.log("hassan");
       
-      state.isLoading = false;
-      state.isSuccess = false;
-    });
-  },
+  //     state.isLoading = false;
+  //     state.isSuccess = false;
+  //   });
+  // },
 });
 
 export default ChatSlice.reducer;

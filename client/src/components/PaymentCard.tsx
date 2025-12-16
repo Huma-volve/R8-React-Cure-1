@@ -6,7 +6,6 @@ import {
   Typography,
   Box,
   Button,
-  TextField,
   Stack,
   Chip,
 } from "@mui/material";
@@ -15,7 +14,7 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import AppleIcon from "@mui/icons-material/Apple";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import { Formik, Field, Form } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useSendPayment, useSavedPaymentMethods } from "../hooks/usePayment";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +22,6 @@ import { setMethod } from "../store/paymentSlice";
 import type { AppDispatch, RootState } from "../store";
 import { loadStripe } from "@stripe/stripe-js";
 import { useState } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 type Props = { onSuccess?: (msg?: string) => void };

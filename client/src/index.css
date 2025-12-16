@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
+@theme{
+  --font-montserrat: 'Montserrat', sans-serif; ;
+}
 
 @theme{
   --font-montserrat: 'Montserrat', sans-serif; 
@@ -23,6 +26,17 @@
     }
     @media (width >= 1400px) {
         max-width : 1400px;}
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
 }
 
 :root {

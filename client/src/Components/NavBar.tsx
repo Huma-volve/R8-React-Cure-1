@@ -27,46 +27,6 @@ import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import { useState } from "react";
 import MobileProfileDrawer from "./MobileProfileDrawer";
 
-// const Search = styled("div")(({ theme }) => ({
-//   position: "relative",
-//   width: "100%",
-//   display: "block",
-//   [theme.breakpoints.up("sm")]: {
-//     borderRadius: "10px",
-//     display: "block",
-//     backgroundColor: "#F5F6F7",
-//     paddingLeft: "16px",
-//     paddingRight: "16px",
-//     marginRight: theme.spacing(3),
-//     width: "100%",
-//     maxWidth: 568,
-//   },
-//   [theme.breakpoints.up("md")]: {
-//     width: "568px",
-//   },
-// }));
-
-// const SearchIconWrapper = styled("div")(({ theme }) => ({
-//   padding: theme.spacing(0, 0),
-//   height: "100%",
-//   position: "absolute",
-//   pointerEvents: "none",
-//   display: "flex",
-//   alignItems: "center",
-//   justifyContent: "center",
-// }));
-
-// const StyledInputBase = styled(InputBase)(({ theme }) => ({
-//   color: "#99A2AB",
-//   "& .MuiInputBase-input": {
-//     padding: theme.spacing(1, 1, 1, 0),
-//     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-//     transition: theme.transitions.create("width"),
-//     [theme.breakpoints.up("md")]: {
-//       width: "568px",
-//     },
-//   },
-// }));
 
 function Navbar() {
   const navigate = useNavigate();
@@ -168,7 +128,7 @@ function Navbar() {
                   </Button>
                   <Button
                                       component={Link}
-                    to="/map" 
+                    to="/booking" 
                     sx={{
                       borderRadius: "10px",
                       textTransform: "none",
@@ -181,6 +141,8 @@ function Navbar() {
                     Bookings
                   </Button>
                   <Button
+                  component={Link}
+                    to="/chat" 
                     sx={{
                       borderRadius: "10px",
                       textTransform: "none",

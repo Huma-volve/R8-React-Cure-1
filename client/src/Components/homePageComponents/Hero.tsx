@@ -8,6 +8,7 @@ import {
   Avatar,
 } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -84,6 +85,7 @@ const Hero = () => {
 
       {/* Social proof pill */}
       <Box
+
         sx={{
           display: "inline-flex",
           alignItems: "center",
@@ -112,6 +114,8 @@ const Hero = () => {
         justifyContent="center"
       >
         <Button
+              component={Link}
+      to="/SearchDoctor"
           variant="contained"
           sx={{
             px: 4,
@@ -125,6 +129,8 @@ const Hero = () => {
         </Button>
 
         <Button
+              component={Link}
+      to="/SearchDoctor"
           variant="outlined"
           sx={{
             px: 4,

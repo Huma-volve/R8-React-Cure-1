@@ -44,10 +44,10 @@ function DesktopFooter() {
             <Link component={RouterLink} to={"/"} color="inherit" underline="none" display="block" variant="body2">
               Home
             </Link>
-            <Link href="#" color="inherit" underline="none" display="block" variant="body2">
+            <Link component={RouterLink} to={"/SearchDoctor"} color="inherit" underline="none" display="block" variant="body2">
               Doctors
             </Link>
-            <Link href="#" color="inherit" underline="none" display="block" variant="body2">
+            <Link component={RouterLink} to={"/faq"} color="inherit" underline="none" display="block" variant="body2">
               FAQs
             </Link>
           </Grid>

@@ -14,7 +14,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Profile from "./pages/Profile";
 import PaymentPage from "@/pages/PaymentPage";
 import ContactUs from "@/Components/ContactUs.tsx";
-import DoctorsMap from "@/Components/DoctorsMap.tsx";
+//import DoctorsMap from "@/Components/DoctorsMap.tsx";
 import DoctorDetails from "@/pages/DoctorDetails";
 import Booking from "@/pages/Booking/Booking";
 import Chat from "@/pages/Chat-Page/Chat";
@@ -25,7 +25,6 @@ function App() {
     <>
       <Navbar />
       <Routes>
-        <Route path="/map" element={<DoctorsMap />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/doctor" element={<DoctorDetails />} />

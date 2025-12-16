@@ -24,16 +24,17 @@ function App() {
   return (
     <>
       <Navbar />
+      <main className="mt-24">
       <Routes>
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/doctor" element={<DoctorDetails />} />
         <Route path="/login" element={<LogIn />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path="/" element={<SignUp />} />
         <Route path="/verify" element={<Verification />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/" element={<HomePage />} />
+        <Route path="/home" element={<HomePage />} />
         <Route path="/SearchDoctor" element={<SearchDoctor />} />
         <Route path="/Favorite" element={<Favorite />} />
         <Route path="/Appointment" element={<AppointmentPage />} />
@@ -41,6 +42,8 @@ function App() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/faq" element={<Faq />} />
       </Routes>
+      </main>
+
 
       <Footer />
     </>

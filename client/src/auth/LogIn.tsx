@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css'; 
+import {Link} from "react-router-dom";
+import Button from '@mui/material/Button';
 
 const LogIn = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -61,9 +63,9 @@ const LogIn = () => {
               </div>
 
               <div className='flex flex-col gap-y-5'>
-                <button className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-medium w-full py-3.5 rounded-lg transition">
+                <Button component={Link} to="/home" className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-medium w-full py-3.5 rounded-lg transition">
                   Sign In
-                </button>
+                </Button>
 
                 <div className='flex items-center gap-x-4'>
                   <hr className='flex-1 border-gray-300'/>
@@ -80,7 +82,7 @@ const LogIn = () => {
               <div className='text-center'>
                 <p className='text-gray-500 text-sm'>
                   Don’t have an account? {' '}
-                  <a href="/signUp" className='text-blue-500 hover:underline font-medium'>
+                  <a href="/" className='text-blue-500 hover:underline font-medium'>
                     Sign up
                   </a>
                 </p>

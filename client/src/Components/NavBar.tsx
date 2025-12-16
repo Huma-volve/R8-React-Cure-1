@@ -113,7 +113,7 @@ function Navbar() {
                 >
                   <Button //Home Button
                     component={Link}
-                    to="/" 
+                    to="/home" 
                     variant="contained"
                     sx={{
                       borderRadius: "10px",
@@ -128,7 +128,7 @@ function Navbar() {
                   </Button>
                   <Button
                                       component={Link}
-                    to="/booking" 
+                    to="/home" 
                     sx={{
                       borderRadius: "10px",
                       textTransform: "none",
@@ -142,7 +142,7 @@ function Navbar() {
                   </Button>
                   <Button
                   component={Link}
-                    to="/chat" 
+                    to="/home" 
                     sx={{
                       borderRadius: "10px",
                       textTransform: "none",
@@ -210,6 +210,7 @@ function Navbar() {
       onFavorite={() => navigate("/favorite")}
       onSettings={() => navigate("/profile")}
       onPrivacy={() => navigate("/privacy")}
+      onLogout={()=> navigate("/login")}
                 />
               </Stack>
             </Box>

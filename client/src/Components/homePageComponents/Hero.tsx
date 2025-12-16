@@ -14,7 +14,6 @@ const Hero = () => {
   return (
    <Box
   sx={{
-    pt: "200px",
     textAlign: "center",
     position: "relative",
     overflow: "hidden",

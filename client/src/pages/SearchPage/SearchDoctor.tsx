@@ -13,6 +13,7 @@ import RouteIcon from '@mui/icons-material/Route';
 import DoctorCard from "@/Components/Cards/DoctorCard";
 import AnimatedPagination from "@/Components/Animation";
 import { Bluetooth as Tooth, Heart, Stethoscope, Brain, User, Eye, Wind } from "lucide-react"
+import { Link } from "react-router-dom";
 
 const Search = styled('div')(({ theme }) => ({
     border: '1px solid #ccc',
@@ -583,7 +584,7 @@ export const SearchDoctor = () => {
                                             </div>                                            
                                             <div className="font-montserrat text-lg ml-2 text-red-400">$3583</div>
                                         </div>
-                                    <Button variant="contained" sx={{ width:'100%'}}>
+                                    <Button component={Link} to="/Appointment" variant="contained" sx={{ width:'100%'}}>
                                         Book Appointment
                                     </Button>
                                 </div>

@@ -130,7 +130,7 @@ const Hero = () => {
 
         <Button
               component={Link}
-      to="/SearchDoctor"
+      to="/Appointment"
           variant="outlined"
           sx={{
             px: 4,

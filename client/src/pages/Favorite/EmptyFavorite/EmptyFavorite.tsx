@@ -1,7 +1,7 @@
 // import Hearts from '@/assets/images/Heart.svg';
 import d1 from '@/assets/images/d1.jpg';
-import { useEffect, useState } from "react";
-import axios from "axios";
+// import { useEffect, useState } from "react";
+// import axios from "axios";
 import DoctorCard from '@/Components/Cards/DoctorCard';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { useNavigate } from 'react-router-dom';

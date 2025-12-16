@@ -3,7 +3,10 @@ import type {  RootState } from "../Redux-Store/BokingStore/BokingStore";
 // import { useEffect } from "react";
 // import { getChatList } from "../Redux-Store/ChatSlice/ChatSlice";
 import profileImage from "../../assets/Images/644acebb39b684127cacceef34d2234b0b1622c9.jpg";
+<<<<<<< HEAD
 import { Link } from "react-router-dom";
+=======
+>>>>>>> 8f21549
 
 export default function Chat() {
 
@@ -44,6 +47,10 @@ if (msgUnread === "Unread") {
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8f21549
 // فلترة البحث
 if (search?.trim()) {
   filteredChat = filteredChat.filter((c) =>
@@ -53,15 +60,22 @@ if (search?.trim()) {
 
   return (
     /* الشاشة كلها */
+<<<<<<< HEAD
     <div className="h-100 bg-white flex flex-col bg">
+=======
+    <div className="h-100 bg-white flex flex-col">
+>>>>>>> 8f21549
 
       {/* ليست الشات */}
       <div className="flex-1 overflow-y-auto p-2">
         {filteredChat.length ? (
           filteredChat.map((chat) => (
+<<<<<<< HEAD
             
             <Link  to={`/chat/${chat.id}/${encodeURIComponent(chat.name)}/${encodeURIComponent(chat.img)}`} key={chat.id}>
             
+=======
+>>>>>>> 8f21549
             <div
               key={chat.id}
               className="p-2 mb-2 rounded-lg  bg-[#f5f6f7] flex justify-between"
@@ -91,8 +105,11 @@ if (search?.trim()) {
                 )}
               </div>
             </div>
+<<<<<<< HEAD
             
             </Link>
+=======
+>>>>>>> 8f21549
           ))
         ) : (
           <div className="h-full flex items-center justify-center text-gray-400">

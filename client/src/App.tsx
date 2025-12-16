@@ -1,57 +1,34 @@
 
 import { BrowserRouter } from 'react-router-dom'
-import './App.css'
-import Booking from './pages/Booking/Booking'
+import Booking from '@/pages/Booking/Booking'
 import { myStore } from './pages/Redux-Store/BokingStore/BokingStore'
 import { Provider } from 'react-redux';
 // import Faqs from './pages/Faq-Page/Faq';
-
-function App() {
-import { Link, Navigate, Route, Routes } from "react-router-dom";
-import { Container, Box } from '@mui/material';
-import './App.css';
+import {  Navigate, Route, Routes } from "react-router-dom";
 import Navbar from './Components/NavBar';
 import Footer from './Components/Footer';
-import HomePage from './pages/Appointmentpage/Homepage';
-import { BrowserRouter } from 'react-router';
-import { Route, Routes } from "react-router-dom"
+import HomePage from '@/pages/Appointmentpage/Homepage';
 import LogIn from "./auth/LogIn"
 import SignUp from "./auth/SignUp"
 import Verification from "./auth/Verification"
 import PrivacyPolicy from "./pages/PrivacyPolicy"
 import Profile from "./pages/Profile"
 import PaymentPage from "./pages/PaymentPage";
-import ContactUs from "./components/ContactUs";
-import DoctorsMap from "./components/DoctorsMap";
+import ContactUs from "./Components/ContactUs";
+import DoctorsMap from "./Components/DoctorsMap";
 import DoctorDetails from "./pages/DoctorDetails";
-import NotificationDropdown from "./components/NotificationDropdown";
 
-export default function App() {
-  return (
-      <Routes>
-        <Route path="/map" element={<DoctorsMap />} />
-        <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/contact" element={<ContactUs />} />
-        <Route path="/doctor" element={<DoctorDetails />} />
-        <Route path="*" element={<Navigate to="/map" replace />} />
-      </Routes>
-    </div>
-  );
-}
 
 function App() {
   return (
     <>
-    <BrowserRouter>
+    {/* <BrowserRouter>
       <Provider store={myStore}>
          <Booking/>
-         {/* <Faqs /> */}
+         <Faqs />
       </Provider>
-    </BrowserRouter>
-     
-    </>
-  )
-        <Navbar />
+    </BrowserRouter> */}
+            <Navbar />
     <Routes>       
       <Route path="/map" element={<DoctorsMap />} />
       <Route path="/payment" element={<PaymentPage />} />
@@ -63,10 +40,14 @@ function App() {
       <Route path="/verify" element={<Verification/>}/>
       <Route path="/privacy" element={<PrivacyPolicy/>}/>
       <Route path="/profile" element={<Profile/>}/>
+      <Route path="/" element={<HomePage/>}/>
     </Routes>
-        <HomePage/>
+
       <Footer />
-  );
+     
+    </>
+  )
+;
 }
 
 export default App;

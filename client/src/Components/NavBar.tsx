@@ -11,10 +11,9 @@ import {
   Button,
 } from "@mui/material";
 import { Toolbar, useTheme } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import Slide from "@mui/material/Slide";
-import InputBase from "@mui/material/InputBase";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 //Icons And images
@@ -70,6 +69,7 @@ import MobileProfileDrawer from "./MobileProfileDrawer";
 // }));
 
 function Navbar() {
+  const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navButtonsOpen, setNavButtonsOpen] = useState(false);
 
@@ -129,28 +129,7 @@ function Navbar() {
 >
   <NavBarSearch onSelect={(v) => console.log("search:", v)} />
 </Box>
-          {/* TODO!!!!! Fix SearchBar Animation*/}
-          {/* <Box
-            sx={{
-              order: { xs: 0, sm: 0 },
-              justifyContent: "center",
-              transition: "transform 400ms ease", // <-- Animation To be fixed Starts here
-              transform: {
-                xs: "none",
-                md: navButtonsOpen ? "translateX(-20px)" : "translateX(0)",
-              },
-            }}
-          >
-            <Search>
-              <SearchIconWrapper>
-                <img src={Magnifer} alt="MaginfierIcon" />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search about speciality, doctor"
-                inputProps={{ "aria-label": "search" }}
-              />
-            </Search>
-          </Box> */}
+
 
 
           {/* Right Side Icons Box */}
@@ -174,7 +153,7 @@ function Navbar() {
                 >
                   <Button //Home Button
                     component={Link}
-                    //to="/" <-- Set correct Path (route?)
+                    to="/" 
                     variant="contained"
                     sx={{
                       borderRadius: "10px",
@@ -188,6 +167,8 @@ function Navbar() {
                     Home
                   </Button>
                   <Button
+                                      component={Link}
+                    to="/map" 
                     sx={{
                       borderRadius: "10px",
                       textTransform: "none",
@@ -259,30 +240,14 @@ function Navbar() {
                 </Box>
 
                 {/* user Icon Button */}
-                {/* <IconButton
-                  sx={{
-                    height: "41px",
-                    width: "41px",
-                    border: 0,
-                    borderRadius: "50%",
-                    padding: "0",
-                    overflow: "hidden",
-                  }}
-                >
-                  <img
-                    src={testimage}
-                    alt="UserIcon"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                </IconButton> */}
                 <ProfilePopUp
                   name="Seif Mohamed"
                   address="129, El-Nasr Street, Cairo"
                   avatarSrc={testimage}
+                  onPaymentMethod={() => navigate("/payment")}
+      onFavorite={() => navigate("/favorites")}
+      onSettings={() => navigate("/profile")}
+      onPrivacy={() => navigate("/privacy")}
                 />
               </Stack>
             </Box>

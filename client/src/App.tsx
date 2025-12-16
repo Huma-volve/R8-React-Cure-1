@@ -1,28 +1,7 @@
 import AppointmentPage from '@/pages/Appointmentpage/Appointmentpage';
 import SearchDoctor from '@/pages/SearchPage/SearchDoctor';
 import Favorite from '@/pages/Favorite/EmptyFavorite/EmptyFavorite';
-import Navbar from '@/components/NavBar';
-import Footer from '@/components/Footer';;
-import { Route, Routes } from "react-router-dom"
-function App() {
-  return (
-    <>
-      <Navbar />
-    <Routes>
-      <Route path="/SearchDoctor" element={<SearchDoctor/>}/>
-      <Route path="/Favorite" element={<Favorite/>}/>
-      <Route path="/Appointment" element={<AppointmentPage/>}/>
-    </Routes>
-      <Footer />
 
-    </>
-      
-  );
-
-import { BrowserRouter } from 'react-router-dom'
-import Booking from '@/pages/Booking/Booking'
-import { myStore } from './pages/Redux-Store/BokingStore/BokingStore'
-import { Provider } from 'react-redux';
 // import Faqs from './pages/Faq-Page/Faq';
 import {  Navigate, Route, Routes } from "react-router-dom";
 import Navbar from './Components/NavBar';
@@ -37,17 +16,12 @@ import PaymentPage from "./pages/PaymentPage";
 import ContactUs from "./Components/ContactUs";
 import DoctorsMap from "./Components/DoctorsMap";
 import DoctorDetails from "./pages/DoctorDetails";
-
+import Booking from "@/pages/Booking/Booking";
+import Chat from "@/pages/Chat-Page/Chat"; 
 
 function App() {
   return (
     <>
-    {/* <BrowserRouter>
-      <Provider store={myStore}>
-         <Booking/>
-         <Faqs />
-      </Provider>
-    </BrowserRouter> */}
             <Navbar />
     <Routes>       
       <Route path="/map" element={<DoctorsMap />} />
@@ -61,6 +35,11 @@ function App() {
       <Route path="/privacy" element={<PrivacyPolicy/>}/>
       <Route path="/profile" element={<Profile/>}/>
       <Route path="/" element={<HomePage/>}/>
+           <Route path="/SearchDoctor" element={<SearchDoctor/>}/>
+      <Route path="/Favorite" element={<Favorite/>}/>
+      <Route path="/Appointment" element={<AppointmentPage/>}/>
+            <Route path="/booking" element={<Booking/>}/>
+                  <Route path="/chat" element={<Chat/>}/>
     </Routes>
 
       <Footer />

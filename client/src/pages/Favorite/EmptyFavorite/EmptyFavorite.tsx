@@ -2,8 +2,9 @@
 import d1 from '@/assets/images/d1.jpg';
 import { useEffect, useState } from "react";
 import axios from "axios";
-import DoctorCard from '@/components/Cards/DoctorCard';
+import DoctorCard from '@/Components/Cards/DoctorCard';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import { useNavigate } from 'react-router-dom';
 
 // interface Doctor {
 //   id: number;
@@ -18,6 +19,7 @@ import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 //   className?: string;
 // }
 const EmptyFavorite: React.FC = () => {
+  const navigate = useNavigate();
   //   const [doctors, setDoctors] = useState<Doctor[]>([]);
   //   const [loading, setLoading] = useState(true);
   //   const [error, setError] = useState<string | null>(null);
@@ -55,7 +57,7 @@ const EmptyFavorite: React.FC = () => {
         </div> */}
         <div>
             <div className="flex items-center pt-22 pl-4 p-2 gap-1 text-gray-600">
-                  <button><KeyboardBackspaceIcon  sx={{fontSize :30}} /></button>
+                  <button onClick={() => navigate(-1)}><KeyboardBackspaceIcon  sx={{fontSize :30}} /></button>
                   <span className="text-2xl font-semibold p-5">
                    Your Favorites Doctors
                   </span>

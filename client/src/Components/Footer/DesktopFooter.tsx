@@ -1,6 +1,6 @@
 import { Box, Container,  IconButton, Link, Typography } from "@mui/material";
 import Grid from '@mui/material/GridLegacy';
-import { Router, Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 
 function DesktopFooter() {
@@ -57,7 +57,7 @@ function DesktopFooter() {
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               Support
             </Typography>
-            <Link href="#" color="inherit" underline="none" display="block" variant="body2">
+            <Link component={RouterLink} to={"/contact"} color="inherit" underline="none" display="block" variant="body2">
               Help Center
             </Link>
             <Link href="/privacy" color="inherit" underline="none" display="block" variant="body2">

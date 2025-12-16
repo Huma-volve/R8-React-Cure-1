@@ -245,7 +245,7 @@ function Navbar() {
                   address="129, El-Nasr Street, Cairo"
                   avatarSrc={testimage}
                   onPaymentMethod={() => navigate("/payment")}
-      onFavorite={() => navigate("/favorites")}
+      onFavorite={() => navigate("/favorite")}
       onSettings={() => navigate("/profile")}
       onPrivacy={() => navigate("/privacy")}
                 />

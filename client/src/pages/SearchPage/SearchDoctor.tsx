@@ -1,5 +1,5 @@
-import { useState ,useEffect } from "react";
-import Specialist from "@/components/Cards/Specialist";
+import { useState  } from "react";
+// import Specialist from "@/Components/Cards/Specialist";
 import Button from '@mui/material/Button';
 import TuneIcon from "@mui/icons-material/Tune";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -10,8 +10,8 @@ import { styled, alpha } from '@mui/material/styles';
 import Checkbox from '@mui/material/Checkbox';
 import InputBase from '@mui/material/InputBase';    
 import RouteIcon from '@mui/icons-material/Route';
-import DoctorCard from "@/components/Cards/DoctorCard";
-import AnimatedPagination from "@/components/Animation";
+import DoctorCard from "@/Components/Cards/DoctorCard";
+import AnimatedPagination from "@/Components/Animation";
 import { Bluetooth as Tooth, Heart, Stethoscope, Brain, User, Eye, Wind } from "lucide-react"
 
 const Search = styled('div')(({ theme }) => ({
@@ -417,19 +417,7 @@ export const SearchDoctor = () => {
     const totalPages = Math.ceil(items.length / itemsPerPage);
 
     const [page, setPage] = useState(1);
-    const startIndex = (page - 1) * itemsPerPage;
-    const pageData = items.slice(startIndex, startIndex + itemsPerPage);
-    const [animating, setAnimating] = useState(false);
-    const [displayedItems, setDisplayedItems] = useState<string[]>([]);
-        useEffect(() => {
-        setAnimating(true); // start fade-out
-        const timeout = setTimeout(() => {
-        setDisplayedItems(items); // switch items after fade-out
-        setAnimating(false); // fade-in
-        }, 200); // fade-out duration (ms)
-
-    return () => clearTimeout(timeout);
-    }, [page]);
+    //const startIndex = (page - 1) * itemsPerPage;
 
     return (
     <> 
@@ -576,7 +564,7 @@ export const SearchDoctor = () => {
                 {/*Doctor details*/}
                 <div className="pt-7 pb-1 pl-10">
                     <div className={`grid grid-cols-3 gap-6 p-5 mb-6 transition-all duration-300 ${
-                                        isOpen ? 'grid-cols-3 ' : 'grid-cols-3' + animating ? 'opacity-100 ease-in-out' : 'opacity-100 '}transform transition-all duration-300 ease-in-out`}>
+                                        isOpen ? 'grid-cols-3 ' : 'grid-cols-3' }transform transition-all duration-300 ease-in-out`}>
                              {/* {doctors.map((doctor) => ( */}
                              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
                                 <div className="  border border-gray-100 shadow-xl ">
@@ -614,7 +602,7 @@ export const SearchDoctor = () => {
                     {/* // Animated pagination  */}
                     <AnimatedPagination
                         currentPage={page}
-                        totalPages={totalPages}
+                        //totalPages={totalPages}
                         onNext={() => setPage((p) => Math.min(p + 1, totalPages))}
                         onPrev={() => setPage((p) => Math.max(p - 1, 1))}
                     />

@@ -14,7 +14,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy"
 import Profile from "./pages/Profile"
 import PaymentPage from "./pages/PaymentPage";
 import ContactUs from "./Components/ContactUs";
-import DoctorsMap from "./Components/DoctorsMap";
+// import DoctorsMap from "./Components/DoctorsMap";
 import DoctorDetails from "./pages/DoctorDetails";
 import AppointmentPage from '@/pages/Appointmentpage/Appointmentpage';
 import SearchDoctor from '@/pages/SearchPage/SearchDoctor';
@@ -40,8 +40,8 @@ function App() {
         <Route path="/Favorite" element={<Favorite />} />
         <Route path="/Appointment" element={<AppointmentPage />} />
         <Route path="/booking" element={<Booking />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/faq" element={<Faq />} />
+        {/* <Route path="/chat" element={<Chat />} />
+        <Route path="/faq" element={<Faq />} /> */}
       </Routes>
       </main>
 

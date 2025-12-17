@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 import { useState } from "react";
 import Specialist from "@/Components/Cards/Specialist";
-=======
-import { useState  } from "react";
-// import Specialist from "@/Components/Cards/Specialist";
->>>>>>> 8779d5fe3302a2e00defd406e859400d4ea38fb4
 import Button from '@mui/material/Button';
 import TuneIcon from "@mui/icons-material/Tune";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -160,15 +155,6 @@ function SearchDoctor() {
             scrollContainer.scrollBy({ left: scrollAmount, behavior: "smooth" });
         }
     };
-    const handleToggle = () => {
-      setIsOpen(!isOpen); // toggle between true and false
-      };
-    const items = Array.from({ length: 30 }, (_, i) => `Item ${i + 1}`);
-    const itemsPerPage = 6;
-    const totalPages = Math.ceil(items.length / itemsPerPage);
-
-    const [page, setPage] = useState(1);
-    //const startIndex = (page - 1) * itemsPerPage;
 
     return (
     <> 

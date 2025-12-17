@@ -70,7 +70,7 @@ const EmptyFavorite: React.FC = () => {
               <DoctorCard
                 doctor={{
                   id: 1,
-                  image: { imageVariable },
+                  image: imageVariable ,
                   name: "Dr. John Doe",
                   specialty: "Cardiologist",
                   hospital: "City Hospital",

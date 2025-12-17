@@ -342,7 +342,7 @@ function SearchDoctor() {
                                 <DoctorCard 
                                     doctor={{
                                         id: i,
-                                        image: { doctorIcon },
+                                        image: doctorIcon ,
                                         name: "Dr. John Doe",
                                         specialty: "Cardiologist",
                                         hospital: "City Hospital",

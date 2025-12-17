@@ -95,6 +95,7 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
           <IconButton
             component={Link}
             to="/profile"
+            onClick={handleClose}
             sx={{
               width: 32,
               height: 32,

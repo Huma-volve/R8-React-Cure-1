@@ -14,7 +14,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy"
 import Profile from "./pages/Profile"
 import PaymentPage from "./pages/PaymentPage";
 import ContactUs from "./Components/ContactUs";
-// import DoctorsMap from "./Components/DoctorsMap";
+import DoctorsMap from "./Components/DoctorsMap";
 import DoctorDetails from "./pages/DoctorDetails";
 import AppointmentPage from '@/pages/Appointmentpage/Appointmentpage';
 import SearchDoctor from '@/pages/SearchPage/SearchDoctor';
@@ -27,6 +27,7 @@ function App() {
       <Navbar />
       <main className="mt-35 lg:mt-30">
       <Routes>
+                <Route path="/map" element={<DoctorsMap />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/doctor" element={<DoctorDetails />} />

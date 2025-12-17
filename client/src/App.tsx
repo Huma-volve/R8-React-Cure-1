@@ -1,8 +1,8 @@
 import AppointmentPage from '@/pages/Appointmentpage/Appointmentpage';
 import SearchDoctor from '@/pages/SearchPage/SearchDoctor';
 import Favorite from '@/pages/Favorite/EmptyFavorite/EmptyFavorite';
-import Navbar from '@/components/NavBar';
-import Footer from '@/components/Footer';;
+import Navbar from '@/Components/NavBar';
+import Footer from '@/Components/Footer';;
 import { Route, Routes } from "react-router-dom"
 function App() {
   return (

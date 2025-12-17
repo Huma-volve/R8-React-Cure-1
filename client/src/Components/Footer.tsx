@@ -1,10 +1,9 @@
-
 import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import MobileFooter from "./Footer/MobileFooter";
-import DesktopFooter from "./Footer/DesktopFooter";
+import MobileFooter from "@/components/Footer/MobileFooter";
+import DesktopFooter from "@/components/Footer/DesktopFooter";
 
 function Footer() {
   const theme = useTheme();

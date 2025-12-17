@@ -88,11 +88,13 @@ function Navbar() {
         <Toolbar
           sx={{
             display: "flex",
+            backgroundColor:"white",
             justifyContent: "space-between",
             alignItems: "center",
                 px: { xs: 2, sm: 4, md: 8 }, 
-    pb: "24px",
-    pt: { xs: "24px", sm: "52px" },
+               pb: "24px"
+               ,
+              pt: { xs: "24px", sm: "32px" },
           }}
         >
           {/* Left Side HeartPulse Icon */}

@@ -1,4 +1,5 @@
-import { Box, Container, Grid, IconButton, Link, Typography } from "@mui/material";
+import { Box, Container, IconButton, Link, Typography } from "@mui/material";
+import Grid from '@mui/material/GridLegacy';
 
 function DesktopFooter() {
   return (

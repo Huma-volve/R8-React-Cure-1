@@ -1,6 +1,6 @@
 import { Box, Typography, Stack } from "@mui/material";
-import BsHeartPulse from "../../assets/NavBarIcons/BsHeartPulse.svg";
-import Phonecall from "../../assets/FooterIcons/Phonecall.svg";
+import BsHeartPulse from "@/assets/NavBarIcons/BsHeartPulse.svg";
+import Phonecall from "@/assets/FooterIcons/Phonecall.svg";
 import {  Linkedin, Facebook, Twitter, Instagram} from "lucide-react";
 
 function MobileFooter() {

@@ -1,18 +1,10 @@
 // import Hearts from '@/assets/images/Heart.svg';
-<<<<<<< HEAD
-import d1 from "@/assets/images/d1.jpg";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import DoctorCard from "@/components/Cards/DoctorCard";
-import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-=======
 import d1 from '@/assets/images/d1.jpg';
 // import { useEffect, useState } from "react";
 // import axios from "axios";
 import DoctorCard from '@/Components/Cards/DoctorCard';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { useNavigate } from 'react-router-dom';
->>>>>>> 8779d5fe3302a2e00defd406e859400d4ea38fb4
 
 // interface Doctor {
 //   id: number;

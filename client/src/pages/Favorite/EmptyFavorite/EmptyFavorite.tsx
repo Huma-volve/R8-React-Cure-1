@@ -64,7 +64,7 @@ const EmptyFavorite: React.FC = () => {
             Your Favorites Doctors
           </span>
         </div>
-        <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ml-20 md:gap-6 p-4 md:p-5 h-screen overflow-y-auto">
+        <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 p-4 md:p-5 h-screen overflow-y-auto">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map((i) => (
             <div key={i} className="w-full">
               <DoctorCard

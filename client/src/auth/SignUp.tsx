@@ -6,6 +6,7 @@ import HeartIcon from "@/assets/BsHeartPulse.png"
 import wave from '@/assets/wave bg.png';
 import border from '@/assets/border.png';
 import googleIcon from '@/assets/flat-color-icons_google.png';
+import {Link} from "react-router-dom";
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -135,9 +136,9 @@ const SignUp = () => {
             {/* رابط تسجيل الدخول */}
             <p className="text-center text-xs text-gray-600 ">
               Already have an account?{' '}
-              <a href="/" className="text-blue-500 hover:underline font-medium ">
+              <Link to="/" className="text-blue-500 hover:underline font-medium ">
                 Sign in
-              </a>
+              </Link>
             </p>
           </div>
         </div>

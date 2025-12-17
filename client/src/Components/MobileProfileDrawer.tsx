@@ -161,7 +161,7 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
             />
           </ListItemButton>
 
-          <ListItemButton component={Link} to="/logout" onClick={handleClose}>
+          <ListItemButton component={Link} to="/" onClick={handleClose}>
             <ListItemIcon>
               <LogoutIcon fontSize="small" color="error" />
             </ListItemIcon>

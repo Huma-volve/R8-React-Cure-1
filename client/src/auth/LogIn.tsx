@@ -11,7 +11,7 @@ const LogIn = () => {
     <div className="flex min-h-screen relative overflow-hidden">
         
       <img 
-        className="absolute top-0 right-0 w-full h-full object-right md:w-[948px] "
+        className="absolute top-0 right-0 w-full h-full object-right md:w-237 "
         src="src/assets/wave bg.png" 
         alt="wave bg" 
       />
@@ -82,7 +82,7 @@ const LogIn = () => {
               <div className='text-center'>
                 <p className='text-gray-500 text-sm'>
                   Don’t have an account? {' '}
-                  <a href="/" className='text-blue-500 hover:underline font-medium'>
+                  <a href="/signup" className='text-blue-500 hover:underline font-medium'>
                     Sign up
                   </a>
                 </p>

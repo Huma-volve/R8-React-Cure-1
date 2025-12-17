@@ -1,5 +1,5 @@
 // import Hearts from '@/assets/images/Heart.svg';
-import imageVariable from "@/assets/images/d1.jpg"
+import imageVariable from "@/assets/images/AppleIcon.svg"
 // import { useEffect, useState } from "react";
 // import axios from "axios";
 import DoctorCard from '@/Components/Cards/DoctorCard';

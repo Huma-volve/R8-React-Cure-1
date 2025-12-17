@@ -14,7 +14,7 @@ import DoctorCard from "@/Components/Cards/DoctorCard";
 import AnimatedPagination from "@/Components/Animation";
 import { Bluetooth as Tooth, Heart, Stethoscope, Brain, User, Eye, Wind } from "lucide-react"
 import { Link } from "react-router-dom";
-import doctorIcon from '@/assets/images/d1.jpg';
+import doctorIcon from '@/assets/images/AppleIcon.svg'
 
 
 const Search = styled('div')(({ theme }) => ({

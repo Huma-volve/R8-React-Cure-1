@@ -4,7 +4,7 @@ import Grid from '@mui/material/GridLegacy';
 =======
 import { Box, Container,  IconButton, Link, Typography } from "@mui/material";
 import Grid from '@mui/material/GridLegacy';
-import { Router, Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 >>>>>>> ecc6a9b82b3e2940b148995853cbc9375514670b
 
@@ -49,10 +49,10 @@ function DesktopFooter() {
             <Link component={RouterLink} to={"/"} color="inherit" underline="none" display="block" variant="body2">
               Home
             </Link>
-            <Link href="#" color="inherit" underline="none" display="block" variant="body2">
+            <Link component={RouterLink} to={"/SearchDoctor"} color="inherit" underline="none" display="block" variant="body2">
               Doctors
             </Link>
-            <Link href="#" color="inherit" underline="none" display="block" variant="body2">
+            <Link component={RouterLink} to={"/faq"} color="inherit" underline="none" display="block" variant="body2">
               FAQs
             </Link>
           </Grid>
@@ -62,7 +62,7 @@ function DesktopFooter() {
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               Support
             </Typography>
-            <Link href="#" color="inherit" underline="none" display="block" variant="body2">
+            <Link component={RouterLink} to={"/contact"} color="inherit" underline="none" display="block" variant="body2">
               Help Center
             </Link>
             <Link href="/privacy" color="inherit" underline="none" display="block" variant="body2">

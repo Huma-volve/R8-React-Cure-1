@@ -1,9 +1,9 @@
-import { BrowserRouter } from 'react-router-dom'
+//import { BrowserRouter } from 'react-router-dom'
 import Booking from '@/pages/Booking/Booking'
-import { myStore } from './pages/Redux-Store/BokingStore/BokingStore'
-import { Provider } from 'react-redux';
+// import { myStore } from './pages/Redux-Store/BokingStore/BokingStore'
+// import { Provider } from 'react-redux';
 // import Faqs from './pages/Faq-Page/Faq';
-import {  Navigate, Route, Routes } from "react-router-dom";
+import {  Route, Routes } from "react-router-dom";
 import Navbar from './Components/NavBar';
 import Footer from './Components/Footer';
 import HomePage from '@/pages/Appointmentpage/Homepage';
@@ -27,6 +27,7 @@ function App() {
       <Navbar />
       <main className="mt-35 lg:mt-30">
       <Routes>
+                <Route path="/map" element={<DoctorsMap />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/doctor" element={<DoctorDetails />} />
@@ -40,8 +41,8 @@ function App() {
         <Route path="/Favorite" element={<Favorite />} />
         <Route path="/Appointment" element={<AppointmentPage />} />
         <Route path="/booking" element={<Booking />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/faq" element={<Faq />} />
+        {/* <Route path="/chat" element={<Chat />} />
+        <Route path="/faq" element={<Faq />} /> */}
       </Routes>
       </main>
 

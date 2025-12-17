@@ -3,6 +3,7 @@ import { Card as MUICard } from "@mui/material"
 import StarRateIcon from '@mui/icons-material/StarRate';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import placeholder from "@/assets/images/profile.svg"
 
 interface Doctor{
   id?: number;
@@ -35,7 +36,7 @@ export const DoctorCard = ({doctor,onFavoriteToggle }: DoctorCardProps) => {
       <div className="">
         <div className="flex items-start justify-around mb-1">
           <div className="flex gap-4">
-              <img src={doctor.image || "/placeholder.svg"} alt={doctor.name} className="object-center w-22 h-24" />
+              <img src={doctor.image || {placeholder}} alt={doctor.name} className="object-center w-22 h-24" />
             <div className="flex-1">
               <h3 className="text-lg font-semibold text-gray-900 mb-1">{doctor.name}</h3>
               <p className="text-sm text-gray-600 ">

@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-import { Box, Container, IconButton, Link, Typography } from "@mui/material";
-import Grid from '@mui/material/GridLegacy';
-=======
 import { Box, Container,  IconButton, Link, Typography } from "@mui/material";
 import Grid from '@mui/material/GridLegacy';
 import { Link as RouterLink } from "react-router-dom";
-
->>>>>>> ecc6a9b82b3e2940b148995853cbc9375514670b
 
 function DesktopFooter() {
   return (

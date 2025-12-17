@@ -1,12 +1,15 @@
 import { useState } from "react"
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
+import { Link } from "react-router-dom";
 //import { set } from "date-fns";
 
 interface TimeSlot {
   time: string
   available: boolean
 }
+
+
 
 const timeSlots: TimeSlot[] = [
   { time: "9:00 AM", available: true },
@@ -102,7 +105,7 @@ export function DateTimePicker() {
       {/* Selection Summary and Book Button */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-4 border-t border-gray-200 gap-3 sm:gap-0">
         <div className="flex items-center gap-2 text-gray-700 text-sm md:text-base">
-          <svg className="w-5 h-5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -114,7 +117,7 @@ export function DateTimePicker() {
             {weekDays.find((w) => w.date === selectedDate)?.day}, {month} {selectedDate} - {selectedTime}
           </span>
         </div>
-        <Button 
+        <Button component={Link} to="/payment" 
           variant="outlined" 
           className="border-blue-600 text-blue-600 hover:bg-blue-50 bg-transparent w-full sm:w-auto"
         >

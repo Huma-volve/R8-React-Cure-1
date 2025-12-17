@@ -2,6 +2,11 @@ import { useState } from 'react';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { Eye, EyeOff } from 'lucide-react';
+import HeartIcon from "@/assets/BsHeartPulse.png"
+import wave from '@/assets/wave bg.png';
+import border from '@/assets/border.png';
+import googleIcon from '@/assets/flat-color-icons_google.png';
+import {Link} from "react-router-dom";
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -14,18 +19,18 @@ const SignUp = () => {
      
       <img
         className="absolute top-0 right-0 w-full h-full object-right md:w-[948px]"
-        src="src/assets/wave bg.png"
+        src={wave}
         alt="wave bg"
       />
       <img
         className="absolute top-0 right-0 w-full h-full object-right md:w-[948px]"
-        src="src/assets/border.png"
+        src={border}
         alt="border"
       />
 
       {/* أيقونة القلب */}
       <img
-        src="src/assets/BsHeartPulse.png"
+        src={HeartIcon}
         alt="heart"
         className="absolute top-8 left-6 w-10 h-10 md:top-10 md:left-20 z-20"
       />
@@ -123,7 +128,7 @@ const SignUp = () => {
               </div>
 
               <button className="w-full flex items-center cursor-pointer justify-center gap-3 bg-white hover:bg-gray-50 text-[#05162C] font-medium py-3 border border-gray-300 rounded-lg transition text-sm">
-                <img src="src/assets/flat-color-icons_google.png" alt="google" className=" w-5 h-5" />
+                <img src={googleIcon} alt="google" className=" w-5 h-5" />
                 Continue with Google
               </button>
             </div>
@@ -131,9 +136,9 @@ const SignUp = () => {
             {/* رابط تسجيل الدخول */}
             <p className="text-center text-xs text-gray-600 ">
               Already have an account?{' '}
-              <a href="/" className="text-blue-500 hover:underline font-medium ">
+              <Link to="/" className="text-blue-500 hover:underline font-medium ">
                 Sign in
-              </a>
+              </Link>
             </p>
           </div>
         </div>

@@ -3,6 +3,10 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css'; 
 import {Link} from "react-router-dom";
 import Button from '@mui/material/Button';
+import HeartIcon from "@/assets/BsHeartPulse.png"
+import wave from '@/assets/wave bg.png';
+import border from '@/assets/border.png';
+import googleIcon from '@/assets/flat-color-icons_google.png';
 
 const LogIn = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -12,18 +16,18 @@ const LogIn = () => {
         
       <img 
         className="absolute top-0 right-0 w-full h-full object-right md:w-237 "
-        src="src/assets/wave bg.png" 
+        src={wave} 
         alt="wave bg" 
       />
       <img 
         className="absolute top-0 right-0 w-full h-full object-right md:w-[948px] "
-        src="src/assets/border.png" 
+        src={border} 
         alt="border" 
       />
 
       {/* أيقونة القلب - responsive وآمنة */}
       <img
-        src='src/assets/BsHeartPulse.png'
+        src={HeartIcon}
         alt='heart'
         className='absolute top-8 left-6 w-10 h-10 md:top-10 md:left-20 z-20'
       />
@@ -74,7 +78,7 @@ const LogIn = () => {
                 </div>
 
                 <button className="cursor-pointer flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-[#05162C] font-medium w-full py-3.5 border border-gray-300 rounded-lg transition">
-                  <img src='src/assets/flat-color-icons_google.png' alt="google" className='w-5 h-5'/>
+                  <img src={googleIcon} alt="google" className='w-5 h-5'/>
                   Sign In With Google
                 </button>
               </div>
@@ -82,9 +86,9 @@ const LogIn = () => {
               <div className='text-center'>
                 <p className='text-gray-500 text-sm'>
                   Don’t have an account? {' '}
-                  <a href="/signup" className='text-blue-500 hover:underline font-medium'>
+                  <Link to="/signup" className='text-blue-500 hover:underline font-medium'>
                     Sign up
-                  </a>
+                  </Link>
                 </p>
               </div>
             </div>

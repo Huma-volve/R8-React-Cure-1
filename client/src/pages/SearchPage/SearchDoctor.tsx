@@ -1,5 +1,5 @@
-import { useState  } from "react";
-// import Specialist from "@/Components/Cards/Specialist";
+import { useState } from "react";
+import Specialist from "@/Components/Cards/Specialist";
 import Button from '@mui/material/Button';
 import TuneIcon from "@mui/icons-material/Tune";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -14,6 +14,7 @@ import DoctorCard from "@/Components/Cards/DoctorCard";
 import AnimatedPagination from "@/Components/Animation";
 import { Bluetooth as Tooth, Heart, Stethoscope, Brain, User, Eye, Wind } from "lucide-react"
 import { Link } from "react-router-dom";
+import doctorIcon from '@/assets/images/AppleIcon.svg'
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -155,15 +156,6 @@ function SearchDoctor() {
             scrollContainer.scrollBy({ left: scrollAmount, behavior: "smooth" });
         }
     };
-    const handleToggle = () => {
-      setIsOpen(!isOpen); // toggle between true and false
-      };
-    const items = Array.from({ length: 30 }, (_, i) => `Item ${i + 1}`);
-    const itemsPerPage = 6;
-    const totalPages = Math.ceil(items.length / itemsPerPage);
-
-    const [page, setPage] = useState(1);
-    //const startIndex = (page - 1) * itemsPerPage;
 
     return (
     <> 
@@ -350,7 +342,7 @@ function SearchDoctor() {
                                 <DoctorCard 
                                     doctor={{
                                         id: i,
-                                        image: "/doctor1.jpg",
+                                        image: doctorIcon ,
                                         name: "Dr. John Doe",
                                         specialty: "Cardiologist",
                                         hospital: "City Hospital",
@@ -365,7 +357,7 @@ function SearchDoctor() {
                                     </div>                                            
                                     <div className="font-montserrat text-lg ml-2 text-red-400">$3583</div>
                                 </div>
-                                <Button 
+                                <Button  component={Link} to="/Appointment"
                                     variant="contained" 
                                     sx={{ 
                                         width:'100%',

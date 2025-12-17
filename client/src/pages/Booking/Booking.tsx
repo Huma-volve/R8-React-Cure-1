@@ -7,9 +7,9 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { useDispatch, useSelector } from "react-redux";
 import { checkStatus } from "../Redux-Store/BokingSlice/BokingSlice";
-import profileImage from '../../assets/Images/644acebb39b684127cacceef34d2234b0b1622c9.jpg';
-import deteImage from '../../assets/Images/calendar-02.png';
-import iconImage from '../../assets/Images/Icon.png';
+import profileImage from '@/assets/images/d1.jpg';
+import deteImage from '@/assets/images/calendar-02.png';
+import iconImage from "@/assets/images/Icon.png";
 import type { RootState } from "../Redux-Store/BokingStore/BokingStore";
 
 

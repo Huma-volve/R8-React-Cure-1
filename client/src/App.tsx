@@ -24,32 +24,31 @@ import Favorite from '@/pages/Favorite/EmptyFavorite/EmptyFavorite';
 function App() {
   return (
     <>
-    {/* <BrowserRouter>
-      <Provider store={myStore}>
-         <Booking/>
-         <Faqs />
-      </Provider>
-    </BrowserRouter> */}
-            <Navbar />
-    <Routes>       
-      <Route path="/map" element={<DoctorsMap />} />
-      <Route path="/payment" element={<PaymentPage />} />
-      <Route path="/contact" element={<ContactUs />} />
-      <Route path="/doctor" element={<DoctorDetails />} />
-      <Route path="*" element={<Navigate to="/map" replace />} />
-      <Route path="/login" element={<LogIn/>}/>
-      <Route path="/signup" element={<SignUp/>}/>
-      <Route path="/verify" element={<Verification/>}/>
-      <Route path="/privacy" element={<PrivacyPolicy/>}/>
-      <Route path="/profile" element={<Profile/>}/>
-      <Route path="/" element={<HomePage/>}/>
-    </Routes>
+      <Navbar />
+      <main className="mt-35 lg:mt-30">
+      <Routes>
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/doctor" element={<DoctorDetails />} />
+        <Route path="/" element={<LogIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/verify" element={<Verification />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/SearchDoctor" element={<SearchDoctor />} />
+        <Route path="/Favorite" element={<Favorite />} />
+        <Route path="/Appointment" element={<AppointmentPage />} />
+        <Route path="/booking" element={<Booking />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/faq" element={<Faq />} />
+      </Routes>
+      </main>
+
 
       <Footer />
-     
     </>
-  )
-;
+  );
 }
 
 export default App;

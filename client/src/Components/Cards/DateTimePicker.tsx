@@ -1,6 +1,7 @@
 import { useState } from "react"
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
+//import { set } from "date-fns";
 
 interface TimeSlot {
   time: string
@@ -19,8 +20,9 @@ const timeSlots: TimeSlot[] = [
 export function DateTimePicker() {
   const [selectedDate, setSelectedDate] = useState(15)
   const [selectedTime, setSelectedTime] = useState("11:00 AM")
-  const [month, setMonth] = useState("November")
-  const [year, setYear] = useState(2024)
+  const [month] = useState("November")
+  const [year] = useState(2024)
+
 
   // Generate week starting from the 12th
   const weekDays = [
@@ -33,11 +35,11 @@ export function DateTimePicker() {
     { day: "Thu", date: 18 },
   ]
 
-  const getDayName = (date: number): string => {
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-    const d = new Date(year, new Date(`${month} 1, ${year}`).getMonth(), date)
-    return days[d.getDay()]
-  }
+  // const getDayName = (date: number): string => {
+  //   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+  //   const d = new Date(year, new Date(`${month} 1, ${year}`).getMonth(), date)
+  //   return days[d.getDay()]
+  // }
 
   const isSelected = (date: number) => selectedDate === date
 

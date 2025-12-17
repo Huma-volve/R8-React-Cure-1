@@ -131,7 +131,7 @@ const SignUp = () => {
             {/* رابط تسجيل الدخول */}
             <p className="text-center text-xs text-gray-600 ">
               Already have an account?{' '}
-              <a href="/login" className="text-blue-500 hover:underline font-medium ">
+              <a href="/" className="text-blue-500 hover:underline font-medium ">
                 Sign in
               </a>
             </p>

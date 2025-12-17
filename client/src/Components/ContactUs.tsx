@@ -1,6 +1,6 @@
 export default function ContactUs() {
   return (
-    <div className="bg-[#f7f8fb] min-h-[calc(100vh-56px)] pt-8 pb-8 font-['Montserrat',sans-serif] px-8 md:px-16 lg:px-24 xl:px-32">
+    <div className="bg-[#f7f8fb] min-h-[calc(100vh-56px)] pt-8 pb-8  px-8 md:px-16 lg:px-24 xl:px-32">
       <div className="w-full bg-white rounded-2xl p-7 md:p-8 lg:p-9 grid grid-cols-1 md:grid-cols-[minmax(320px,0.9fr)_minmax(360px,1.1fr)] gap-6 md:gap-7 items-start shadow-[0_12px_30px_rgba(0,0,0,0.05)]">
         <div className="pr-2 md:pr-3">
           <p className="mb-2.5 md:mb-3 text-2xl md:text-[26px] font-extrabold text-[#1b2c4f]">

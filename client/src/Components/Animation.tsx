@@ -2,14 +2,12 @@ import { motion, AnimatePresence } from "framer-motion";
 
 type Props = {
   currentPage: number;
-  totalPages: number;
   onNext: () => void;
   onPrev: () => void;
 };
 
 export default function AnimatedPagination({
   currentPage,
-  totalPages,
   onNext,
   onPrev,
 }: Props) {

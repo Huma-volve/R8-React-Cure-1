@@ -1,5 +1,5 @@
-import { useState ,useEffect } from "react";
-import Specialist from "@/components/Cards/Specialist";
+import { useState  } from "react";
+// import Specialist from "@/Components/Cards/Specialist";
 import Button from '@mui/material/Button';
 import TuneIcon from "@mui/icons-material/Tune";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -10,9 +10,10 @@ import { styled, alpha } from '@mui/material/styles';
 import Checkbox from '@mui/material/Checkbox';
 import InputBase from '@mui/material/InputBase';    
 import RouteIcon from '@mui/icons-material/Route';
-import DoctorCard from "@/components/Cards/DoctorCard";
-import AnimatedPagination from "@/components/Animation";
+import DoctorCard from "@/Components/Cards/DoctorCard";
+import AnimatedPagination from "@/Components/Animation";
 import { Bluetooth as Tooth, Heart, Stethoscope, Brain, User, Eye, Wind } from "lucide-react"
+import { Link } from "react-router-dom";
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -154,6 +155,15 @@ function SearchDoctor() {
             scrollContainer.scrollBy({ left: scrollAmount, behavior: "smooth" });
         }
     };
+    const handleToggle = () => {
+      setIsOpen(!isOpen); // toggle between true and false
+      };
+    const items = Array.from({ length: 30 }, (_, i) => `Item ${i + 1}`);
+    const itemsPerPage = 6;
+    const totalPages = Math.ceil(items.length / itemsPerPage);
+
+    const [page, setPage] = useState(1);
+    //const startIndex = (page - 1) * itemsPerPage;
 
     return (
     <> 
@@ -373,7 +383,7 @@ function SearchDoctor() {
                 <div className="mb-10 px-4">
                     <AnimatedPagination
                         currentPage={page}
-                        totalPages={totalPages}
+                        //totalPages={totalPages}
                         onNext={() => setPage((p) => Math.min(p + 1, totalPages))}
                         onPrev={() => setPage((p) => Math.max(p - 1, 1))}
                     />

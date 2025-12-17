@@ -24,6 +24,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import { CardElement, useStripe, useElements} from "@stripe/react-stripe-js";
+import {Link} from "react-router-dom";
 type Props = { onSuccess?: (msg?: string) => void };
 
 type PaymentFormValues = {
@@ -183,7 +184,7 @@ export default function PaymentCard({ onSuccess }: Props) {
                   size="small"
                   color="default"
                 />
-                <Typography
+                <Typography component={Link} to="/Appointment"
                   variant="caption"
                   color="primary"
                   className="cursor-pointer"

@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { setBookingId } from "../store/paymentSlice";
 import type { AppDispatch } from "../store";
 
+
 export default function PaymentPage() {
   const [searchParams] = useSearchParams();
   const dispatch = useDispatch<AppDispatch>();

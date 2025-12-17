@@ -1,12 +1,16 @@
 import { useState } from "react"
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
+import { Link } from "react-router-dom";
+i
 //import { set } from "date-fns";
 
 interface TimeSlot {
   time: string
   available: boolean
 }
+
+
 
 const timeSlots: TimeSlot[] = [
   { time: "9:00 AM", available: true },
@@ -114,7 +118,7 @@ export function DateTimePicker() {
             {weekDays.find((w) => w.date === selectedDate)?.day}, {month} {selectedDate} - {selectedTime}
           </span>
         </div>
-        <Button 
+        <Button component={Link} to="/payment" 
           variant="outlined" 
           className="border-blue-600 text-blue-600 hover:bg-blue-50 bg-transparent w-full sm:w-auto"
         >

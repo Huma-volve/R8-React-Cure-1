@@ -1,3 +1,7 @@
+import { Box, Container,  IconButton, Link, Typography } from "@mui/material";
+import Grid from '@mui/material/GridLegacy';
+import { Link as RouterLink } from "react-router-dom";
+
 function DesktopFooter() {
   return (
     <Box

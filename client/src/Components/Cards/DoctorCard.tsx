@@ -29,7 +29,7 @@ export const DoctorCard = ({doctor,onFavoriteToggle }: DoctorCardProps) => {
   }
   return (
     <MUICard
-      className="rounded-xl! w-[550px] bg-white border  border-gray-200 hover:shadow-md transition-shadow"
+      className="rounded-xl! bg-white border  border-gray-200 hover:shadow-md transition-shadow"
       elevation={0}
     >
       <div className="">

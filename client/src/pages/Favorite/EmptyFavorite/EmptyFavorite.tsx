@@ -53,17 +53,17 @@ const EmptyFavorite: React.FC = () => {
             <h3>Add your favorite to find it easily</h3> 
              
         </div> */}
-        <div>
-            <div className="flex items-center pt-22 pl-4 p-2 gap-1 text-gray-600">
-                  <button><KeyboardBackspaceIcon  sx={{fontSize :30}} /></button>
-                  <span className="text-2xl font-semibold p-5">
+        <div className="w-full">
+            <div className="flex items-center pt-4 md:pt-8 lg:pt-22 px-4 py-2 gap-1 text-gray-600">
+                  <button><KeyboardBackspaceIcon sx={{fontSize: 30}} /></button>
+                  <span className="text-xl md:text-2xl font-semibold px-2 md:px-5">
                    Your Favorites Doctors
                   </span>
             </div>
-          <div className='grid grid-cols-3 gap-6  p-5 h-screen'>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16].map((i) => (
-                                <div className="  ">
-                                    <DoctorCard key={i} doctor={{
+          <div className=' grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ml-20 md:gap-6 p-4 md:p-5 h-screen overflow-y-auto'>
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map((i) => (
+                                <div key={i} className="w-full">
+                                    <DoctorCard doctor={{
                                                     id: 1,
                                                     image: {d1},
                                                     name: "Dr. John Doe",

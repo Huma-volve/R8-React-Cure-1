@@ -214,13 +214,13 @@ const AppointmentPage: React.FC = () => {
             {/* Review Card 1 */}
             <div className='w-full border border-gray-300 rounded-lg p-3'>
               <div className='flex flex-row gap-3 md:gap-4'>
-                <img src={human} alt="" className='rounded-full w-12 h-12 md:w-15 md:h-15 object-cover bg-gray-400 flex-shrink-0'/>
+                <img src={human} alt="" className='rounded-full w-12 h-12 md:w-15 md:h-15 object-cover bg-gray-400 shrink-0'/>
                 <div className='flex flex-row justify-between w-full'>
                   <div className='pt-1 md:pt-2'>
                     <p className='font-[Georgia] font-normal text-sm md:text-[16px] text-gray-900'>Nabila Reyna</p>
                     <p className='font-montserrat font-medium text-xs md:text-[14px] text-gray-600'>30 min ago</p>
                   </div>
-                  <div className="flex items-center justify-center gap-0.5 w-14 h-7 md:w-16 md:h-8 bg-amber-100 rounded-md flex-shrink-0">
+                  <div className="flex items-center justify-center gap-0.5 w-14 h-7 md:w-16 md:h-8 bg-amber-100 rounded-md shrink-0">
                     <StarRateIcon sx={{ fontSize: 20 }} className="fill-yellow-400 text-yellow-400 md:text-[25px]" />
                     <span className='font-extrabold text-sm md:text-[16px] text-amber-400'>4.5</span>
                   </div>
@@ -236,13 +236,13 @@ const AppointmentPage: React.FC = () => {
             {/* Review Card 2 */}
             <div className='w-full border border-gray-300 rounded-lg p-3'>
               <div className='flex flex-row gap-3 md:gap-4'>
-                <img src={human} alt="" className='rounded-full w-12 h-12 md:w-15 md:h-15 object-cover bg-gray-400 flex-shrink-0'/>
+                <img src={human} alt="" className='rounded-full w-12 h-12 md:w-15 md:h-15 object-cover bg-gray-400 shrink-0'/>
                 <div className='flex flex-row justify-between w-full'>
                   <div className='pt-1 md:pt-2'>
                     <p className='font-[Georgia] font-normal text-sm md:text-[16px] text-gray-900'>Nabila Reyna</p>
                     <p className='font-montserrat font-medium text-xs md:text-[14px] text-gray-600'>30 min ago</p>
                   </div>
-                  <div className="flex items-center justify-center gap-0.5 w-14 h-7 md:w-16 md:h-8 bg-amber-100 rounded-md flex-shrink-0">
+                  <div className="flex items-center justify-center gap-0.5 w-14 h-7 md:w-16 md:h-8 bg-amber-100 rounded-md shrink-0">
                     <StarRateIcon sx={{ fontSize: 20 }} className="fill-yellow-400 text-yellow-400 md:text-[25px]" />
                     <span className='font-extrabold text-sm md:text-[16px] text-amber-400'>4.5</span>
                   </div>

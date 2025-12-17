@@ -1,5 +1,5 @@
-import { useState ,useEffect } from "react";
-import Specialist from "@/components/Cards/Specialist";
+import { useState } from "react";
+import Specialist from "@/Components/Cards/Specialist";
 import Button from '@mui/material/Button';
 import TuneIcon from "@mui/icons-material/Tune";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -10,8 +10,8 @@ import { styled, alpha } from '@mui/material/styles';
 import Checkbox from '@mui/material/Checkbox';
 import InputBase from '@mui/material/InputBase';    
 import RouteIcon from '@mui/icons-material/Route';
-import DoctorCard from "@/components/Cards/DoctorCard";
-import AnimatedPagination from "@/components/Animation";
+import DoctorCard from "@/Components/Cards/DoctorCard";
+import AnimatedPagination from "@/Components/Animation";
 import { Bluetooth as Tooth, Heart, Stethoscope, Brain, User, Eye, Wind } from "lucide-react"
 
 

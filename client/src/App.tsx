@@ -24,7 +24,7 @@ function App() {
   return (
     <>
       <Navbar />
-      <main className="mt-24">
+      <main className="mt-35 lg:mt-30">
       <Routes>
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/contact" element={<ContactUs />} />

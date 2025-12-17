@@ -67,7 +67,7 @@ function Navbar() {
   }}
 >
           {/* Left Side HeartPulse Icon */}
-          <Box sx={{ order: { xs: 1, sm: 1 } }}>
+          <Box component={Link} to="/home" sx={{ order: { xs: 1, sm: 1 } }}>
             <IconButton sx={{ width: "64px" }}>
               <img src={BsHeartPulse} alt="HearPulseIcon" />
             </IconButton>

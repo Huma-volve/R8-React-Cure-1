@@ -1,5 +1,5 @@
 // import Hearts from '@/assets/images/Heart.svg';
-import d1 from '@/assets/images/d1.jpg';
+import imageVariable from "@/assets/images/d1.jpg"
 // import { useEffect, useState } from "react";
 // import axios from "axios";
 import DoctorCard from '@/Components/Cards/DoctorCard';
@@ -70,7 +70,7 @@ const EmptyFavorite: React.FC = () => {
               <DoctorCard
                 doctor={{
                   id: 1,
-                  image: { d1 },
+                  image: { imageVariable },
                   name: "Dr. John Doe",
                   specialty: "Cardiologist",
                   hospital: "City Hospital",

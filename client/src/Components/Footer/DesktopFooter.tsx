@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 import { Box, Container, IconButton, Link, Typography } from "@mui/material";
 import Grid from '@mui/material/GridLegacy';
+=======
+import { Box, Container,  IconButton, Link, Typography } from "@mui/material";
+import Grid from '@mui/material/GridLegacy';
+import { Router, Link as RouterLink } from "react-router-dom";
+
+>>>>>>> ecc6a9b82b3e2940b148995853cbc9375514670b
 
 function DesktopFooter() {
   return (
@@ -8,7 +15,7 @@ function DesktopFooter() {
       sx={{
         bgcolor: "#021431",
         color: "white",
-        pt: 6,
+        pt: 10,
         pb: 3,
         mt: "auto",   
         width: "100%",
@@ -39,7 +46,7 @@ function DesktopFooter() {
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               Company
             </Typography>
-            <Link href="#" color="inherit" underline="none" display="block" variant="body2">
+            <Link component={RouterLink} to={"/"} color="inherit" underline="none" display="block" variant="body2">
               Home
             </Link>
             <Link href="#" color="inherit" underline="none" display="block" variant="body2">
@@ -58,7 +65,7 @@ function DesktopFooter() {
             <Link href="#" color="inherit" underline="none" display="block" variant="body2">
               Help Center
             </Link>
-            <Link href="#" color="inherit" underline="none" display="block" variant="body2">
+            <Link href="/privacy" color="inherit" underline="none" display="block" variant="body2">
               Privacy Policy
             </Link>
             <Link href="#" color="inherit" underline="none" display="block" variant="body2">
@@ -96,7 +103,7 @@ function DesktopFooter() {
             <Link href="#" color="inherit" underline="none" variant="caption">
               Terms &amp; Conditions
             </Link>
-            <Link href="#" color="inherit" underline="none" variant="caption">
+            <Link component={RouterLink} to={"/privacy"} color="inherit" underline="none" variant="caption">
               Privacy Policy
             </Link>
           </Box>

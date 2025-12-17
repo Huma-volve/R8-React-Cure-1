@@ -1,14 +1,57 @@
 import {
+  Box,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+<<<<<<< HEAD
 import MobileFooter from "@/components/Footer/MobileFooter";
 import DesktopFooter from "@/components/Footer/DesktopFooter";
+=======
+
+import MobileFooter from "./Footer/MobileFooter";
+import DesktopFooter from "./Footer/DesktopFooter";
+import DownloadSection from "./Footer/DownloadSection"; // adjust path if needed
+>>>>>>> ecc6a9b82b3e2940b148995853cbc9375514670b
 
 function Footer() {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); 
-    return isMobile ? <MobileFooter /> : <DesktopFooter />;
-    }
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  if (isMobile) {
+    return (
+      <Box>
+        <Box sx={{ px: 2, py: 4 }}>
+          <DownloadSection />
+        </Box>
+        <MobileFooter />
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ position: "relative" }}>
+      <Box
+        sx={{
+          position: "relative",
+          zIndex: 2,
+          maxWidth: 1240,
+          mx: "auto",
+          px: 2,
+          mb: -5,
+        }}
+      >
+        <DownloadSection />
+      </Box>
+      <Box
+        sx={{
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
+        <DesktopFooter />
+      </Box>
+    </Box>
+  );
+}
 
 export default Footer;

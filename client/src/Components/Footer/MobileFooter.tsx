@@ -14,6 +14,7 @@ function MobileFooter() {
           sx={{
             display: "flex",
             alignItems: "center",
+            justifyContent: "center",
             pt: "30px",
             mb: 2,
             gap: 1,

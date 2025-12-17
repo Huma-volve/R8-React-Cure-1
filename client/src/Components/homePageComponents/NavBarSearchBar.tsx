@@ -96,7 +96,7 @@ async function fetchSuggestions(query: string): Promise<{
   try {
     // ✅ CHANGED: use params; sends /search?q=...
     // If your backend expects "query" instead of "q", change this to: { params: { query } }
-    const response = await api.post("/search", { content: query });
+    const response = await api.post("/search", { content: query },{ headers: { Authorization: `Bearer ${token}` } });
 
     // ✅ CHANGED: your doctors array is inside response.data.data
     const doctorsRaw: DoctorFromApi[] = response.data.data ?? [];

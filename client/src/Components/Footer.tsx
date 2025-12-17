@@ -3,7 +3,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-
 import MobileFooter from "./Footer/MobileFooter";
 import DesktopFooter from "./Footer/DesktopFooter";
 import DownloadSection from "./Footer/DownloadSection"; // adjust path if needed

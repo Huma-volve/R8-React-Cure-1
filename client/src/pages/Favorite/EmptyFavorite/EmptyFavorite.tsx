@@ -57,7 +57,7 @@ const EmptyFavorite: React.FC = () => {
         </div> */}
       <div className="w-full">
         <div className="flex items-center pt-4 md:pt-8 lg:pt-22 px-4 py-2 gap-1 text-gray-600">
-          <button>
+          <button onClick={() => navigate(-1)}>
             <KeyboardBackspaceIcon sx={{ fontSize: 30 }} />
           </button>
           <span className="text-xl md:text-2xl font-semibold px-2 md:px-5">

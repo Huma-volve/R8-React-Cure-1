@@ -356,7 +356,7 @@ function SearchDoctor() {
                                     </div>                                            
                                     <div className="font-montserrat text-lg ml-2 text-red-400">$3583</div>
                                 </div>
-                                <Button 
+                                <Button  component={Link} to="/Appointment"
                                     variant="contained" 
                                     sx={{ 
                                         width:'100%',

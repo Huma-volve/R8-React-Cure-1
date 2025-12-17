@@ -1,6 +1,5 @@
 import NavBarSearch from "@/Components/homePageComponents/NavBarSearchBar";
 import ProfilePopUp from "@/Components/homePageComponents/ProfilePopUp";
-
 //Basic Imports
 import {
   AppBar,

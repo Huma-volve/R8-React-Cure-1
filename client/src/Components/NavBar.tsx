@@ -1,5 +1,6 @@
 import NavBarSearch from "@/Components/homePageComponents/NavBarSearchBar";
 import ProfilePopUp from "@/Components/homePageComponents/ProfilePopUp";
+import api from "@/api/axios";
 //Basic Imports
 import {
   AppBar,
@@ -23,9 +24,16 @@ import BsHeartPulse from "../assets/NavBarIcons/BsHeartPulse.svg";
 //import Magnifer from "../assets/NavBarIcons/Magnifer.svg";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MobileProfileDrawer from "./MobileProfileDrawer";
 
+
+//to be changed using redux? just a test for now
+type User = {
+  name: string;
+  address: string;
+  profilePicUrl?: any;
+};
 
 function Navbar() {
   const navigate = useNavigate();
@@ -42,6 +50,29 @@ function Navbar() {
       setNavButtonsOpen((prev) => !prev);
     }
   }
+
+const [user, setUser] = useState<User | null>(null);
+
+useEffect(() => {
+  const token = localStorage.getItem("access_token");
+  if (!token) return; 
+
+  let cancelled = false;
+
+  (async () => {
+    try {
+      const res = await api.get("https://round8-cure-php-team-two.huma-volve.com/api/patient/profile"); // replace with your real endpoint
+      console.log("User profile response:", res);
+      if (!cancelled) setUser(res.data.data ?? res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  })();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
 
   return (
     <>
@@ -202,9 +233,9 @@ function Navbar() {
 
                 {/* user Icon Button */}
                 <ProfilePopUp
-                  name="Seif Mohamed"
-                  address="129, El-Nasr Street, Cairo"
-                  avatarSrc={testimage}
+                  name={user?.name || "Guest User"}
+                  address={user?.address || "Unknown Location"}
+                  avatarSrc={user?.profilePicUrl || testimage}
                   onPaymentMethod={() => navigate("/payment")}
       onFavorite={() => navigate("/favorite")}
       onSettings={() => navigate("/profile")}

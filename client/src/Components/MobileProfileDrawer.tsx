@@ -17,10 +17,19 @@ import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import {Link} from "react-router-dom";
+import { useEffect, useState } from "react";
+import api from "@/api/axios";
 
 type MobileProfileDrawerProps = {
   open: boolean;
   onClose: () => void;
+};
+
+//duplicate from navbar to be changed with redux later
+type User = {
+  name: string;
+  address: string;
+  profilePicUrl?: any;
 };
 
 function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
@@ -28,6 +37,28 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
     onClose();
   }
 
+  const [user, setUser] = useState<User | null>(null);
+
+useEffect(() => {
+  const token = localStorage.getItem("access_token");
+  if (!token) return; 
+
+  let cancelled = false;
+
+  (async () => {
+    try {
+      const res = await api.get("https://round8-cure-php-team-two.huma-volve.com/api/patient/profile"); // replace with your real endpoint
+      console.log("User profile response:", res);
+      if (!cancelled) setUser(res.data.data ?? res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  })();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
   return (
     <Drawer
       anchor="right"
@@ -69,7 +100,7 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
           {/* LEFT: avatar + name + address */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <Avatar
-              src={profileImg} // your testimage here
+              src={user?.profilePicUrl || profileImg} // your testimage here
               sx={{ width: 48, height: 48, mr: 2 }}
             />
 
@@ -79,13 +110,13 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
                 fontWeight={600}
                 sx={{ lineHeight: 1.2 }}
               >
-                Seif Mohamed
+                {user?.name || "Guest User"}
               </Typography>
 
               <Box sx={{ display: "flex", alignItems: "center", mt: 0.5 }}>
                 <LocationOnOutlinedIcon sx={{ fontSize: 16, mr: 0.5 }} />
                 <Typography variant="body2" color="text.secondary">
-                  129, El-Nasr Street, Cairo
+                  {user?.address || "Unknown Location"}
                 </Typography>
               </Box>
             </Box>

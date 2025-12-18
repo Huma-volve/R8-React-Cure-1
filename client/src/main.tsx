@@ -6,9 +6,11 @@ import { store } from "./store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
+import { devAutoLogin } from "@/api/devAutoLogin.ts"
 
 const queryClient = new QueryClient();
 
+await devAutoLogin();
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
      <Provider store={store}>

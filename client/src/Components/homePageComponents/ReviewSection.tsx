@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "@/api/axios";
 
 import homeReviewStar from "@/assets/images/homeReviewStar.svg";
 import DoctorCard from "@/Components/Cards/DoctorCard";
@@ -26,12 +26,10 @@ type DoctorCardModel = {
   rating: number;
   startTime: string;
   endTime: string;
-  // you can keep price here if your DoctorCard later displays it
   price?: number;
 };
 
 function parseTimesToRange(times: any[]): { startTime: string; endTime: string } {
-  // If backend provides times later, parse it here.
   if (!times || times.length === 0) return { startTime: "—", endTime: "—" };
   return { startTime: "—", endTime: "—" };
 }
@@ -63,13 +61,10 @@ export default function ReviewSection() {
       try {
         setLoading(true);
 
-        const res = await axios.get(
+        const res = await api.get(
           "https://round8-cure-php-team-two.huma-volve.com/api/reviews/doctors/top"
         );
 
-        // Common shapes:
-        // res.data.data -> array
-        // res.data.data.data -> array
         const raw: ApiDoctor[] = res.data?.data?.data ?? res.data?.data ?? [];
 
         if (!cancelled) {
@@ -90,7 +85,6 @@ export default function ReviewSection() {
 
   return (
     <Box display="flex" flexDirection="column" gap={4}>
-      {/* Top Doctors header + button */}
       <Box
         display="flex"
         alignItems={{ xs: "flex-start", sm: "center" }}
@@ -109,8 +103,8 @@ export default function ReviewSection() {
         </Box>
 
         <Button
-          component={Link}
-          to="/doctors/top" // change to your real "View All" route
+          //component={Link}
+          //to="/doctors/top" 
           variant="outlined"
           sx={{ borderRadius: "10px", textTransform: "none" }}
         >
@@ -118,7 +112,6 @@ export default function ReviewSection() {
         </Button>
       </Box>
 
-      {/* Horizontal cards row */}
       <Box
         sx={{
           display: "flex",
@@ -150,7 +143,6 @@ export default function ReviewSection() {
         )}
       </Box>
 
-      {/* Your existing review text block (unchanged) */}
       <Box display="flex" flexDirection="column" alignItems="center">
         <Box display="flex" flexDirection="column" alignItems="center">
           <Typography sx={{ fontSize: { xs: "24px", sm: "40px" } }}>

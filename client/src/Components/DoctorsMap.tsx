@@ -5,43 +5,29 @@ import {
   useJsApiLoader,
 } from "@react-google-maps/api";
 import { useEffect, useMemo, useState } from "react";
-
-// Define the Doctor interface
-export interface Doctor {
-  id: number;
-  name: string;
-  specialty: string;
-  rating: number;
-  times: string;
-  image: string;
-  lat: number;
-  lng: number;
-}
-
-// Import doctors data - adjust the path as needed
-// For now, using a placeholder. Replace with actual import:
-// import { doctors } from "../data/doctors";
-const doctors: Doctor[] = [
-  // Add your actual doctors data here
-];
+import { useNavigate } from "react-router-dom";
+import { useNearYouDoctors, type DoctorListItem } from "../hooks/useDoctor";
 
 const containerStyle = { width: "100%", height: "520px" };
 const defaultCenter = { lat: 30.0444, lng: 31.2357 };
 
-type Libraries = ("places" | "drawing" | "geometry" | "visualization")[];
-
 export default function DoctorsMap() {
-  const libraries = useMemo<Libraries>(() => ["places"], []);
-  const [mapRef, setMapRef] = useState<google.maps.Map | null>(null);
+  const navigate = useNavigate();
+  const libraries: ("places")[] = useMemo(() => ["places"], []);
+  const [mapRef, setMapRef] = useState<any>(null);
   const [currentPos, setCurrentPos] = useState<{
     lat: number;
     lng: number;
   } | null>(null);
-  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
-  const [route, setRoute] = useState<google.maps.DirectionsResult | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<DoctorListItem | null>(null);
+  const [route, setRoute] = useState<any>(null);
   const [distance, setDistance] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [loadingRoute, setLoadingRoute] = useState(false);
+  const [page] = useState(1);
+  
+  const { data: doctorsData, isLoading } = useNearYouDoctors(page);
+  const doctors = doctorsData?.doctors_near_you?.data || [];
 
   const { isLoaded } = useJsApiLoader({
     id: "google-maps-script",
@@ -49,10 +35,7 @@ export default function DoctorsMap() {
     libraries,
   });
 
-  const fetchFallbackCenter = async (): Promise<{
-    lat: number;
-    lng: number;
-  }> => {
+  const fetchFallbackCenter = async () => {
     try {
       const res = await fetch(
         "https://nominatim.openstreetmap.org/search?format=json&q=Egypt"
@@ -63,7 +46,6 @@ export default function DoctorsMap() {
       }
     } catch (e) {
       // ignore and let defaultCenter be used
-      console.error("Failed to fetch fallback center:", e);
     }
     return defaultCenter;
   };
@@ -86,7 +68,7 @@ export default function DoctorsMap() {
     lng1: number,
     lat2: number,
     lng2: number
-  ): string => {
+  ) => {
     const R = 6371; // km
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
     const dLng = ((lng2 - lng1) * Math.PI) / 180;
@@ -99,12 +81,11 @@ export default function DoctorsMap() {
     return (R * c).toFixed(2);
   };
 
-  const drawRoute = async (doctor: Doctor): Promise<void> => {
+  const drawRoute = async (doctor: DoctorListItem) => {
     if (!currentPos || !isLoaded) {
       return;
     }
-    const maps = (window as typeof window & { google?: typeof google }).google
-      ?.maps;
+    const maps = (window as any).google?.maps;
     if (!maps) return;
 
     setLoadingRoute(true);
@@ -112,14 +93,11 @@ export default function DoctorsMap() {
     directionsService.route(
       {
         origin: currentPos,
-        destination: { lat: doctor.lat, lng: doctor.lng },
+        destination: { lat: doctor.location.lat, lng: doctor.location.lng },
         travelMode: maps.TravelMode.DRIVING,
         provideRouteAlternatives: false,
       },
-      (
-        result: google.maps.DirectionsResult | null,
-        status: google.maps.DirectionsStatus
-      ) => {
+      (result: any, status: string) => {
         setLoadingRoute(false);
         if (status === "OK" && result) {
           const leg = result.routes[0]?.legs?.[0];
@@ -131,8 +109,8 @@ export default function DoctorsMap() {
           const km = calcDistanceFallback(
             currentPos.lat,
             currentPos.lng,
-            doctor.lat,
-            doctor.lng
+            doctor.location.lat,
+            doctor.location.lng
           );
           setDistance(`${km} km`);
           setDuration("");
@@ -142,86 +120,102 @@ export default function DoctorsMap() {
     );
   };
 
-  const handleSelectDoctor = (doc: Doctor): void => {
+  const handleSelectDoctor = (doc: DoctorListItem) => {
     setSelectedDoctor(doc);
     if (mapRef) {
-      mapRef.panTo({ lat: doc.lat, lng: doc.lng });
+      mapRef.panTo({ lat: doc.location.lat, lng: doc.location.lng });
       mapRef.setZoom(14);
     }
     drawRoute(doc);
   };
 
+  const handleDoctorClick = (doctor: DoctorListItem) => {
+    navigate(`/doctor/${doctor.id}`);
+  };
+
   if (!isLoaded) return <p>Loading…</p>;
 
+  if (isLoading) {
+    return (
+      <section className="p-8 bg-[#f5f6fb] font-['Montserrat',sans-serif]">
+        <div className="text-center py-20">
+          <p className="text-[#6b7280]">Loading doctors...</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="p-4 md:p-6 lg:p-8 bg-[#f5f6fb] font-['Montserrat',sans-serif]">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
+    <section className="p-8 bg-[#f5f6fb] font-['Montserrat',sans-serif]">
+      <div className="flex items-center justify-between mb-4">
         <div>
-          <p className="m-0 text-[#2f2f2f] font-bold text-base md:text-lg">
-            The Map
-          </p>
-          <p className="mt-1 mb-0 text-[#6b7280] text-xs md:text-[13px]">
+          <p className="m-0 text-[#2f2f2f] font-bold text-lg">The Map</p>
+          <p className="mt-1 mb-0 text-[#6b7280] text-[13px]">
             Select a doctor and you will be guided on the map with distance and
             route
           </p>
         </div>
-        <span className="bg-[#eef2ff] text-[#4f46e5] py-2 px-3.5 rounded-xl font-semibold text-xs md:text-[13px]">
-          {doctors.length} Results
+        <span className="bg-[#eef2ff] text-[#4f46e5] py-2 px-3.5 rounded-xl font-semibold text-[13px]">
+          {doctorsData?.doctors_near_you?.total || doctors.length} Results
         </span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-4 md:gap-4.5 bg-white rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.06)] p-3 md:p-4.5">
-        {/* Doctors List - Responsive */}
-        <div className="border-b lg:border-b-0 lg:border-r border-[#e5e7eb] pb-4 lg:pb-0 lg:pr-4">
-          <div className="max-h-[300px] lg:max-h-[520px] overflow-y-auto flex flex-col gap-2.5 pr-1.5">
-            {doctors.map((d) => {
-              const isActive = selectedDoctor?.id === d.id;
-              return (
-                <button
-                  type="button"
-                  key={d.id}
-                  onClick={() => handleSelectDoctor(d)}
-                  className={`flex gap-3 items-center w-full p-2.5 px-3 border rounded-[14px] bg-white cursor-pointer transition-all text-left ${
-                    isActive
-                      ? "border-[#2d9cdb] shadow-[0_10px_20px_rgba(45,156,219,0.14)]"
-                      : "border-[#e5e7eb] hover:border-[#cdd7ff] hover:shadow-[0_6px_15px_rgba(45,156,219,0.08)]"
-                  }`}
-                >
-                  <img
-                    src={d.image}
-                    alt={d.name}
-                    className="w-10 h-10 md:w-12 md:h-12 rounded-xl object-cover flex-shrink-0"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="m-0 font-bold text-sm md:text-base text-[#1f2937] truncate">
-                      {d.name}
-                    </p>
-                    <p className="my-0.5 mb-1.5 text-xs md:text-[13px] text-[#6b7280] truncate">
-                      {d.specialty}
-                    </p>
-                    <div className="flex gap-2 items-center text-xs text-[#4b5563]">
-                      <span className="bg-[#fff7ed] text-[#ea580c] py-0.5 px-2 rounded-[10px] font-semibold">
-                        ★ {d.rating}
-                      </span>
-                      <span className="text-[#111827] font-semibold truncate">
-                        {d.times}
-                      </span>
+      <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-4.5 bg-white rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.06)] p-4.5">
+        <div className="border-r border-[#e5e7eb] pr-2.5 lg:pr-0">
+          <div className="max-h-[520px] overflow-y-auto flex flex-col gap-2.5 pr-1.5">
+            {doctors.length === 0 ? (
+              <p className="text-center text-[#6b7280] py-8">No doctors found</p>
+            ) : (
+              doctors.map((d) => {
+                const isActive = selectedDoctor?.id === d.id;
+                const firstTime = d.times && d.times.length > 0 ? d.times[0] : null;
+                const timeDisplay = firstTime 
+                  ? `${firstTime.start_time.slice(0, 5)} - ${firstTime.end_time.slice(0, 5)}`
+                  : "No available times";
+                
+                return (
+                  <button
+                    type="button"
+                    key={d.id}
+                    onClick={() => handleSelectDoctor(d)}
+                    className={`flex gap-3 items-center w-full p-2.5 px-3 border rounded-[14px] bg-white cursor-pointer transition-all text-left ${
+                      isActive
+                        ? "border-[#2d9cdb] shadow-[0_10px_20px_rgba(45,156,219,0.14)]"
+                        : "border-[#e5e7eb] hover:border-[#cdd7ff] hover:shadow-[0_6px_15px_rgba(45,156,219,0.08)]"
+                    }`}
+                  >
+                    <img
+                      src={d.image}
+                      alt={d.name}
+                      className="w-12 h-12 rounded-xl object-cover"
+                    />
+                    <div className="flex-1">
+                      <p className="m-0 font-bold text-[#1f2937]">{d.name}</p>
+                      <p className="my-0.5 mb-1.5 text-[13px] text-[#6b7280]">
+                        {d.specialty.name} | {d.hospital_name}
+                      </p>
+                      <div className="flex gap-2 items-center text-xs text-[#4b5563]">
+                        <span className="text-[#111827] font-semibold">{timeDisplay}</span>
+                      </div>
                     </div>
-                  </div>
-                </button>
-              );
-            })}
+                  </button>
+                );
+              })
+            )}
           </div>
         </div>
 
-        {/* Map Container - Responsive */}
         <div className="relative">
           <div className="relative rounded-2xl overflow-hidden shadow-[inset_0_0_0_1px_#e5e7eb]">
             <GoogleMap
               mapContainerStyle={containerStyle}
               zoom={13}
-              center={selectedDoctor || currentPos || defaultCenter}
-              onLoad={(map) => setMapRef(map)}
+              center={
+                selectedDoctor
+                  ? { lat: selectedDoctor.location.lat, lng: selectedDoctor.location.lng }
+                  : currentPos || defaultCenter
+              }
+              onLoad={(map: any) => setMapRef(map)}
               onUnmount={() => setMapRef(null)}
               options={{
                 streetViewControl: false,
@@ -239,23 +233,24 @@ export default function DoctorsMap() {
               )}
 
               {doctors.map((doc) => {
+                const maps = (window as any).google?.maps;
                 const isActive = selectedDoctor?.id === doc.id;
                 return (
                   <Marker
                     key={doc.id}
-                    position={{ lat: doc.lat, lng: doc.lng }}
+                    position={{ lat: doc.location.lat, lng: doc.location.lng }}
                     onClick={() => handleSelectDoctor(doc)}
                     title={doc.name}
                     icon={
-                      typeof google !== "undefined"
+                      maps
                         ? {
                             url: doc.image,
-                            scaledSize: new google.maps.Size(
+                            scaledSize: new maps.Size(
                               isActive ? 46 : 40,
                               isActive ? 46 : 40
                             ),
-                            anchor: new google.maps.Point(20, 20),
-                            labelOrigin: new google.maps.Point(20, 48),
+                            anchor: new maps.Point(20, 20),
+                            labelOrigin: new maps.Point(20, 48),
                           }
                         : undefined
                     }
@@ -278,25 +273,32 @@ export default function DoctorsMap() {
               )}
             </GoogleMap>
 
-            {/* Info Card - Responsive */}
-            <div className="absolute left-2 right-2 bottom-2 md:left-4.5 md:right-4.5 md:bottom-4.5 bg-[rgba(255,255,255,0.95)] backdrop-blur-sm rounded-[14px] p-2.5 md:p-3 md:px-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
-              <div className="flex-1 min-w-0">
-                <p className="m-0 font-bold text-sm md:text-base text-[#111827] truncate">
+            <div className="absolute left-4.5 right-4.5 bottom-4.5 bg-[rgba(255,255,255,0.95)] rounded-[14px] p-3 px-3.5 flex items-center justify-between gap-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
+              <div className="flex-1">
+                <p className="m-0 font-bold text-[#111827]">
                   {selectedDoctor
                     ? selectedDoctor.name
                     : "Select a doctor from the list"}
                 </p>
-                <p className="mt-0.5 mb-0 text-xs text-[#6b7280] truncate">
+                <p className="mt-0.5 mb-0 text-xs text-[#6b7280]">
                   {selectedDoctor
-                    ? selectedDoctor.specialty
+                    ? `${selectedDoctor.specialty.name} | ${selectedDoctor.hospital_name}`
                     : "Click on a doctor to display the distance and route"}
                 </p>
               </div>
-              <div className="flex items-center gap-2 font-bold text-xs md:text-sm text-[#2563eb] whitespace-nowrap">
-                {distance && <span>{distance}</span>}
-                {duration && <span>· {duration}</span>}
-                {loadingRoute && (
-                  <span className="text-[#6b7280]">Calculating route…</span>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 font-bold text-[#2563eb] whitespace-nowrap">
+                  {distance && <span>{distance}</span>}
+                  {duration && <span>· {duration}</span>}
+                  {loadingRoute && <span>Calculating route…</span>}
+                </div>
+                {selectedDoctor && (
+                  <button
+                    onClick={() => handleDoctorClick(selectedDoctor)}
+                    className="bg-[#1c73d2] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#155fb0] transition-colors whitespace-nowrap"
+                  >
+                    View Details
+                  </button>
                 )}
               </div>
             </div>

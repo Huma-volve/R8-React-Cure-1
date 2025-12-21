@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "../api/axios";
 
 export type Notification = {
   id: string; // UUID from backend
@@ -10,53 +11,63 @@ export type Notification = {
   data?: Record<string, any>;
 };
 
-// ---- Static / mock notifications instead of real API calls ----
-
-const MOCK_NOTIFICATIONS: Notification[] = [
-  {
-    id: "1",
-    title: "Appointment confirmed",
-    message: "Your appointment with Dr. Jessica Turner is confirmed.",
-    read_at: null,
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    title: "New message",
-    message: "You have a new message from the clinic.",
-    read_at: null,
-    created_at: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-  },
-  {
-    id: "3",
-    title: "Reminder",
-    message: "Don't forget your upcoming appointment tomorrow.",
-    read_at: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
-    created_at: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
-  },
-];
-
-async function getAllNotificationsMock(): Promise<Notification[]> {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return MOCK_NOTIFICATIONS;
+// Helper function to check API response status
+function checkApiResponse(response: any, defaultMessage: string = "API request failed") {
+  if (response.status !== true && response.status !== 200) {
+    throw new Error(response.message || defaultMessage);
+  }
+  return response;
 }
 
-async function getUnreadNotificationsMock(): Promise<Notification[]> {
-  const all = await getAllNotificationsMock();
-  return all.filter((n) => !n.read_at);
+async function getAllNotifications(): Promise<Notification[]> {
+  const { data } = await api.get("/notifications");
+  // API returns { status, message, data: [] }
+  checkApiResponse(data, "Failed to fetch notifications");
+  return data?.data || [];
+}
+
+async function getUnreadNotifications(): Promise<Notification[]> {
+  const { data } = await api.get("/notifications/unread");
+  // API returns { status, message, data: [] }
+  checkApiResponse(data, "Failed to fetch unread notifications");
+  return data?.data || [];
+}
+
+async function markNotificationAsRead(id: string): Promise<void> {
+  const { data } = await api.post(`/notifications/${id}/read`);
+  // API returns { status, message } or { status: 404, message: "Notification not found" }
+  checkApiResponse(data, "Failed to mark notification as read");
+}
+
+async function markAllNotificationsAsRead(): Promise<void> {
+  const { data } = await api.post("/notifications/mark-all-read");
+  // API returns { status: 200, message: "All unread notifications marked as read" }
+  checkApiResponse(data, "Failed to mark all notifications as read");
+}
+
+async function deleteNotification(id: string): Promise<void> {
+  const { data } = await api.delete(`/notifications/${id}`);
+  // API returns { status: true/200, message: "..." } or { status: 404, message: "Notification not found" }
+  checkApiResponse(data, "Failed to delete notification");
+}
+
+async function deleteAllNotifications(): Promise<void> {
+  const { data } = await api.delete("/notifications");
+  // API returns { status, message }
+  checkApiResponse(data, "Failed to delete all notifications");
 }
 
 export function useNotifications() {
   return useQuery({
     queryKey: ["notifications"],
-    queryFn: getAllNotificationsMock,
+    queryFn: getAllNotifications,
   });
 }
 
 export function useUnreadNotifications() {
   return useQuery({
     queryKey: ["notifications", "unread"],
-    queryFn: getUnreadNotificationsMock,
+    queryFn: getUnreadNotifications,
   });
 }
 
@@ -64,17 +75,11 @@ export function useMarkNotificationAsRead() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      const current =
-        queryClient.getQueryData<Notification[]>(["notifications"]) || [];
-      const updated = current.map((n) =>
-        n.id === id ? { ...n, read_at: new Date().toISOString() } : n
-      );
-      queryClient.setQueryData(["notifications"], updated);
-      queryClient.setQueryData(
-        ["notifications", "unread"],
-        updated.filter((n) => !n.read_at)
-      );
+    mutationFn: markNotificationAsRead,
+    onSuccess: () => {
+      // Invalidate and refetch notifications & unread list
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications", "unread"] });
     },
   });
 }
@@ -83,18 +88,10 @@ export function useMarkAllNotificationsAsRead() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async () => {
-      const current =
-        queryClient.getQueryData<Notification[]>(["notifications"]) || [];
-      const updated = current.map((n) => ({
-        ...n,
-        read_at: n.read_at || new Date().toISOString(),
-      }));
-      queryClient.setQueryData(["notifications"], updated);
-      queryClient.setQueryData(
-        ["notifications", "unread"],
-        updated.filter((n) => !n.read_at)
-      );
+    mutationFn: markAllNotificationsAsRead,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications", "unread"] });
     },
   });
 }
@@ -103,15 +100,10 @@ export function useDeleteNotification() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      const current =
-        queryClient.getQueryData<Notification[]>(["notifications"]) || [];
-      const updated = current.filter((n) => n.id !== id);
-      queryClient.setQueryData(["notifications"], updated);
-      queryClient.setQueryData(
-        ["notifications", "unread"],
-        updated.filter((n) => !n.read_at)
-      );
+    mutationFn: deleteNotification,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications", "unread"] });
     },
   });
 }
@@ -120,9 +112,10 @@ export function useDeleteAllNotifications() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async () => {
-      queryClient.setQueryData(["notifications"], []);
-      queryClient.setQueryData(["notifications", "unread"], []);
+    mutationFn: deleteAllNotifications,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications", "unread"] });
     },
   });
 }

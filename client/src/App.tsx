@@ -30,7 +30,7 @@ export default function App() {
           Contact
         </Link>
         <Link
-          to="/doctor"
+          to="/doctor/1"
           className="text-[#e5e7eb] no-underline font-semibold py-1.5 px-2.5 rounded-lg hover:bg-[rgba(255,255,255,0.08)]"
         >
           Doctor
@@ -43,7 +43,7 @@ export default function App() {
         <Route path="/map" element={<DoctorsMap />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/contact" element={<ContactUs />} />
-        <Route path="/doctor" element={<DoctorDetails />} />
+        <Route path="/doctor/:id" element={<DoctorDetails />} />
         <Route path="*" element={<Navigate to="/map" replace />} />
       </Routes>
     </div>

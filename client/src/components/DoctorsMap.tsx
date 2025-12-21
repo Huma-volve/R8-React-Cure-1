@@ -5,24 +5,29 @@ import {
   useJsApiLoader,
 } from "@react-google-maps/api";
 import { useEffect, useMemo, useState } from "react";
-import type { Doctor } from "../data/doctors";
-import { doctors } from "../data/doctors";
+import { useNavigate } from "react-router-dom";
+import { useNearYouDoctors, type DoctorListItem } from "../hooks/useDoctor";
 
 const containerStyle = { width: "100%", height: "520px" };
 const defaultCenter = { lat: 30.0444, lng: 31.2357 };
 
 export default function DoctorsMap() {
+  const navigate = useNavigate();
   const libraries = useMemo(() => ["places"], []);
   const [mapRef, setMapRef] = useState<any>(null);
   const [currentPos, setCurrentPos] = useState<{
     lat: number;
     lng: number;
   } | null>(null);
-  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<DoctorListItem | null>(null);
   const [route, setRoute] = useState<any>(null);
   const [distance, setDistance] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [loadingRoute, setLoadingRoute] = useState(false);
+  const [page, setPage] = useState(1);
+  
+  const { data: doctorsData, isLoading } = useNearYouDoctors(page);
+  const doctors = doctorsData?.doctors_near_you?.data || [];
 
   const { isLoaded } = useJsApiLoader({
     id: "google-maps-script",
@@ -76,7 +81,7 @@ export default function DoctorsMap() {
     return (R * c).toFixed(2);
   };
 
-  const drawRoute = async (doctor: Doctor) => {
+  const drawRoute = async (doctor: DoctorListItem) => {
     if (!currentPos || !isLoaded) {
       return;
     }
@@ -88,7 +93,7 @@ export default function DoctorsMap() {
     directionsService.route(
       {
         origin: currentPos,
-        destination: { lat: doctor.lat, lng: doctor.lng },
+        destination: { lat: doctor.location.lat, lng: doctor.location.lng },
         travelMode: maps.TravelMode.DRIVING,
         provideRouteAlternatives: false,
       },
@@ -104,8 +109,8 @@ export default function DoctorsMap() {
           const km = calcDistanceFallback(
             currentPos.lat,
             currentPos.lng,
-            doctor.lat,
-            doctor.lng
+            doctor.location.lat,
+            doctor.location.lng
           );
           setDistance(`${km} km`);
           setDuration("");
@@ -115,16 +120,30 @@ export default function DoctorsMap() {
     );
   };
 
-  const handleSelectDoctor = (doc: Doctor) => {
+  const handleSelectDoctor = (doc: DoctorListItem) => {
     setSelectedDoctor(doc);
     if (mapRef) {
-      mapRef.panTo({ lat: doc.lat, lng: doc.lng });
+      mapRef.panTo({ lat: doc.location.lat, lng: doc.location.lng });
       mapRef.setZoom(14);
     }
     drawRoute(doc);
   };
 
+  const handleDoctorClick = (doctor: DoctorListItem) => {
+    navigate(`/doctor/${doctor.id}`);
+  };
+
   if (!isLoaded) return <p>Loading…</p>;
+
+  if (isLoading) {
+    return (
+      <section className="p-8 bg-[#f5f6fb] font-['Montserrat',sans-serif]">
+        <div className="text-center py-20">
+          <p className="text-[#6b7280]">Loading doctors...</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="p-8 bg-[#f5f6fb] font-['Montserrat',sans-serif]">
@@ -137,44 +156,52 @@ export default function DoctorsMap() {
           </p>
         </div>
         <span className="bg-[#eef2ff] text-[#4f46e5] py-2 px-3.5 rounded-xl font-semibold text-[13px]">
-          {doctors.length} Results
+          {doctorsData?.doctors_near_you?.total || doctors.length} Results
         </span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-4.5 bg-white rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.06)] p-4.5">
         <div className="border-r border-[#e5e7eb] pr-2.5 lg:pr-0">
           <div className="max-h-[520px] overflow-y-auto flex flex-col gap-2.5 pr-1.5">
-            {doctors.map((d) => {
-              const isActive = selectedDoctor?.id === d.id;
-              return (
-                <button
-                  type="button"
-                  key={d.id}
-                  onClick={() => handleSelectDoctor(d)}
-                  className={`flex gap-3 items-center w-full p-2.5 px-3 border rounded-[14px] bg-white cursor-pointer transition-all text-left ${
-                    isActive
-                      ? "border-[#2d9cdb] shadow-[0_10px_20px_rgba(45,156,219,0.14)]"
-                      : "border-[#e5e7eb] hover:border-[#cdd7ff] hover:shadow-[0_6px_15px_rgba(45,156,219,0.08)]"
-                  }`}
-                >
-                  <img
-                    src={d.image}
-                    alt={d.name}
-                    className="w-12 h-12 rounded-xl object-cover"
-                  />
-                  <div className="flex-1">
-                    <p className="m-0 font-bold text-[#1f2937]">{d.name}</p>
-                    <p className="my-0.5 mb-1.5 text-[13px] text-[#6b7280]">{d.specialty}</p>
-                    <div className="flex gap-2 items-center text-xs text-[#4b5563]">
-                      <span className="bg-[#fff7ed] text-[#ea580c] py-0.5 px-2 rounded-[10px] font-semibold">
-                        ★ {d.rating}
-                      </span>
-                      <span className="text-[#111827] font-semibold">{d.times}</span>
+            {doctors.length === 0 ? (
+              <p className="text-center text-[#6b7280] py-8">No doctors found</p>
+            ) : (
+              doctors.map((d) => {
+                const isActive = selectedDoctor?.id === d.id;
+                const firstTime = d.times && d.times.length > 0 ? d.times[0] : null;
+                const timeDisplay = firstTime 
+                  ? `${firstTime.start_time.slice(0, 5)} - ${firstTime.end_time.slice(0, 5)}`
+                  : "No available times";
+                
+                return (
+                  <button
+                    type="button"
+                    key={d.id}
+                    onClick={() => handleSelectDoctor(d)}
+                    className={`flex gap-3 items-center w-full p-2.5 px-3 border rounded-[14px] bg-white cursor-pointer transition-all text-left ${
+                      isActive
+                        ? "border-[#2d9cdb] shadow-[0_10px_20px_rgba(45,156,219,0.14)]"
+                        : "border-[#e5e7eb] hover:border-[#cdd7ff] hover:shadow-[0_6px_15px_rgba(45,156,219,0.08)]"
+                    }`}
+                  >
+                    <img
+                      src={d.image}
+                      alt={d.name}
+                      className="w-12 h-12 rounded-xl object-cover"
+                    />
+                    <div className="flex-1">
+                      <p className="m-0 font-bold text-[#1f2937]">{d.name}</p>
+                      <p className="my-0.5 mb-1.5 text-[13px] text-[#6b7280]">
+                        {d.specialty.name} | {d.hospital_name}
+                      </p>
+                      <div className="flex gap-2 items-center text-xs text-[#4b5563]">
+                        <span className="text-[#111827] font-semibold">{timeDisplay}</span>
+                      </div>
                     </div>
-                  </div>
-                </button>
-              );
-            })}
+                  </button>
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -207,7 +234,7 @@ export default function DoctorsMap() {
                 return (
                   <Marker
                     key={doc.id}
-                    position={{ lat: doc.lat, lng: doc.lng }}
+                    position={{ lat: doc.location.lat, lng: doc.location.lng }}
                     onClick={() => handleSelectDoctor(doc)}
                     title={doc.name}
                     icon={
@@ -243,7 +270,7 @@ export default function DoctorsMap() {
             </GoogleMap>
 
             <div className="absolute left-4.5 right-4.5 bottom-4.5 bg-[rgba(255,255,255,0.95)] rounded-[14px] p-3 px-3.5 flex items-center justify-between gap-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
-              <div>
+              <div className="flex-1">
                 <p className="m-0 font-bold text-[#111827]">
                   {selectedDoctor
                     ? selectedDoctor.name
@@ -251,14 +278,24 @@ export default function DoctorsMap() {
                 </p>
                 <p className="mt-0.5 mb-0 text-xs text-[#6b7280]">
                   {selectedDoctor
-                    ? selectedDoctor.specialty
+                    ? `${selectedDoctor.specialty.name} | ${selectedDoctor.hospital_name}`
                     : "Click on a doctor to display the distance and route"}
                 </p>
               </div>
-              <div className="flex items-center gap-2 font-bold text-[#2563eb] whitespace-nowrap">
-                {distance && <span>{distance}</span>}
-                {duration && <span>· {duration}</span>}
-                {loadingRoute && <span>Calculating route…</span>}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 font-bold text-[#2563eb] whitespace-nowrap">
+                  {distance && <span>{distance}</span>}
+                  {duration && <span>· {duration}</span>}
+                  {loadingRoute && <span>Calculating route…</span>}
+                </div>
+                {selectedDoctor && (
+                  <button
+                    onClick={() => handleDoctorClick(selectedDoctor)}
+                    className="bg-[#1c73d2] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#155fb0] transition-colors whitespace-nowrap"
+                  >
+                    View Details
+                  </button>
+                )}
               </div>
             </div>
           </div>

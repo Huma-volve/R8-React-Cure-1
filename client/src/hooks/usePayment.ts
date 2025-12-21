@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import api from "../api/axios";
 
 export type PaymentPayload = {
   booking_id: number;
@@ -15,51 +16,100 @@ export type SavedPaymentMethod = {
   is_default: boolean; // Whether this is the default payment method
 };
 
-// ---- Static / mock data instead of real API calls ----
+export type PaymentIntentResponse = {
+  payment_intent_id: string;
+  client_secret: string;
+  payment_id: number;
+  publishableKey: string;
+};
 
-async function sendPaymentMock(_payload: PaymentPayload) {
-  // Simulate a short delay then return a fake success response
-  await new Promise((resolve) => setTimeout(resolve, 500));
+export type ConfirmPaymentResponse = {
+  stripe_status?: string; // e.g., "requires_payment_method", "succeeded", etc.
+  [key: string]: any;
+};
+
+// Helper function to check API response status
+function checkApiResponse(response: any, defaultMessage: string = "API request failed") {
+  if (response.status !== true && response.status !== 200) {
+    const error = new Error(response.message || defaultMessage) as Error & { 
+      data?: any;
+      stripe_status?: string;
+    };
+    // Include additional data in error for better error handling
+    if (response.data) {
+      error.data = response.data;
+      if (response.data.stripe_status) {
+        error.stripe_status = response.data.stripe_status;
+      }
+    }
+    throw error;
+  }
+  return response;
+}
+
+async function createPaymentIntent(payload: PaymentPayload): Promise<PaymentIntentResponse> {
+  const { data } = await api.post("/stripe/create-payment-intent", payload);
+  // API returns { status: true, message: "Payment intent created successfully", data: {...} }
+  checkApiResponse(data, "Failed to create payment intent");
+  return data.data;
+}
+
+async function sendPayment(payload: PaymentPayload) {
+  // Step 1: create payment intent on backend
+  const paymentIntent = await createPaymentIntent(payload);
+
+  // Step 2: confirm payment on backend (using booking_id)
+  const { data } = await api.post("/stripe/confirm-payment", {
+    booking_id: payload.booking_id,
+  });
+
+  // API returns { status: true/false, message: "...", data: { stripe_status: "..." } }
+  // Check response status - will throw error if status is false
+  checkApiResponse(data, "Failed to confirm payment");
+
   return {
-    status: "success",
-    message: "Mock payment processed successfully.",
+    ...data.data, // Extract data from response
+    paymentIntent, // Include payment intent data in response
   };
 }
 
-async function getSavedPaymentMethodsMock(): Promise<SavedPaymentMethod[]> {
-  // Static list of saved cards
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return [
-    {
-      provider_token: "pm_mock_visa_1234",
-      brand: "Visa",
-      last_four: "2783",
-      exp_month: 3,
-      exp_year: 2025,
-      is_default: true,
-    },
-    {
-      provider_token: "pm_mock_mastercard_5678",
-      brand: "Mastercard",
-      last_four: "5678",
-      exp_month: 11,
-      exp_year: 2027,
-      is_default: false,
-    },
-  ];
+async function getSavedPaymentMethods(): Promise<SavedPaymentMethod[]> {
+  try {
+    const { data } = await api.get("/payments/methods");
+    // API might return { status, message, data: [] } or just array
+    if (data?.data) {
+      return data.data;
+    }
+    return Array.isArray(data) ? data : [];
+  } catch (error: any) {
+    // If endpoint doesn't exist (404) or other errors, return empty array
+    // This allows the app to continue working without saved payment methods
+    if (error?.response?.status === 404) {
+      console.warn("Payments methods endpoint not available, returning empty array");
+      return [];
+    }
+    // Re-throw other errors
+    throw error;
+  }
+}
+
+export function useCreatePaymentIntent() {
+  return useMutation({
+    mutationFn: createPaymentIntent,
+  });
 }
 
 export function useSendPayment() {
-  // Use react-query mutation but with mock function (no real API)
   return useMutation({
-    mutationFn: sendPaymentMock,
+    mutationFn: sendPayment,
   });
 }
 
 export function useSavedPaymentMethods() {
-  // Use react-query query with static mock data
   return useQuery({
     queryKey: ["savedPaymentMethods"],
-    queryFn: getSavedPaymentMethodsMock,
+    queryFn: getSavedPaymentMethods,
+    retry: false, // Don't retry on failure
+    refetchOnWindowFocus: false, // Don't refetch on window focus to avoid repeated 404 errors
   });
 }

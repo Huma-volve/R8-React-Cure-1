@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import PaymentCard from "../components/PaymentCard";
 import ConfirmModal from "../components/ConfirmModal";
 import { Typography } from "@mui/material";

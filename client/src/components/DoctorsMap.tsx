@@ -13,7 +13,7 @@ const defaultCenter = { lat: 30.0444, lng: 31.2357 };
 
 export default function DoctorsMap() {
   const navigate = useNavigate();
-  const libraries = useMemo(() => ["places"], []);
+  const libraries: ("places")[] = useMemo(() => ["places"], []);
   const [mapRef, setMapRef] = useState<any>(null);
   const [currentPos, setCurrentPos] = useState<{
     lat: number;
@@ -24,7 +24,7 @@ export default function DoctorsMap() {
   const [distance, setDistance] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [loadingRoute, setLoadingRoute] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
   
   const { data: doctorsData, isLoading } = useNearYouDoctors(page);
   const doctors = doctorsData?.doctors_near_you?.data || [];
@@ -210,8 +210,12 @@ export default function DoctorsMap() {
             <GoogleMap
               mapContainerStyle={containerStyle}
               zoom={13}
-              center={selectedDoctor || currentPos || defaultCenter}
-              onLoad={(map) => setMapRef(map)}
+              center={
+                selectedDoctor
+                  ? { lat: selectedDoctor.location.lat, lng: selectedDoctor.location.lng }
+                  : currentPos || defaultCenter
+              }
+              onLoad={(map: any) => setMapRef(map)}
               onUnmount={() => setMapRef(null)}
               options={{
                 streetViewControl: false,

@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import homeReviewStar from "@/assets/images/homeReviewStar.svg"
+import homeReviewStar from "../../assets/images/homeReviewStar.svg"
 
 function ReviewSection() {
   return (

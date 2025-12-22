@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Camera, User, Lock, LogOut } from 'lucide-react';
-import userImage from '@/assets/profileImage.jpg';
 
 const Profile = () => {
   
@@ -13,6 +12,7 @@ const Profile = () => {
   const [location, setLocation] = useState('New York, USA');
 
  
+  const userImage = 'src/assets/profileImage.jpg'; 
   const userName = 'Seif Mohamed';
   const userTitle = '129,El-Nasr Street, Cairo';
 

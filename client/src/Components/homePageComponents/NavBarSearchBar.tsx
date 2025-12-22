@@ -13,7 +13,7 @@ import {
 import InputBase from "@mui/material/InputBase";
 import { styled } from "@mui/material/styles";
 
-import Magnifer from "@/assets/NavBarIcons/Magnifer.svg";
+import Magnifer from "../../assets/NavBarIcons/Magnifer.svg";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",

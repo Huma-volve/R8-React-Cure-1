@@ -19,7 +19,6 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import {useMediaQuery, useTheme} from "@mui/material";
-import { useNavigate } from "react-router-dom";
 
 
 type ProfilePopoverProps = {
@@ -48,15 +47,11 @@ export default function ProfilePopUp({
   const open = Boolean(anchorEl);
    const theme = useTheme();
 const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-const navigate = useNavigate();
 
   function handleOpen(_e: React.MouseEvent<HTMLElement>) {
     if (!isMobile) {
       setAnchorEl(_e.currentTarget);
     }
-    else { {
-      navigate("/profile");
-    }}
    }
   //const handleOpen = (e: React.MouseEvent<HTMLElement>) => setAnchorEl(e.currentTarget);
   const handleClose = () => setAnchorEl(null);

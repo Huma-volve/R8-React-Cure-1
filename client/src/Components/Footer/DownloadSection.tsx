@@ -1,7 +1,7 @@
-import iPhone12Pro from "@/assets/images/iPhone12Pro.svg";
-import { Box,  Typography, Button } from "@mui/material";
-import googleIcon from "@/assets/images/googleIcon.svg";
-import AppleIcon from "@/assets/images/AppleIcon.svg";
+// import iPhone12Pro from "@/assets/images/iPhone12Pro.svg";
+import { Box, Typography, Button } from "@mui/material";
+// import googleIcon from "@/assets/images/googleIcon.svg";
+// import AppleIcon from "@/assets/images/AppleIcon.svg";
 
 function DownloadSection() {
   return (
@@ -51,7 +51,7 @@ function DownloadSection() {
         </Typography>
         <Box
           component={"img"}
-          src={iPhone12Pro}
+          // src={iPhone12Pro}
           sx={{ py: { xs: 1, sm: 0 }, display: { xs: "block", md: "none" } }}
         />
         <Box sx={{ display: { sm: "flex" }, gap: 2 }}>
@@ -67,7 +67,7 @@ function DownloadSection() {
               mb: { xs: 2, sm: 0}
             }}
           >
-            <Box component={"img"} src={googleIcon} sx={{ px: 0.5 }} />
+            {/* <Box component={"img"} src={googleIcon} sx={{ px: 0.5 }} /> */}
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography sx={{ fontSize: "8px", color: "white" }}>
                 GET IT ON
@@ -90,7 +90,7 @@ function DownloadSection() {
               justifyContent: "space-around",
             }}
           >
-            <Box component={"img"} src={AppleIcon} sx={{ px: 0.5 }} />
+            {/* <Box component={"img"} src={AppleIcon} sx={{ px: 0.5 }} /> */}
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography sx={{ fontSize: "8px", color: "white" }}>
                 Download on the
@@ -106,7 +106,7 @@ function DownloadSection() {
       </Box>
       <Box
         component={"img"}
-        src={iPhone12Pro}
+        // src={iPhone12Pro}
         sx={{ display: { xs: "none", md: "block" } }}
       />
       {/* Text Ends here*/}

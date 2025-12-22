@@ -3,10 +3,10 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+
 import MobileFooter from "./Footer/MobileFooter";
 import DesktopFooter from "./Footer/DesktopFooter";
 import DownloadSection from "./Footer/DownloadSection"; // adjust path if needed
-// >>>>>>> ecc6a9b82b3e2940b148995853cbc9375514670b
 
 function Footer() {
   const theme = useTheme();

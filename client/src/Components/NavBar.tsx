@@ -1,5 +1,6 @@
-import NavBarSearch from "@/Components/homePageComponents/NavBarSearchBar";
-import ProfilePopUp from "@/Components/homePageComponents/ProfilePopUp";
+// import NavBarSearch from "@/Components/homePageComponents/NavBarSearchBar";
+// import ProfilePopUp from "@/Components/homePageComponents/ProfilePopUp";
+
 //Basic Imports
 import {
   AppBar,
@@ -12,24 +13,63 @@ import {
 import { Toolbar, useTheme } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-
+// import NavbarSearch from "./homePageComponents/NavBarSearchBar";
+// import ProfilePopUp from "./homePageComponents/ProfilePopUp";
 
 //Icons And images
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import testimage from "../assets/NavBarIcons/testimage.jpg";
-import BsHeartPulse from "../assets/NavBarIcons/BsHeartPulse.svg";
+// import testimage from "../assets/NavBarIcons/testimage.jpg?url";
+import BsHeartPulse from "../assets/NavBarIcons/BsHeartPulse.svg?url";
 //import Magnifer from "../assets/NavBarIcons/Magnifer.svg";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 
 import { useState } from "react";
-import MobileProfileDrawer from "./MobileProfileDrawer";
+// import MobileProfileDrawer from "./MobileProfileDrawer";
 
+// const Search = styled("div")(({ theme }) => ({
+//   position: "relative",
+//   width: "100%",
+//   display: "block",
+//   [theme.breakpoints.up("sm")]: {
+//     borderRadius: "10px",
+//     display: "block",
+//     backgroundColor: "#F5F6F7",
+//     paddingLeft: "16px",
+//     paddingRight: "16px",
+//     marginRight: theme.spacing(3),
+//     width: "100%",
+//     maxWidth: 568,
+//   },
+//   [theme.breakpoints.up("md")]: {
+//     width: "568px",
+//   },
+// }));
+
+// const SearchIconWrapper = styled("div")(({ theme }) => ({
+//   padding: theme.spacing(0, 0),
+//   height: "100%",
+//   position: "absolute",
+//   pointerEvents: "none",
+//   display: "flex",
+//   alignItems: "center",
+//   justifyContent: "center",
+// }));
+
+// const StyledInputBase = styled(InputBase)(({ theme }) => ({
+//   color: "#99A2AB",
+//   "& .MuiInputBase-input": {
+//     padding: theme.spacing(1, 1, 1, 0),
+//     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+//     transition: theme.transitions.create("width"),
+//     [theme.breakpoints.up("md")]: {
+//       width: "568px",
+//     },
+//   },
+// }));
 
 function Navbar() {
-  const navigate = useNavigate();
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  // const [drawerOpen, setDrawerOpen] = useState(false);
   const [navButtonsOpen, setNavButtonsOpen] = useState(false);
 
   const theme = useTheme();
@@ -37,7 +77,7 @@ function Navbar() {
 
   function handleMenuClick() {
     if (isMobile) {
-      setDrawerOpen(true);
+      // setDrawerOpen(true);
     } else {
       setNavButtonsOpen((prev) => !prev);
     }
@@ -52,44 +92,64 @@ function Navbar() {
           bgcolor: "white",
         }}
       >
-<Toolbar
-  sx={{
-    display: "flex",
-    flexWrap: "wrap",
-    alignItems: "center",
-    justifyContent: "space-between",
-    columnGap: 2,
-    rowGap: 2,
-    px: { xs: 2, sm: 4, md: 8 },
-    pb: "24px",
-    pt: { xs: "24px", sm: "52px" },
-  }}
->
+        <Toolbar
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "space-between",
+            columnGap: 2,
+            rowGap: 2,
+            px: { xs: 2, sm: 4, md: 8 },
+            pb: "24px",
+            pt: { xs: "24px", sm: "52px" },
+          }}
+        >
           {/* Left Side HeartPulse Icon */}
-          <Box component={Link} to="/home" sx={{ order: { xs: 1, sm: 1 } }}>
+          <Box sx={{ order: { xs: 1, sm: 1 } }}>
             <IconButton sx={{ width: "64px" }}>
               <img src={BsHeartPulse} alt="HearPulseIcon" />
             </IconButton>
           </Box>
           <Box
-  sx={{
-    order: { xs: 3, md: 2 },
-    flexBasis: { xs: "100%", md: "auto" },
-    flexGrow: 1,
-    mx: { md: "auto" },
-    display: "flex",
-    justifyContent: "center",
-    transition: "transform 400ms ease",
-    transform: {
-      xs: "none",
-      md: navButtonsOpen ? "translateX(-20px)" : "translateX(0)",
-    },
-  }}
->
-  <NavBarSearch onSelect={(v) => console.log("search:", v)} />
-</Box>
-
-
+            sx={{
+              order: { xs: 3, md: 2 },
+              flexBasis: { xs: "100%", md: "auto" },
+              flexGrow: 1,
+              mx: { md: "auto" },
+              display: "flex",
+              justifyContent: "center",
+              transition: "transform 400ms ease",
+              transform: {
+                xs: "none",
+                md: navButtonsOpen ? "translateX(-20px)" : "translateX(0)",
+              },
+            }}
+          >
+            {/* <NavbarSearch onSelect={(v) => console.log("search:", v)} /> */}
+          </Box>
+          {/* TODO!!!!! Fix SearchBar Animation*/}
+          {/* <Box
+            sx={{
+              order: { xs: 0, sm: 0 },
+              justifyContent: "center",
+              transition: "transform 400ms ease", // <-- Animation To be fixed Starts here
+              transform: {
+                xs: "none",
+                md: navButtonsOpen ? "translateX(-20px)" : "translateX(0)",
+              },
+            }}
+          >
+            <Search>
+              <SearchIconWrapper>
+                <img src={Magnifer} alt="MaginfierIcon" />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search about speciality, doctor"
+                inputProps={{ "aria-label": "search" }}
+              />
+            </Search>
+          </Box> */}
 
           {/* Right Side Icons Box */}
           <Box sx={{ order: { xs: 2, md: 3 } }}>
@@ -112,7 +172,7 @@ function Navbar() {
                 >
                   <Button //Home Button
                     component={Link}
-                    to="/home" 
+                    to="/"
                     variant="contained"
                     sx={{
                       borderRadius: "10px",
@@ -126,8 +186,6 @@ function Navbar() {
                     Home
                   </Button>
                   <Button
-                                      component={Link}
-                    to="/home" 
                     sx={{
                       borderRadius: "10px",
                       textTransform: "none",
@@ -140,8 +198,6 @@ function Navbar() {
                     Bookings
                   </Button>
                   <Button
-                  component={Link}
-                    to="/home" 
                     sx={{
                       borderRadius: "10px",
                       textTransform: "none",
@@ -201,26 +257,41 @@ function Navbar() {
                 </Box>
 
                 {/* user Icon Button */}
-                <ProfilePopUp
+                {/* <IconButton
+                  sx={{
+                    height: "41px",
+                    width: "41px",
+                    border: 0,
+                    borderRadius: "50%",
+                    padding: "0",
+                    overflow: "hidden",
+                  }}
+                >
+                  <img
+                    src={testimage}
+                    alt="UserIcon"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </IconButton> */}
+                {/* <ProfilePopUp
                   name="Seif Mohamed"
                   address="129, El-Nasr Street, Cairo"
                   avatarSrc={testimage}
-                  onPaymentMethod={() => navigate("/payment")}
-      onFavorite={() => navigate("/favorite")}
-      onSettings={() => navigate("/profile")}
-      onPrivacy={() => navigate("/privacy")}
-      onLogout={()=> navigate("/login")}
-                />
+                /> */}
               </Stack>
             </Box>
           </Box>
         </Toolbar>
       </AppBar>
 
-      <MobileProfileDrawer
+      {/* <MobileProfileDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-      />
+      /> */}
     </>
   );
 }

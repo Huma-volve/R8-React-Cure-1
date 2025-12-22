@@ -23,8 +23,7 @@ import type { AppDispatch, RootState } from "../store";
 import { loadStripe } from "@stripe/stripe-js";
 import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
-import { CardElement, useStripe, useElements} from "@stripe/react-stripe-js";
-import {Link} from "react-router-dom";
+
 type Props = { onSuccess?: (msg?: string) => void };
 
 type PaymentFormValues = {
@@ -57,9 +56,9 @@ const paymentOptions = [
 
 // Helper function to create Stripe payment method
 async function createStripePaymentMethod(
-//   cardNumber: string,
-//   expiry: string,
-//   cvv: string,
+  cardNumber: string,
+  expiry: string,
+  cvv: string,
   name: string
 ): Promise<string> {
   const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
@@ -70,34 +69,33 @@ async function createStripePaymentMethod(
     console.warn("Stripe publishable key not found. Using test payment method ID.");
     return "pm_test_1234567890";
   }
-    const stripe = useStripe();
+
   try {
-    const stripee = await loadStripe(stripePublishableKey);
-    if (!stripee) {
+    const stripe = await loadStripe(stripePublishableKey);
+    if (!stripe) {
       throw new Error("Failed to load Stripe");
     }
 
     // Parse expiry date (MM/YY format)
-    // const [month, year] = expiry.split("/");
-    // const expYear = parseInt(`20${year}`, 10);
-    // const expMonth = parseInt(month, 10);
-    const elements = useElements();
+    const [month, year] = expiry.split("/");
+    const expYear = parseInt(`20${year}`, 10);
+    const expMonth = parseInt(month, 10);
+
     // Create payment method using Stripe.js
-   const cardElement = elements!.getElement(CardElement);
-
-    const { paymentMethod, error } = await stripe!.createPaymentMethod({
-    type: "card",
-    card: cardElement!,
-    billing_details: {
+    // Note: In production, you should use Stripe Elements for secure card input
+    // This is a simplified version for development
+    const { paymentMethod, error } = await stripe.createPaymentMethod({
+      type: "card",
+      card: {
+        number: cardNumber.replace(/\s/g, ""),
+        exp_month: expMonth,
+        exp_year: expYear,
+        cvc: cvv,
+      } as any,
+      billing_details: {
         name: name,
-    },
+      },
     });
-
-    if (error) {
-    console.log(error);
-    } else {
-    console.log(paymentMethod);
-    }
 
     if (error) {
       throw error;
@@ -184,7 +182,7 @@ export default function PaymentCard({ onSuccess }: Props) {
                   size="small"
                   color="default"
                 />
-                <Typography component={Link} to="/Appointment"
+                <Typography
                   variant="caption"
                   color="primary"
                   className="cursor-pointer"
@@ -367,9 +365,9 @@ export default function PaymentCard({ onSuccess }: Props) {
                   // Create new Stripe payment method from card details
                   paymentMethodId = await createStripePaymentMethod(
                     values.cardNumber,
-                    // values.expiry,
-                    // values.cvv,
-                    // values.name
+                    values.expiry,
+                    values.cvv,
+                    values.name
                   );
                 } else {
                   // For non-card payment methods, you might need different handling

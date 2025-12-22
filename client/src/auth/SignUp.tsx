@@ -2,11 +2,6 @@ import { useState } from 'react';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { Eye, EyeOff } from 'lucide-react';
-import HeartIcon from "@/assets/BsHeartPulse.png"
-import wave from '@/assets/wave bg.png';
-import border from '@/assets/border.png';
-import googleIcon from '@/assets/flat-color-icons_google.png';
-import {Link} from "react-router-dom";
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -19,18 +14,18 @@ const SignUp = () => {
      
       <img
         className="absolute top-0 right-0 w-full h-full object-right md:w-[948px]"
-        src={wave}
+        src="src/assets/wave bg.png"
         alt="wave bg"
       />
       <img
         className="absolute top-0 right-0 w-full h-full object-right md:w-[948px]"
-        src={border}
+        src="src/assets/border.png"
         alt="border"
       />
 
       {/* أيقونة القلب */}
       <img
-        src={HeartIcon}
+        src="src/assets/BsHeartPulse.png"
         alt="heart"
         className="absolute top-8 left-6 w-10 h-10 md:top-10 md:left-20 z-20"
       />
@@ -108,7 +103,7 @@ const SignUp = () => {
                 <PhoneInput
                   defaultCountry="EG"
                   value={phoneNumber}
-                  onChange={(value) => setPhoneNumber(value || '')}
+                  onChange={(value: string | undefined) => setPhoneNumber(value || '')}
                   placeholder="Enter phone number"
                   className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 transition"
                 />
@@ -128,7 +123,7 @@ const SignUp = () => {
               </div>
 
               <button className="w-full flex items-center cursor-pointer justify-center gap-3 bg-white hover:bg-gray-50 text-[#05162C] font-medium py-3 border border-gray-300 rounded-lg transition text-sm">
-                <img src={googleIcon} alt="google" className=" w-5 h-5" />
+                <img src="src/assets/flat-color-icons_google.png" alt="google" className=" w-5 h-5" />
                 Continue with Google
               </button>
             </div>
@@ -136,9 +131,9 @@ const SignUp = () => {
             {/* رابط تسجيل الدخول */}
             <p className="text-center text-xs text-gray-600 ">
               Already have an account?{' '}
-              <Link to="/" className="text-blue-500 hover:underline font-medium ">
+              <a href="/login" className="text-blue-500 hover:underline font-medium ">
                 Sign in
-              </Link>
+              </a>
             </p>
           </div>
         </div>

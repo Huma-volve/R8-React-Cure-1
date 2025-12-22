@@ -23,8 +23,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import BsHeartPulse from "../assets/NavBarIcons/BsHeartPulse.svg?url";
 //import Magnifer from "../assets/NavBarIcons/Magnifer.svg";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import Badge from "@mui/material/Badge";
 
 import { useState } from "react";
+import NotificationDropdown from "./NotificationDropdown";
+import { useUnreadNotifications } from "../hooks/useNotifications";
 // import MobileProfileDrawer from "./MobileProfileDrawer";
 
 // const Search = styled("div")(({ theme }) => ({
@@ -71,9 +75,20 @@ import { useState } from "react";
 function Navbar() {
   // const [drawerOpen, setDrawerOpen] = useState(false);
   const [navButtonsOpen, setNavButtonsOpen] = useState(false);
+  const [notificationAnchor, setNotificationAnchor] = useState<HTMLButtonElement | null>(null);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const { data: unreadNotifications } = useUnreadNotifications();
+  const unreadCount = unreadNotifications?.length || 0;
+
+  const handleNotificationClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setNotificationAnchor(event.currentTarget);
+  };
+
+  const handleNotificationClose = () => {
+    setNotificationAnchor(null);
+  };
 
   function handleMenuClick() {
     if (isMobile) {
@@ -243,6 +258,7 @@ function Navbar() {
 
                   {/* notification icon Button */}
                   <IconButton
+                    onClick={handleNotificationClick}
                     sx={{
                       border: 1,
                       borderRadius: "10px",
@@ -250,10 +266,26 @@ function Navbar() {
                       color: "#05162C",
                       bgcolor: "#F5F6F7",
                       display: { xs: "none", sm: "flex" },
+                      "&:hover": {
+                        bgcolor: "#E9EAEC",
+                      },
                     }}
                   >
-                    <NotificationsNoneIcon />
+                    <Badge badgeContent={unreadCount} color="error">
+                      {unreadCount > 0 ? (
+                        <NotificationsIcon />
+                      ) : (
+                        <NotificationsNoneIcon />
+                      )}
+                    </Badge>
                   </IconButton>
+                  
+                  {/* Notification Dropdown */}
+                  <NotificationDropdown 
+                    anchorEl={notificationAnchor}
+                    onClose={handleNotificationClose}
+                    showIconButton={false}
+                  />
                 </Box>
 
                 {/* user Icon Button */}

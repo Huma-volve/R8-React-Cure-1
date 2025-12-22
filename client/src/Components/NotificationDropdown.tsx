@@ -24,23 +24,41 @@ import {
 } from "../hooks/useNotifications";
 import { formatDistanceToNow } from "date-fns";
 
-export default function NotificationDropdown() {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+type NotificationDropdownProps = {
+  anchorEl?: HTMLButtonElement | null;
+  onClose?: () => void;
+  showIconButton?: boolean;
+};
+
+export default function NotificationDropdown({ 
+  anchorEl: externalAnchorEl, 
+  onClose: externalOnClose,
+  showIconButton = true 
+}: NotificationDropdownProps = {}) {
+  const [internalAnchorEl, setInternalAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { data: allNotifications, isLoading } = useNotifications();
   const { data: unreadNotifications } = useUnreadNotifications();
   const markAsRead = useMarkNotificationAsRead();
   const markAllAsRead = useMarkAllNotificationsAsRead();
   const popoverRef = useRef<HTMLDivElement>(null);
 
+  // Use external anchorEl if provided, otherwise use internal state
+  const anchorEl = externalAnchorEl !== undefined ? externalAnchorEl : internalAnchorEl;
   const unreadCount = unreadNotifications?.length || 0;
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
+    if (externalAnchorEl === undefined) {
+      setInternalAnchorEl(event.currentTarget);
+    }
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
+    if (externalOnClose) {
+      externalOnClose();
+    } else {
+      setInternalAnchorEl(null);
+    }
   };
 
   const handleMarkAsRead = async (id: string) => {
@@ -61,6 +79,8 @@ export default function NotificationDropdown() {
 
   // Close dropdown when clicking outside
   useEffect(() => {
+    if (!open) return;
+
     const handleClickOutside = (event: MouseEvent) => {
       if (
         popoverRef.current &&
@@ -72,13 +92,12 @@ export default function NotificationDropdown() {
       }
     };
 
-    if (open) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, anchorEl]);
 
   const formatDate = (dateString: string) => {
@@ -113,24 +132,26 @@ export default function NotificationDropdown() {
 
   return (
     <>
-      <IconButton
-        onClick={handleClick}
-        sx={{
-          color: "#e5e7eb",
-          "&:hover": {
-            backgroundColor: "rgba(255, 255, 255, 0.08)",
-          },
-        }}
-        aria-label="notifications"
-      >
-        <Badge badgeContent={unreadCount} color="error">
-          {unreadCount > 0 ? (
-            <NotificationsIcon sx={{ color: "#e5e7eb" }} />
-          ) : (
-            <NotificationsNoneIcon sx={{ color: "#e5e7eb" }} />
-          )}
-        </Badge>
-      </IconButton>
+      {showIconButton && (
+        <IconButton
+          onClick={handleClick}
+          sx={{
+            color: "#e5e7eb",
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.08)",
+            },
+          }}
+          aria-label="notifications"
+        >
+          <Badge badgeContent={unreadCount} color="error">
+            {unreadCount > 0 ? (
+              <NotificationsIcon sx={{ color: "#e5e7eb" }} />
+            ) : (
+              <NotificationsNoneIcon sx={{ color: "#e5e7eb" }} />
+            )}
+          </Badge>
+        </IconButton>
+      )}
 
       <Popover
         open={open}

@@ -1,7 +1,7 @@
 import { Link, Navigate, Route, Routes } from "react-router-dom";
 
-import Navbar from './components/NavBar';
-import Footer from './components/Footer';
+import Navbar from './Components/NavBar';
+import Footer from './Components/Footer';
 import HomePage from './pages/Appointmentpage/Homepage';
 import LogIn from "./auth/LogIn";
 import SignUp from "./auth/SignUp";
@@ -9,10 +9,10 @@ import Verification from "./auth/Verification";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Profile from "./pages/Profile";
 import PaymentPage from "./pages/PaymentPage";
-import ContactUs from "./components/ContactUs";
-import DoctorsMap from "./components/DoctorsMap";
+import ContactUs from "./Components/ContactUs";
+import DoctorsMap from "./Components/DoctorsMap";
 import DoctorDetails from "./pages/DoctorDetails";
-import NotificationDropdown from "./components/NotificationDropdown";
+import NotificationDropdown from "./Components/NotificationDropdown";
 
 export default function App() {
   return (

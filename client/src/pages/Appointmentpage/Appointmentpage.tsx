@@ -1,5 +1,5 @@
 import { useState } from "react";
-import DateTimePicker from '@/components/DateTimePicker';
+import DateTimePicker from '@/Components/DateTimePicker';
 import StarRateIcon from '@mui/icons-material/StarRate';
 import human from '../../assets/images/human.png?url';
 import verify from '../../assets/images/verified.svg';
@@ -8,8 +8,8 @@ import star2 from '../../assets/images/star2.svg';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import profile from '../../assets/images/profile.svg';
 import messages from '../../assets/images/messages.svg';
-import ReviewCard from "@/components/Cards/ReviewCard";
-import PopUp from '@/components/Cards/PopUp';
+import ReviewCard from "@/Components/Cards/ReviewCard";
+import PopUp from '@/Components/Cards/PopUp';
 
 const AppointmentPage: React.FC = () => {
   const [expanded, setExpanded] = useState(false);

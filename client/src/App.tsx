@@ -13,16 +13,18 @@ import Profile from "./pages/Profile"
 
 function App() {
   return (
-        <Navbar />
-    <Routes>
-      <Route path="/login" element={<LogIn/>}/>
-      <Route path="/signup" element={<SignUp/>}/>
-      <Route path="/verify" element={<Verification/>}/>
-      <Route path="/privacy" element={<PrivacyPolicy/>}/>
-      <Route path="/profile" element={<Profile/>}/>
-    </Routes>
-        <HomePage/>
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/login" element={<LogIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/verify" element={<Verification />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
+      <HomePage />
       <Footer />
+    </>
   );
 }
 

@@ -105,7 +105,19 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
         </Box>
         {/* Rest of the pop up buttons*/}
         {/* Menu list */}
+        
         <List sx={{ mt: 3 }}>
+
+            <ListItemButton>
+            <ListItemIcon>
+              <LocationOnOutlinedIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Notifications" />
+            <ChevronRightIcon
+              sx={{ ml: "auto", fontSize: 18, color: "text.disabled" }}
+            />
+            </ListItemButton>
+
           <ListItemButton>
             <ListItemIcon>
               <CreditCardIcon fontSize="small" />

@@ -24,6 +24,7 @@
         max-width : 1400px;}
 }
 
+<<<<<<< HEAD
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
@@ -35,6 +36,8 @@
   }
 }
 
+=======
+>>>>>>> 880d3a01f445a2d2727c0a9d0498490bf1b41161
 :root {
   font-family: "Inter", system-ui, -apple-system, sans-serif;
   line-height: 1.5;

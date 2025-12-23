@@ -11,13 +11,35 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 const Hero = () => {
   return (
-    <Box
-      sx={{
-        py: "200px",
-        textAlign: "center",
-        position: "relative",
-      }}
-    >
+   <Box
+  sx={{
+    pt: "200px",
+    textAlign: "center",
+    position: "relative",
+    overflow: "hidden",
+
+    // background rings
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      inset: "0px", 
+      pointerEvents: "none",
+      zIndex: 0,
+      backgroundImage: `
+        repeating-radial-gradient(
+          circle at 50% 35%,
+          rgba(2, 20, 49, 0.08) 0px,
+          rgba(2, 20, 49, 0.08) 1px,
+          transparent 1px,
+          transparent 140px
+        )
+      `,
+      opacity: 0.7,
+    },
+
+    "& > *": { position: "relative", zIndex: 1 },
+  }}
+>
       {/* Top pill */}
       <Chip
         label="Upgrade your account"
@@ -88,14 +110,13 @@ const Hero = () => {
         direction="row"
         spacing={2}
         justifyContent="center"
-        sx={{ flexWrap: "wrap" }}
       >
         <Button
           variant="contained"
           sx={{
             px: 4,
             py: 1.2,
-            borderRadius: "999px",
+            borderRadius: "10px",
             textTransform: "none",
             fontWeight: 600,
           }}
@@ -108,7 +129,7 @@ const Hero = () => {
           sx={{
             px: 4,
             py: 1.2,
-            borderRadius: "999px",
+            borderRadius: "10px",
             textTransform: "none",
             fontWeight: 500,
             bgcolor: "background.paper",

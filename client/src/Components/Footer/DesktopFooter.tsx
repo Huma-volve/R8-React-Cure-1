@@ -1,4 +1,6 @@
-import { Box, Container, Grid, IconButton, Link, Typography } from "@mui/material";
+import { Box, Container,  IconButton, Link, Typography } from "@mui/material";
+import Grid from '@mui/material/GridLegacy';
+
 
 function DesktopFooter() {
   return (
@@ -7,7 +9,7 @@ function DesktopFooter() {
       sx={{
         bgcolor: "#021431",
         color: "white",
-        pt: 6,
+        pt: 10,
         pb: 3,
         mt: "auto",   
         width: "100%",

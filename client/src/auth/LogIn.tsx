@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import PhoneInput from 'react-phone-number-input';
-import 'react-phone-number-input/style.css';
-import { getFullApiUrl } from '../config';
+import 'react-phone-number-input/style.css'; 
+import {Link} from "react-router-dom";
+import Button from '@mui/material/Button';
+import HeartIcon from "@/assets/BsHeartPulse.png"
+import wave from '@/assets/wave bg.png';
+import border from '@/assets/border.png';
+import googleIcon from '@/assets/flat-color-icons_google.png';
 
 const LogIn = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -120,21 +125,22 @@ const LogIn = () => {
 
   return (
     <div className="flex min-h-screen relative overflow-hidden">
-      <img
-        className="absolute top-0 right-0 w-full h-full object-right md:w-[948px]"
-        src="src/assets/wave bg.png"
-        alt="wave bg"
+        
+      <img 
+        className="absolute top-0 right-0 w-full h-full object-right md:w-237 "
+        src={wave} 
+        alt="wave bg" 
       />
-      <img
-        className="absolute top-0 right-0 w-full h-full object-right md:w-[948px]"
-        src="src/assets/border.png"
-        alt="border"
+      <img 
+        className="absolute top-0 right-0 w-full h-full object-right md:w-[948px] "
+        src={border} 
+        alt="border" 
       />
 
       <img
-        src="src/assets/BsHeartPulse.png"
-        alt="heart"
-        className="absolute top-8 left-6 w-10 h-10 md:top-10 md:left-20 z-20"
+        src={HeartIcon}
+        alt='heart'
+        className='absolute top-8 left-6 w-10 h-10 md:top-10 md:left-20 z-20'
       />
 
       <div className="absolute inset-0 flex items-center justify-center md:justify-end md:pr-12 lg:pr-32 z-10 pointer-events-none">
@@ -179,14 +185,10 @@ const LogIn = () => {
               {error && <p className="text-red-500 text-sm text-center">{error}</p>}
               {success && <p className="text-green-500 text-sm text-center">{success}</p>}
 
-              <div className="flex flex-col gap-y-5">
-                <button
-                  onClick={handleSignIn}
-                  disabled={loading}
-                  className="cursor-pointer bg-blue-500 hover:bg-blue-600 disabled:bg-blue-400 text-white font-medium w-full py-3.5 rounded-lg transition"
-                >
-                  {loading ? 'Signing In...' : 'Sign In'}
-                </button>
+              <div className='flex flex-col gap-y-5'>
+                <Button component={Link} to="/home" className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-medium w-full py-3.5 rounded-lg transition">
+                  Sign In
+                </Button>
 
                 <div className="flex items-center gap-x-4">
                   <hr className="flex-1 border-gray-300" />
@@ -194,22 +196,18 @@ const LogIn = () => {
                   <hr className="flex-1 border-gray-300" />
                 </div>
 
-                <button
-                  onClick={handleGoogleSignIn}
-                  disabled={loading}
-                  className="cursor-pointer flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-[#05162C] font-medium w-full py-3.5 border border-gray-300 rounded-lg transition"
-                >
-                  <img src="src/assets/flat-color-icons_google.png" alt="google" className="w-5 h-5" />
-                  {loading ? 'Connecting...' : 'Sign In With Google'}
+                <button className="cursor-pointer flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-[#05162C] font-medium w-full py-3.5 border border-gray-300 rounded-lg transition">
+                  <img src={googleIcon} alt="google" className='w-5 h-5'/>
+                  Sign In With Google
                 </button>
               </div>
 
-              <div className="text-center">
-                <p className="text-gray-500 text-sm">
-                  Don’t have an account?{' '}
-                  <a href="/signUp" className="text-blue-500 hover:underline font-medium">
+              <div className='text-center'>
+                <p className='text-gray-500 text-sm'>
+                  Don’t have an account? {' '}
+                  <Link to="/signup" className='text-blue-500 hover:underline font-medium'>
                     Sign up
-                  </a>
+                  </Link>
                 </p>
               </div>
             </div>

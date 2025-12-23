@@ -7,6 +7,7 @@ import HeartIcon from "@/assets/BsHeartPulse.png"
 import wave from '@/assets/wave bg.png';
 import border from '@/assets/border.png';
 import googleIcon from '@/assets/flat-color-icons_google.png';
+import { getFullApiUrl } from '@/config';
 
 const LogIn = () => {
   const [phoneNumber, setPhoneNumber] = useState('');

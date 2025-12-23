@@ -4,7 +4,7 @@ import type { AppDispatch } from "@/store";
 import { useEffect } from "react";
 import { getChatList } from "../Redux-Store/ChatSlice/ChatSlice";
 import { Link } from "react-router-dom";
-import profileImage from "@/assets/Images/644acebb39b684127cacceef34d2234b0b1622c9.jpg";
+import profileImage from "@/assets/Images/profileImage.jpg";
 
 export default function Chat() {
   const { chatList, isLoadingList, isErrorList, msgUnread, search } = useSelector(

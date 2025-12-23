@@ -118,7 +118,7 @@ export const getDoctorById = async (doctorId: string) => {
  */
 
 export const getSpecialists = async () => {
-  const response = await api.get("/specialties");
+  const response = await api.get("/home/specialties");
   return response.data;
 };
 

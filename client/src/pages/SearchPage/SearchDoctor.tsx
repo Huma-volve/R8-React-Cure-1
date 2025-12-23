@@ -1,5 +1,4 @@
 import { useState, useEffect,useMemo } from "react";
-import Specialist from "@/Components/Cards/Specialist";
 import Button from '@mui/material/Button';
 import TuneIcon from "@mui/icons-material/Tune";
 import SearchSkeleton from "@/skelatons/SearchSkeleton";
@@ -13,11 +12,9 @@ import InputBase from '@mui/material/InputBase';
 import RouteIcon from '@mui/icons-material/Route';
 import DoctorCard from "@/Components/Cards/DoctorCard";
 import AnimatedPagination from "@/Components/Animation";
-import { Bluetooth as Tooth, Heart, Stethoscope, Brain, User, Eye, Wind } from "lucide-react"
 import { useNavigate  } from "react-router-dom";
-import { getAllDoctors } from "@/api/auth";
+import { getAllDoctors, getSpecialists } from "@/api/auth";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
 
 const Search = styled('div')(({ theme }) => ({
     border: '1px solid #ccc',
@@ -57,99 +54,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-interface Specialist {
+interface Specialty {
   id: string
   name: string
-  icon: React.ReactNode
+  icon: string
 }
 
-const specialists: Specialist[] = [
-  { id: "dentist", name: "Dentist", icon: <Tooth className="w-5 h-5" /> },
-  {
-    id: "cardiologist",
-    name: "Cardiologist",
-    icon: <Heart className="w-5 h-5" />,
-  },
-  {
-    id: "ent",
-    name: "ENT",
-    icon: <Stethoscope className="w-5 h-5" />,
-  },
-  {
-    id: "neurologist",
-    name: "Neurologist",
-    icon: <Brain className="w-5 h-5" />,
-  },
-  {
-    id: "gp",
-    name: "General Practitioner",
-    icon: <User className="w-5 h-5" />,
-  },
-  {
-    id: "ophthalmologist",
-    name: "Ophthalmologist",
-    icon: <Eye className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist2",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist3",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist4",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist5",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist6",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist7",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist8",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist9",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  
-];
-
-const getWorkingTimeRange = (times?: DoctorTimeSlot[]) => {
-  if (!times || times.length === 0) return null;
-
-  const sorted = [...times].sort((a, b) =>
-    a.start_time.localeCompare(b.start_time)
-  );
-
-  return {
-    start: sorted[0].start_time.slice(0, 5),
-    end: sorted[sorted.length - 1].end_time.slice(0, 5),
-  };
-};
 interface DoctorTimeSlot {
   date: string;
   start_time: string;
@@ -167,24 +77,48 @@ interface DoctorsD{
   is_favorite: boolean,
   price:number  
 }
+const getWorkingTimeRange = (times?: DoctorTimeSlot[]) => {
+  if (!times || times.length === 0) return null;
+
+  const sorted = [...times].sort((a, b) =>
+    a.start_time.localeCompare(b.start_time)
+  );
+
+  return {
+    start: sorted[0].start_time.slice(0, 5),
+    end: sorted[sorted.length - 1].end_time.slice(0, 5),
+  };
+};
+
 function SearchDoctor() {
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
-    const [selected, setSelected] = useState<string | null>(null);
     const [animating, setAnimating] = useState(false);
     const [page, setPage] = useState(1);
     const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
-    const [doctors, setdoctors] = useState<DoctorsD[]>([]);
+    const [doctors, setDoctors] = useState<DoctorsD[]>([]);
+    const [specialists, setSpecialists] = useState<Specialty[]>([]);
     const [loading, setLoading] = useState(true);
     const isMobile = useMediaQuery("(max-width: 640px)");
     const isTablet = useMediaQuery("(min-width: 641px) and (max-width: 1024px)");
-    const ITEMS_PER_PAGE = isMobile ? 4 : isTablet ? 6 : 9;
-    const totalPages = Math.ceil(doctors.length / ITEMS_PER_PAGE);
+    const filteredDoctors = useMemo(() => {
+        if (!selectedSpecialty) return doctors;
 
-    useEffect(() => {
-    getAllDoctors()
-      .then((res) => {
-        const list = Array.isArray(res?.data) ? res.data : [];
+        return doctors.filter(
+          (doctor) =>  doctor.specialty === selectedSpecialty
+        );
+      }, [doctors, selectedSpecialty]);
+
+    const ITEMS_PER_PAGE = isMobile ? 4 : isTablet ? 6 : 9;
+    const totalPages = Math.ceil(filteredDoctors.length / ITEMS_PER_PAGE);
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [doctorsRes, specialtiesRes] = await Promise.all([
+          getAllDoctors(),       // axios call
+          getSpecialists(),   // axios call
+        ]);
+        const list = Array.isArray(doctorsRes?.data) ? doctorsRes.data : [];
 
         const mapped = list.map((doctor: DoctorsD) => {
           const range = getWorkingTimeRange(doctor.times);
@@ -196,18 +130,22 @@ function SearchDoctor() {
           };
         });
 
-        setdoctors(mapped);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
-  const filteredDoctors = useMemo(() => {
-      if (!selectedSpecialty) return doctors;
+        setDoctors(mapped);
 
-      return doctors.filter(
-        (doctor) => doctor.specialty === "Ophthalmology"
-      );
-    }, [doctors, selectedSpecialty]);
+        setSpecialists(
+          specialtiesRes.data?.specialties ?? []
+        );
+      } catch (error) {
+        console.error("Failed to load data", error);
+      } finally {
+        setLoading(false);
+      }
+  };
+
+  loadData();
+}, []);
+
+
   if (loading) return <SearchSkeleton/>;
 
     const handleToggle = () => {
@@ -225,7 +163,7 @@ function SearchDoctor() {
     };
     const startIndex = (page - 1) * ITEMS_PER_PAGE; 
     const endIndex = startIndex + ITEMS_PER_PAGE;
-    const paginatedDoctors = doctors.slice(startIndex, endIndex);
+    const paginatedDoctors = filteredDoctors.slice(startIndex, endIndex);
     return (
     <> 
        <div className="flex-1 mt-30">    
@@ -357,20 +295,20 @@ function SearchDoctor() {
                             {specialists.map((specialist) => (
                                 <button
                                     key={specialist.id}
-                                    onClick={() => setSelected(selected === specialist.id ? null : specialist.id)}
+                                    onClick={() =>  setSelectedSpecialty(selectedSpecialty === specialist.name ? null : specialist.name)}
                                     className={`
                                         flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap
                                         transition-all duration-300 ease-out
                                         border-2
                                         transform hover:scale-105
                                         ${
-                                        selected === specialist.id
+                                        selectedSpecialty === specialist.name
                                             ? "border-blue-500 bg-blue-50 text-blue-600 shadow-md"
                                             : "border-gray-300 bg-white text-gray-700 hover:border-gray-400"
                                         }
                                     `}
                                 >
-                                    <span className={`transition-transform duration-300 ${selected === specialist.id ? "scale-110" : ""}`}>
+                                    <span className={`transition-transform duration-300 ${selectedSpecialty === specialist.name ? "scale-110" : ""}`}>
                                         {specialist.icon}
                                     </span>
                                     <span className="text-sm font-medium">{specialist.name}</span>
@@ -408,6 +346,8 @@ function SearchDoctor() {
                         transform transition-all duration-300 ease-in-out
                     `}>
                               {filteredDoctors.length === 0 ? (
+                                  <p className="text-gray-500 col-span-full text-center">No doctors found for the selected specialty.</p>
+                                ) : (
                                      paginatedDoctors.map((doctor) => (
                                   <div key={doctor.id} className=" border border-gray-100 shadow-xl rounded-lg overflow-hidden">
                                     <DoctorCard doctor={doctor}/>
@@ -428,27 +368,7 @@ function SearchDoctor() {
                                     </Button>
                                   </div>
                                 ))
-                                ) : (
-                                    filteredDoctors.map((doctor) => (
-                                     <div key={doctor.id} className=" border border-gray-100 shadow-xl rounded-lg overflow-hidden">
-                                    <DoctorCard doctor={doctor}/>
-                                    <div className="flex justify-between p-2">
-                                      <div className="text-sm text-gray-600">
-                                          Price<span className="text-xs">/hour</span>
-                                      </div>                                            
-                                      <div className="font-montserrat text-lg ml-2 text-red-400">{doctor.price}</div>
-                                    </div>
-                                    <Button   onClick={() => navigate(`/doctors/${doctor.id}`)}
-                                    variant="contained" 
-                                    sx={{ 
-                                        width:'100%',
-                                        borderRadius: 0,
-                                    }}
-                                    >
-                                        Book Appointment
-                                    </Button>
-                                  </div>
-                                    )))}
+                                    )}
 
         
 

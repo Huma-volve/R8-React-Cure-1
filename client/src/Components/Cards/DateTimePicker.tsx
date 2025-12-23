@@ -47,7 +47,7 @@ export function DateTimePicker() {
   const isSelected = (date: number) => selectedDate === date
 
   return (
-    <div className="w-full max-w-full md:max-w-2xl lg:max-w-3xl bg-white rounded-2xl border border-gray-200 p-4 md:p-6 shadow-sm mx-auto">
+    <div className=" bg-white rounded-2xl border border-gray-200 p-4 md:p-6 shadow-sm ">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 md:mb-6 pb-4 border-b border-gray-200 gap-3 sm:gap-0">
         <h2 className="text-gray-700 font-medium text-base md:text-lg">Choose date and time</h2>

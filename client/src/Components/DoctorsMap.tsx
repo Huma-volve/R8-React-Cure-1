@@ -154,7 +154,7 @@ export default function DoctorsMap() {
   if (!isLoaded) return <p>Loading…</p>;
 
   return (
-    <section className="p-4 md:p-6 lg:p-8 bg-[#f5f6fb] font-['Montserrat',sans-serif]">
+    <section className="p-4 md:p-6 lg:p-8 bg-[#f5f6fb] font-montserrat">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
         <div>
           <p className="m-0 text-[#2f2f2f] font-bold text-base md:text-lg">
@@ -190,7 +190,7 @@ export default function DoctorsMap() {
                   <img
                     src={d.image}
                     alt={d.name}
-                    className="w-10 h-10 md:w-12 md:h-12 rounded-xl object-cover flex-shrink-0"
+                    className="w-10 h-10 md:w-12 md:h-12 rounded-xl object-cover shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <p className="m-0 font-bold text-sm md:text-base text-[#1f2937] truncate">

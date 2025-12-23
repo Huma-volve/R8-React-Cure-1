@@ -115,12 +115,12 @@ const Verification = () => {
     <div className="flex min-h-screen relative overflow-hidden">
 
       <img
-        className="absolute top-0 right-0 w-full h-full  object-right md:w-[948px]"
+        className="absolute top-0 right-0 w-full h-full  object-right md:w-237"
         src="src/assets/wave bg.png"
         alt="wave bg"
       />
       <img
-        className="absolute top-0 right-0 w-full h-full  object-right md:w-[948px]"
+        className="absolute top-0 right-0 w-full h-full  object-right md:w-237"
         src="src/assets/border.png"
         alt="border"
       />
@@ -192,7 +192,7 @@ const Verification = () => {
               onClick={handleVerify}
               disabled={code.some((d) => !d) || loading}
               className="cursor-pointer w-full py-3.5 rounded-lg font-medium text-white transition
-                         bg-blue-500 hover:bg-blue-600 text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
+                         bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
               {loading ? 'Verifying...' : 'Verify'}
             </button>

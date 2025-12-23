@@ -4,6 +4,10 @@
   --font-montserrat: 'Montserrat', sans-serif; ;
 }
 
+@theme{
+  --font-montserrat: 'Montserrat', sans-serif; 
+}
+
 @utility container {
     margin-inline : auto;
     padding-inline : 2rem;
@@ -22,6 +26,17 @@
     }
     @media (width >= 1400px) {
         max-width : 1400px;}
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
 }
 
 :root {

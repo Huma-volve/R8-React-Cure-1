@@ -15,7 +15,7 @@ export default function DoctorDetails() {
   const doctor = doctors[0];
 
   return (
-    <section className="bg-[#f7f8fb] py-10 px-5 font-['Montserrat',sans-serif]">
+    <section className="bg-[#f7f8fb] py-10 px-5]">
       <div className="max-w-[1180px] mx-auto">
         <header className="flex items-center justify-between mb-4.5">
           <button

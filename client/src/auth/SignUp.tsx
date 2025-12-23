@@ -123,11 +123,25 @@ const SignUp = () => {
 
   return (
     <div className="flex min-h-screen relative overflow-hidden">
+<<<<<<< abdelrahman
       <img className="absolute top-0 right-0 w-full h-full object-right md:w-[948px]" src="src/assets/wave bg.png" alt="wave bg" />
       <img className="absolute top-0 right-0 w-full h-full object-right md:w-[948px]" src="src/assets/border.png" alt="border" />
+=======
+     
+      <img
+        className="absolute top-0 right-0 w-full h-full object-right md:w-[948px]"
+        src={wave}
+        alt="wave bg"
+      />
+      <img
+        className="absolute top-0 right-0 w-full h-full object-right md:w-[948px]"
+        src={border}
+        alt="border"
+      />
+>>>>>>> final-result
 
       <img
-        src="src/assets/BsHeartPulse.png"
+        src={HeartIcon}
         alt="heart"
         className="absolute top-8 left-6 w-10 h-10 md:top-10 md:left-20 z-20"
       />
@@ -256,6 +270,7 @@ const SignUp = () => {
                 <hr className="flex-1 border-gray-300" />
               </div>
 
+<<<<<<< abdelrahman
               <button
                 onClick={handleGoogleSignIn}
                 disabled={loading}
@@ -264,14 +279,23 @@ const SignUp = () => {
               >
                 <img src="src/assets/flat-color-icons_google.png" alt="google" className="w-5 h-5" />
                 {loading ? 'Connecting...' : 'Continue with Google'}
+=======
+              <button className="w-full flex items-center cursor-pointer justify-center gap-3 bg-white hover:bg-gray-50 text-[#05162C] font-medium py-3 border border-gray-300 rounded-lg transition text-sm">
+                <img src={googleIcon} alt="google" className=" w-5 h-5" />
+                Continue with Google
+>>>>>>> final-result
               </button>
             </div>
 
             <p className="text-center text-xs text-gray-600">
               Already have an account?{' '}
+<<<<<<< abdelrahman
               <a href="/login" className="text-blue-500 hover:underline font-medium">
+=======
+              <Link to="/" className="text-blue-500 hover:underline font-medium ">
+>>>>>>> final-result
                 Sign in
-              </a>
+              </Link>
             </p>
           </div>
         </div>

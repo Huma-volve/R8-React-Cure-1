@@ -1,5 +1,5 @@
 import iPhone12Pro from "@/assets/images/iPhone12Pro.svg";
-import { Box, Stack, Typography, Button } from "@mui/material";
+import { Box,  Typography, Button } from "@mui/material";
 import googleIcon from "@/assets/images/googleIcon.svg";
 import AppleIcon from "@/assets/images/AppleIcon.svg";
 

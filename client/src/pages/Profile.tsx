@@ -271,11 +271,11 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-10 font-sans text-slate-800">
       <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100">
-          <div className="flex flex-col lg:flex-row min-h-[700px]">
+        <div className="bg-white rounded-4xl shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100">
+          <div className="flex flex-col lg:flex-row min-h-175">
 
             {/* Sidebar Left */}
-            <div className="w-full lg:w-[350px] bg-slate-50 border-r border-slate-100 p-8 flex flex-col">
+            <div className="w-full lg:w-87.5 bg-slate-50 border-r border-slate-100 p-8 flex flex-col">
               <div className="text-center mb-10 flex flex-col items-center">
                 <div className="relative group">
                   <div className="w-32 h-32 md:w-40 md:h-40 rounded-full p-1 bg-white shadow-lg relative overflow-hidden ring-4 ring-blue-50 transition-transform duration-300 group-hover:scale-105">
@@ -311,7 +311,7 @@ const Profile = () => {
                 </div>
               </div>
 
-              <div className="space-y-2 flex-grow">
+              <div className="space-y-2 grow">
                 <nav className="space-y-1">
                   <NavItem icon={User} label="Profile Details" active />
                   <NavItem icon={Lock} label="Security" />

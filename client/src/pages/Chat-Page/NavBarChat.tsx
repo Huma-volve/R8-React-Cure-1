@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { checkMesage } from '../Redux-Store/ChatSlice/ChatSlice';
-// import CloseIcon from '@mui/icons-material/Close';
-// import CircleNotificationsIcon from '@mui/icons-material/CircleNotifications';
+import { checkMesage } from "../Redux-Store/ChatSlice/ChatSlice";
 
 export default function NavBarChat() {
   const dispatch = useDispatch();

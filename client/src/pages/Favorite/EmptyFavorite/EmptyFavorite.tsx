@@ -1,62 +1,102 @@
-// import Hearts from '@/assets/images/Heart.svg';
-import imageVariable from "@/assets/images/AppleIcon.svg"
-// import { useEffect, useState } from "react";
-// import axios from "axios";
+import Hearts from '@/assets/images/Heart.svg';
+import { useEffect, useState } from "react";
 import DoctorCard from '@/Components/Cards/DoctorCard';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import { getFavorites } from "@/api/auth";
 import { useNavigate } from 'react-router-dom';
 
-// interface Doctor {
-//   id: number;
-//   image: string
-//   name: string
-//   specialty: string
-//   hospital: string
-//   rating: number
-//   startTime: string
-//   endTime: string
-//   onFavoriteToggle?: (isFavorited: boolean) => void
-//   className?: string;
-// }
+interface DoctorTimeSlot {
+  date: string;
+  start_time: string;
+  end_time: string;
+}
+
+interface FavoriteItem {
+  id: number;
+  image: string
+  name: string
+  specialty: string
+  hospital_name: string
+  rating: number
+  times?: DoctorTimeSlot[];
+  is_favorite: boolean
+
+  onFavoriteToggle?: (isFavorited: boolean) => void
+}
+
+const getWorkingTimeRange = (times?: DoctorTimeSlot[]) => {
+  if (!times || times.length === 0) return null;
+
+  const sorted = [...times].sort((a, b) =>
+    a.start_time.localeCompare(b.start_time)
+  );
+
+  return {
+    start: sorted[0].start_time.slice(0, 5),
+    end: sorted[sorted.length - 1].end_time.slice(0, 5),
+  };
+};
 const EmptyFavorite: React.FC = () => {
   const navigate = useNavigate();
-  //   const [doctors, setDoctors] = useState<Doctor[]>([]);
-  //   const [loading, setLoading] = useState(true);
-  //   const [error, setError] = useState<string | null>(null);
-  //   const [isFavorited, setIsFavorited] = useState(false)
-  //   const handleFavoriteToggle = () => {
-  //     const newState = !isFavorited
-  //     setIsFavorited(newState)
-  //     onFavoriteToggle?.(newState)
-  //   }
+  
+  const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  //     useEffect(() => {
-  //   const fetchDoctors = async () => {
-  //     try {
-  //       const response = await axios.get("https://your-api.com/doctors");
-  //       setDoctors(response.data);
-  //     } catch (err) {
-  //       setError("Failed to fetch doctors.");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+    useEffect(() => {
+    getFavorites()
+      .then((res) => {
+        const list = Array.isArray(res?.data) ? res.data : [];
 
-  //   fetchDoctors();
-  // }, []);
+        const mapped = list.map((doctor: FavoriteItem) => {
+          const range = getWorkingTimeRange(doctor.times);
 
-  // if (loading) return <div className="p-4">Loading doctors...</div>;
-  // if (error) return <div className="p-4 text-red-500">{error}</div>;
-  return (
-    <>
-      {/* <div className="flex h-screen justify-center items-center flex-col gap-5">
+          return {
+            ...doctor,
+            startTime: range?.start,
+            endTime: range?.end,
+          };
+        });
+
+        setFavorites(mapped);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleFavoriteToggle = async (
+    doctorId: number,
+    isFavorited: boolean
+  ) => {
+    try {
+      if (!isFavorited) {
+        // user unfavorited → remove from backend
+        // await removeFromFavorites(doctorId);
+        // remove from UI immediately
+        setFavorites((prev) =>
+          prev.filter((doctor) => doctor.id !== doctorId)
+        );
+      }
+    } catch (error) {
+      console.error("Failed to update favorite", error);
+    }
+  };
+
+  if (loading) return <p className="flex h-screen justify-center items-center flex-col gap-5">Loading...</p>;
+  if (favorites.length === 0) {
+    return (
+      <div className="flex h-screen justify-center items-center flex-col gap-5">
             <img src={Hearts} alt="Heart pic" />
             <h1>Your favorite!</h1>
             <h3>Add your favorite to find it easily</h3> 
              
-        </div> */}
-      <div className="w-full">
-        <div className="flex items-center pt-4 md:pt-8 lg:pt-22 px-4 py-2 gap-1 text-gray-600">
+        </div>
+    );
+  }
+  return (
+    <>  
+
+      <div className="w-full h-screen">
+        <div className="flex items-center sm:pt-10 px-4 py-2 gap-1 text-gray-600">
           <button onClick={() => navigate(-1)}>
             <KeyboardBackspaceIcon sx={{ fontSize: 30 }} />
           </button>
@@ -64,31 +104,13 @@ const EmptyFavorite: React.FC = () => {
             Your Favorites Doctors
           </span>
         </div>
-        <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 p-4 md:p-5 h-screen overflow-y-auto">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map((i) => (
-            <div key={i} className="w-full">
-              <DoctorCard
-                doctor={{
-                  id: 1,
-                  image: imageVariable ,
-                  name: "Dr. John Doe",
-                  specialty: "Cardiologist",
-                  hospital: "City Hospital",
-                  rating: 4.5,
-                  startTime: "09:00 AM",
-                  endTime: "05:00 PM",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-          {doctors.map((doctor) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 p-4 md:p-5  overflow-y-auto">
+            {favorites.map((FavoriteItem) => (
 
-            <DoctorCard key={doctor.id} doctor={doctor} />
-          ))}
-        </div> */}
+              <DoctorCard key={FavoriteItem.id} doctor={FavoriteItem} onFavoriteToggle={handleFavoriteToggle} />
+            ))}
+          </div>
+      </div>
     </>
   );
 };

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect,useMemo } from "react";
 import Specialist from "@/Components/Cards/Specialist";
 import Button from '@mui/material/Button';
 import TuneIcon from "@mui/icons-material/Tune";
+import SearchSkeleton from "@/skelatons/SearchSkeleton";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -13,8 +14,9 @@ import RouteIcon from '@mui/icons-material/Route';
 import DoctorCard from "@/Components/Cards/DoctorCard";
 import AnimatedPagination from "@/Components/Animation";
 import { Bluetooth as Tooth, Heart, Stethoscope, Brain, User, Eye, Wind } from "lucide-react"
-import { Link } from "react-router-dom";
-import doctorIcon from '@/assets/images/AppleIcon.svg'
+import { useNavigate  } from "react-router-dom";
+import { getAllDoctors } from "@/api/auth";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -136,12 +138,77 @@ const specialists: Specialist[] = [
   
 ];
 
+const getWorkingTimeRange = (times?: DoctorTimeSlot[]) => {
+  if (!times || times.length === 0) return null;
+
+  const sorted = [...times].sort((a, b) =>
+    a.start_time.localeCompare(b.start_time)
+  );
+
+  return {
+    start: sorted[0].start_time.slice(0, 5),
+    end: sorted[sorted.length - 1].end_time.slice(0, 5),
+  };
+};
+interface DoctorTimeSlot {
+  date: string;
+  start_time: string;
+  end_time: string;
+}
+interface DoctorsD{
+
+  id: number;
+  image: string
+  name: string
+  specialty: string
+  hospital_name: string
+  rating: number
+  times?: DoctorTimeSlot[];
+  is_favorite: boolean,
+  price:number  
+}
 function SearchDoctor() {
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [selected, setSelected] = useState<string | null>(null);
     const [animating, setAnimating] = useState(false);
-    const totalPages = 5;
     const [page, setPage] = useState(1);
+    const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
+    const [doctors, setdoctors] = useState<DoctorsD[]>([]);
+    const [loading, setLoading] = useState(true);
+    const isMobile = useMediaQuery("(max-width: 640px)");
+    const isTablet = useMediaQuery("(min-width: 641px) and (max-width: 1024px)");
+    const ITEMS_PER_PAGE = isMobile ? 4 : isTablet ? 6 : 9;
+    const totalPages = Math.ceil(doctors.length / ITEMS_PER_PAGE);
+
+    useEffect(() => {
+    getAllDoctors()
+      .then((res) => {
+        const list = Array.isArray(res?.data) ? res.data : [];
+
+        const mapped = list.map((doctor: DoctorsD) => {
+          const range = getWorkingTimeRange(doctor.times);
+
+          return {
+            ...doctor,
+            startTime: range?.start,
+            endTime: range?.end,
+          };
+        });
+
+        setdoctors(mapped);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+  const filteredDoctors = useMemo(() => {
+      if (!selectedSpecialty) return doctors;
+
+      return doctors.filter(
+        (doctor) => doctor.specialty === "Ophthalmology"
+      );
+    }, [doctors, selectedSpecialty]);
+  if (loading) return <SearchSkeleton/>;
 
     const handleToggle = () => {
         setAnimating(true);
@@ -156,7 +223,9 @@ function SearchDoctor() {
             scrollContainer.scrollBy({ left: scrollAmount, behavior: "smooth" });
         }
     };
-
+    const startIndex = (page - 1) * ITEMS_PER_PAGE; 
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const paginatedDoctors = doctors.slice(startIndex, endIndex);
     return (
     <> 
        <div className="flex-1 mt-30">    
@@ -192,7 +261,7 @@ function SearchDoctor() {
                     {/* Filter dropdown - Hidden on mobile */}
                     <div
                     className={`
-                    absolute top-20 left-0 h-[771px] w-60 bg-white z-20
+                    absolute top-20 left-0 h-192.75 w-60 bg-white z-20
                     transition-all duration-300 ease-in-out
                     ${isOpen ? "-translate-x-10 opacity-100" : "-translate-x-full opacity-0"}
                     `}
@@ -334,48 +403,63 @@ function SearchDoctor() {
                         mb-6 
                         transition-all 
                         duration-300 
+                        items-end
                         ${animating ? 'opacity-100 ease-in-out' : 'opacity-100'}
                         transform transition-all duration-300 ease-in-out
                     `}>
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
-                            <div key={i} className="border border-gray-100 shadow-xl rounded-lg overflow-hidden">
-                                <DoctorCard 
-                                    doctor={{
-                                        id: i,
-                                        image: doctorIcon ,
-                                        name: "Dr. John Doe",
-                                        specialty: "Cardiologist",
-                                        hospital: "City Hospital",
-                                        rating: 4.5,
-                                        startTime: "09:00 AM",
-                                        endTime: "05:00 PM",
-                                    }} 
-                                />
-                                <div className="flex justify-between p-2">
-                                    <div className="text-sm text-gray-600">
-                                        Price<span className="text-xs">/hour</span>
-                                    </div>                                            
-                                    <div className="font-montserrat text-lg ml-2 text-red-400">$3583</div>
-                                </div>
-                                <Button  component={Link} to="/Appointment"
+                              {filteredDoctors.length === 0 ? (
+                                     paginatedDoctors.map((doctor) => (
+                                  <div key={doctor.id} className=" border border-gray-100 shadow-xl rounded-lg overflow-hidden">
+                                    <DoctorCard doctor={doctor}/>
+                                    <div className="flex justify-between p-2">
+                                      <div className="text-sm text-gray-600">
+                                          Price<span className="text-xs">/hour</span>
+                                      </div>                                            
+                                      <div className="font-montserrat text-lg ml-2 text-red-400">{doctor.price}</div>
+                                    </div>
+                                    <Button   onClick={() => navigate(`/doctors/${doctor.id}`)}
                                     variant="contained" 
                                     sx={{ 
                                         width:'100%',
-                                        borderRadius: 0
+                                        borderRadius: 0,
                                     }}
-                                >
-                                    Book Appointment
-                                </Button>
-                            </div>
-                        ))}
+                                    >
+                                        Book Appointment
+                                    </Button>
+                                  </div>
+                                ))
+                                ) : (
+                                    filteredDoctors.map((doctor) => (
+                                     <div key={doctor.id} className=" border border-gray-100 shadow-xl rounded-lg overflow-hidden">
+                                    <DoctorCard doctor={doctor}/>
+                                    <div className="flex justify-between p-2">
+                                      <div className="text-sm text-gray-600">
+                                          Price<span className="text-xs">/hour</span>
+                                      </div>                                            
+                                      <div className="font-montserrat text-lg ml-2 text-red-400">{doctor.price}</div>
+                                    </div>
+                                    <Button   onClick={() => navigate(`/doctors/${doctor.id}`)}
+                                    variant="contained" 
+                                    sx={{ 
+                                        width:'100%',
+                                        borderRadius: 0,
+                                    }}
+                                    >
+                                        Book Appointment
+                                    </Button>
+                                  </div>
+                                    )))}
+
+        
+
                     </div>
                 </div>
                 
                 {/*Pagination*/}
-                <div className="mb-10 px-4">
+                <div className="mb-10 w-screen">
                     <AnimatedPagination
                         currentPage={page}
-                        //totalPages={totalPages}
+                        totalpages={totalPages}
                         onNext={() => setPage((p) => Math.min(p + 1, totalPages))}
                         onPrev={() => setPage((p) => Math.max(p - 1, 1))}
                     />

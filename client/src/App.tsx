@@ -7,9 +7,9 @@ import {  Route, Routes } from "react-router-dom";
 import Navbar from './Components/NavBar';
 import Footer from './Components/Footer';
 import HomePage from '@/pages/Appointmentpage/Homepage';
-import LogIn from "./auth/LogIn"
-import SignUp from "./auth/SignUp"
-import Verification from "./auth/Verification"
+import LogIn from "./pages/auth/LogIn"
+import SignUp from "./pages/auth/SignUp"
+import Verification from "./pages/auth/Verification"
 import PrivacyPolicy from "./pages/PrivacyPolicy"
 import Profile from "./pages/Profile"
 import PaymentPage from "./pages/PaymentPage";
@@ -27,7 +27,7 @@ function App() {
       <Navbar />
       <main className="mt-35 lg:mt-30">
       <Routes>
-                <Route path="/map" element={<DoctorsMap />} />
+        <Route path="/map" element={<DoctorsMap />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/doctor" element={<DoctorDetails />} />
@@ -39,7 +39,7 @@ function App() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/SearchDoctor" element={<SearchDoctor />} />
         <Route path="/Favorite" element={<Favorite />} />
-        <Route path="/Appointment" element={<AppointmentPage />} />
+        <Route path="/doctors/:id" element={<AppointmentPage />} />
         <Route path="/booking" element={<Booking />} />
         {/* <Route path="/chat" element={<Chat />} />
         <Route path="/faq" element={<Faq />} /> */}

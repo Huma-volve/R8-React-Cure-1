@@ -15,7 +15,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import profileImage from "@/assets/Images/profileImage.jpg";
+import profileImage from "@/assets/profileImage.jpg";
 import iconImage from "@/assets/images/Icon.png";
 
 import Loading from "../Loding";

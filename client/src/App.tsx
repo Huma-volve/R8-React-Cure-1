@@ -19,6 +19,8 @@ import DoctorDetails from "./pages/DoctorDetails";
 import AppointmentPage from '@/pages/Appointmentpage/Appointmentpage';
 import SearchDoctor from '@/pages/SearchPage/SearchDoctor';
 import Favorite from '@/pages/Favorite/EmptyFavorite/EmptyFavorite';
+import Faqs from './pages/Faq-Page/Faq';
+import Chat from './pages/Chat-Page/Chat';
 
 
 function App() {
@@ -41,8 +43,8 @@ function App() {
         <Route path="/Favorite" element={<Favorite />} />
         <Route path="/doctors/:id" element={<AppointmentPage />} />
         <Route path="/booking" element={<Booking />} />
-        {/* <Route path="/chat" element={<Chat />} />
-        <Route path="/faq" element={<Faq />} /> */}
+         <Route path="/chat" element={<Chat />} />
+        <Route path="/faq" element={<Faqs />} /> 
       </Routes>
       </main>
 

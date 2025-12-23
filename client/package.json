@@ -14,19 +14,65 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
+<<<<<<< HEAD
     "@mui/x-date-pickers": "^8.22.0",
+=======
+<<<<<<< HEAD
+>>>>>>> final-result
     "@reduxjs/toolkit": "^2.11.1",
+<<<<<<< HEAD
+    "@stripe/stripe-js": "^8.5.3",
+=======
+    "@react-google-maps/api": "^2.20.8",
+    "@reduxjs/toolkit": "^2.11.2",
+    "@stripe/react-stripe-js": "^5.4.1",
+    "@stripe/stripe-js": "^8.6.0",
+>>>>>>> b9a36c1d92d8d9e2c58ecb3949d4af78b303fe7e
     "@tailwindcss/vite": "^4.1.17",
     "@tanstack/react-query": "^5.90.12",
     "axios": "^1.13.2",
+<<<<<<< HEAD
     "dayjs": "^1.11.19",
+=======
+    "date-fns": "^4.1.0",
+    "formik": "^2.4.9",
+<<<<<<< HEAD
+=======
+    "@tailwindcss/vite": "^4.1.17",
+    "@tanstack/react-query": "^5.90.12",
+    "axios": "^1.13.2",
+>>>>>>> 880d3a01f445a2d2727c0a9d0498490bf1b41161
+>>>>>>> final-result
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+=======
+    "framer-motion": "^12.23.26",
+    "gensync": "^1.0.0-beta.2",
+    "lru-cache": "^11.2.4",
+    "lucide-react": "^0.560.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-phone-number-input": "^3.4.14",
+>>>>>>> b9a36c1d92d8d9e2c58ecb3949d4af78b303fe7e
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.10.1",
     "react-slick": "^0.31.0",
     "redux": "^5.0.1",
+<<<<<<< HEAD
+    "slick-carousel": "^1.8.1",
+<<<<<<< HEAD
+    "lucide-react": "^0.560.0",
+    "react-phone-number-input": "^3.4.14",
+    "yup": "^1.7.1"  
+
+  
+
+=======
     "slick-carousel": "^1.8.1"
+>>>>>>> 880d3a01f445a2d2727c0a9d0498490bf1b41161
+=======
+    "yup": "^1.7.1"
+>>>>>>> b9a36c1d92d8d9e2c58ecb3949d4af78b303fe7e
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -39,6 +85,7 @@
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
+    "gh-pages": "^6.3.0",
     "globals": "^16.5.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.17",

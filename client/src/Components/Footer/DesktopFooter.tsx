@@ -1,6 +1,6 @@
 import { Box, Container,  IconButton, Link, Typography } from "@mui/material";
 import Grid from '@mui/material/GridLegacy';
-
+import { Link as RouterLink } from "react-router-dom";
 
 function DesktopFooter() {
   return (
@@ -40,13 +40,13 @@ function DesktopFooter() {
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               Company
             </Typography>
-            <Link href="#" color="inherit" underline="none" display="block" variant="body2">
+            <Link component={RouterLink} to={"/"} color="inherit" underline="none" display="block" variant="body2">
               Home
             </Link>
-            <Link href="#" color="inherit" underline="none" display="block" variant="body2">
+            <Link component={RouterLink} to={"/SearchDoctor"} color="inherit" underline="none" display="block" variant="body2">
               Doctors
             </Link>
-            <Link href="#" color="inherit" underline="none" display="block" variant="body2">
+            <Link component={RouterLink} to={"/faq"} color="inherit" underline="none" display="block" variant="body2">
               FAQs
             </Link>
           </Grid>
@@ -56,10 +56,10 @@ function DesktopFooter() {
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               Support
             </Typography>
-            <Link href="#" color="inherit" underline="none" display="block" variant="body2">
+            <Link component={RouterLink} to={"/contact"} color="inherit" underline="none" display="block" variant="body2">
               Help Center
             </Link>
-            <Link href="#" color="inherit" underline="none" display="block" variant="body2">
+            <Link href="/privacy" color="inherit" underline="none" display="block" variant="body2">
               Privacy Policy
             </Link>
             <Link href="#" color="inherit" underline="none" display="block" variant="body2">
@@ -97,7 +97,7 @@ function DesktopFooter() {
             <Link href="#" color="inherit" underline="none" variant="caption">
               Terms &amp; Conditions
             </Link>
-            <Link href="#" color="inherit" underline="none" variant="caption">
+            <Link component={RouterLink} to={"/privacy"} color="inherit" underline="none" variant="caption">
               Privacy Policy
             </Link>
           </Box>

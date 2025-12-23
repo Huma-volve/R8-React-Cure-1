@@ -1,196 +1,266 @@
-import { Button} from "@mui/material"
-// FormControl, InputLabel, MenuItem, Select 
-import {  useState } from "react"
-import { NavLink } from "react-router-dom"
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../Redux-Store/BokingStore/BokingStore";
+import { cancelAppointment, checkStatus, fetchBookings } from "../Redux-Store/BokingSlice/BokingSlice";
+import type { Booking } from "../Redux-Store/BokingSlice/BokingSlice";
+
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import type { Dayjs } from "dayjs";
+
+import { Button, Tabs, Tab, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+
+import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
-import { useDispatch, useSelector } from "react-redux";
-import { checkStatus } from "../Redux-Store/BokingSlice/BokingSlice";
-import profileImage from '@/assets/images/d1.jpg';
-import deteImage from '@/assets/images/calendar-02.png';
+
+import profileImage from "@/assets/profileImage.jpg";
 import iconImage from "@/assets/images/Icon.png";
-import type { RootState } from "../Redux-Store/BokingStore/BokingStore";
 
+import Loading from "../Loding";
+import ErrorPage from "../ERROR-PAGE/ErrorPage";
+// import { useNavigate } from "react-router-dom";
 
-interface Doctor {
-  name : string ,
-  job : string ,
-  img : string ,
-  address : string ,
-  status: string 
-  
-}
 export default function Booking() {
+  // const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
 
-  
+  // For modal confirmation
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(null);
 
-  const [allDr] = useState<Doctor[]>([
+  const { status, allData, isLoading, isError } = useSelector(
+    (state: RootState) => state.bookingSlice
+  );
 
-    { name: "Jennifer Miller", job: "Psychiatrist", img: "img", address: "129, El-Nasr Street, Cairo, Egypt" , status : "Canceled" },
-    { name: "Jennifer Miller", job: "Psychiatrist", img: "img", address: "129, El-Nasr Street, Cairo, Egypt" , status : "Upcoming" },
-    { name: "Jennifer Miller", job: "Psychiatrist", img: "img", address: "129, El-Nasr Street, Cairo, Egypt" , status : "Completed" }
-  ])
+  const STATUS_LIST = ["all", "Upcoming", "Completed", "cancelled"];
 
-  
- const value = useSelector((state : RootState ) => state );
-
-
-  const dispatch = useDispatch()
-
-  const filterStatus = ()=>{
-
-    if ( value.bookingSlice.status === "all") {
-      return allDr
-    }else{
-      return allDr.filter( dr => dr.status === value.bookingSlice.status );
+  useEffect(() => {
+    if (!allData.length) {
+      dispatch(fetchBookings(status));
     }
-  }
+  }, [dispatch, status, allData.length]);
 
+  const filteredData = allData.filter((dr) => {
+    if (status === "all") return true;
+    if (status === "Upcoming") {
+      return dr.status === "Upcoming" || dr.status === "pending_payment";
+    }
+    return dr.status === status.toLowerCase();
+  });
 
-   const settings  = {
-    arrows : false  ,
-    dots :false ,
+  const sliderSettings = {
+    arrows: false,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 7,
     slidesToScroll: 1,
   };
 
-  const dayas = [
+  const handleOpenConfirm = (id: number) => {
+    setSelectedBookingId(id);
+    setOpenConfirm(true);
+  };
 
-    { day: "Fri", date: 11 },
-    { day: "Sat", date: 12 },
-    { day: "Sun", date: 13 },
-    { day: "Mon", date: 14 },
-    { day: "Tue", date: 15 },
-    { day: "Wed", date: 16 },
-    { day: "Thu", date: 17 },
-    { day: "Fri", date: 18 }
+  const handleConfirmCancel = () => {
+    if (selectedBookingId) {
+      dispatch(cancelAppointment(selectedBookingId));
+    }
+    setOpenConfirm(false);
+  };
 
-  ]
+  const handleCloseConfirm = () => setOpenConfirm(false);
 
+  if (isLoading) return <Loading />;
+  if (isError) return <ErrorPage />;
 
-  return <>
-  
-<div className="w-[100]">
-     <div className="sm:hidden w-100 m-auto  py-1.5">
+  return (
+    <div className="w-full p-4">
+      {/* Slider Mobile */}
+      <div className="sm:hidden w-full m-auto py-1.5">
         <h2 className="p-5 font-bold">My Booking</h2>
-        <Slider    {...settings}>
-
-          {dayas.map((item , idx)=>{
-            return <div
-                key={idx}
-              >
-                <div className="bg-gray-200 mx-1.5 rounded-[7px] p-1">
-                  <h3 className=" text-center">{item.day}</h3>
-                <h4 className=" text-center">{item.date}</h4>
+       <Slider {...sliderSettings}>
+            {filteredData.slice(0, 7).map((item) => {
+              const day = item.date.split("-")[2]; // يفصل yyyy-mm-dd ويجيب اليوم
+              return (
+                <div key={item.id}>
+                  <div className="bg-gray-200 mx-1.5 rounded-[7px] p-1">
+                    <h3 className="text-center">{day}</h3>
+                    <h4 className="text-center">{item.time}</h4>
+                  </div>
                 </div>
-              </div>
+              );
+            })}
+          </Slider>
 
-          })}
-      </Slider>
-       </div>
+      </div>
 
-    
-    <div className=" p-4 m-auto">
-
-
-      <div className="hidden sm:flex justify-between items-center p-1 ">
-
-        {/* Left section */}
-        <div className="Appointments flex flex-col">
-          <h2 className=" p-3 text-2xl">Your appointments</h2>
-
-          <nav className="nav py-1">
-            <ul className="flex justify-between gap-1 items-center text-xm w-100">
-              <li><NavLink onClick={()=>{dispatch(checkStatus("all"))}} className="p-2  rounded-[7px] text-gray-400" to={"all"}>All</NavLink></li>
-              <li><NavLink onClick={()=>{dispatch(checkStatus("Upcoming"))}} className="p-2 rounded-[7px] text-gray-400" to={"Upcoming"}>Upcoming</NavLink></li>
-              <li><NavLink onClick={()=>{dispatch(checkStatus("Completed"))}} className="p-2 rounded-[7px] text-gray-400" to={"Completed"}>Completed</NavLink></li>
-              <li><NavLink onClick={()=>{dispatch(checkStatus("Canceled"))}} className="p-2 rounded-[7px] text-gray-400" to={"Canceled"}>Canceled</NavLink></li>
-            </ul>
-          </nav>
+      {/* Header + Tabs */}
+      <div className="hidden sm:flex justify-between items-center mb-6">
+        <div>
+          <h2 className="p-3 text-2xl">Your appointments</h2>
+          <Tabs
+            value={status}
+            onChange={(_, newValue) => dispatch(checkStatus(newValue))}
+            sx={{
+              minHeight: "48px",
+              "& .MuiTab-root": {
+                textTransform: "none",
+                fontWeight: 500,
+                color: "text.primary",
+              },
+              "& .MuiTab-root.Mui-selected": {
+                backgroundColor: "primary.main",
+                color: "#fff !important",
+                borderRadius: "8px",
+                fontWeight: "bold",
+              },
+              "& .MuiTabs-indicator": {
+                display: "none",
+              },
+            }}
+          >
+            {STATUS_LIST.map((st) => (
+              <Tab key={st} label={st} value={st} />
+            ))}
+          </Tabs>
         </div>
 
-  
-        
-        <select name="" id="demo-select-small-label" className=" border border-gray-400 p-2 rounded-[10px] w-[396px] ">
-          <option value=""><h3 className="flex text-[#bbc1c7]"> <img src={deteImage} alt="" />Monday, July 21 - 11:00 Am</h3></option>
-        </select>
-
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            value={selectedDate}
+            onChange={(newValue) => setSelectedDate(newValue)}
+            slotProps={{ textField: { helperText: "" } }}
+          />
+        </LocalizationProvider>
       </div>
 
+      {/* Appointment Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full mt-5">
+        {filteredData.length > 0 ? (
+          filteredData.map((dr) => {
+            const canCancel = (dr: Booking) => {
+              const appointmentDateTime = new Date(`${dr.date}T${dr.time}`);
+              return dr.can_cancel && new Date() > appointmentDateTime;
+            };
 
-      {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-\[100\%\]">
+            return (
+              <div key={dr.id} className="p-3 border border-[#bbc1c7] rounded-2xl">
+                <div className="flex justify-between border-b border-[#bbc1c7] pb-1">
+                  <h3 className="flex gap-1 items-center">
+                    <EventNoteIcon />
+                    {dr.date} {dr.time}
+                  </h3>
 
-        {filterStatus().map((dr, i) => (
-          <div key={i} className=" p-3 border border-[#bbc1c7] rounded-2xl mt-2">
+                  <span
+                    onClick={() => {
+                      if (dr.status != "cancelled") {
+                        handleOpenConfirm(dr.id);
+                      }
+                    }}
+                    className={
+                      dr.status === "Upcoming" || dr.status === "pending_payment"
+                        ? "text-[#145db8] cursor-pointer"
+                        : dr.status === "cancelled"
+                        ? "text-red-500"
+                        : "text-green-500 cursor-pointer"
+                    }
+                  >
+                    {dr.status === "pending_payment" ? "Upcoming" : dr.status}
+                  </span>
+                </div>
 
-            <div className="deat flex justify-between border-b border-[#bbc1c7] pb-1 ">
-              <h3 className="flex "><img src={deteImage} className=" mr-1" alt="" />Monday, July 21 - 11:00 Am</h3>
-                <h3 className={ dr.status === "Upcoming" ? "text-[#145db8]" : dr.status === "Canceled" ? "text-red-500" : dr.status === "Completed" ? "text-green-500" : "" }>{dr.status}</h3>
-            </div>
+                <div className="flex items-center p-1">
+                  <img
+                    src={profileImage}
+                    className="w-10.75 h-10.25 rounded-full object-cover"
+                    alt={dr.doctor.name}
+                  />
+                  <div className="ml-2">
+                    <h3>{dr.doctor.name}</h3>
+                    <h4 className="text-gray-500">{dr.doctor.job}</h4>
+                  </div>
+                </div>
 
-            <div className="flex items-center  p-1">
-              <figure className="w-[43px] h-[41px] rounded-full flex items-center justify-center overflow-hidden">
-                <img src={profileImage} className="w-\[100\%\] h-\[100\%\] object-cover" alt="" />
-              </figure>
+                <p className="px-1 py-2 text-gray-400 flex gap-1 items-center">
+                  <img src={iconImage} alt="" />
+                  6th of October City, Cairo
+                </p>
 
-              <div className="ml-2">
-                <h3>{dr.name}</h3>
-                <h4 className="text-gray-500">{dr.job}</h4>
+                <div className="grid grid-cols-2 gap-3 mt-2">
+                  <Button
+                    variant="outlined"
+                    disabled={dr.status === "pending_payment"}
+                    onClick={() => {
+                      if (dr.status !== "cancelled") {
+                        dispatch(cancelAppointment(dr.id));
+                      }
+
+                      // if (dr.status === "cancelled") {
+                      //   navigate("/Appointment");
+                      // }
+
+
+                    }}
+                  >
+                    {canCancel(dr)
+                      ? "Cancel"
+                      : dr.status === "cancelled"
+                      ? "Book Again"
+                      : dr.status === "pending_payment"
+                      ? "Cancel"
+                      : "View Details"}
+                  </Button>
+
+                  <Button
+
+                  onClick={()=>{
+
+
+                      // if (dr.status != "cancelled" && dr.status != "pending_payment" ) {
+                      //      navigate("/Form");
+                      //   }
+
+                  }}
+
+                    variant="contained"
+                    sx={{ boxShadow: "none", "&:hover": { boxShadow: "none" } }}
+                  >
+                    {canCancel(dr)
+                      ? "Reschedule"
+                      : dr.status === "cancelled"
+                      ? "Support"
+                      : dr.status === "pending_payment"
+                      ? "Reschedule"
+                      : "FeadBack"}
+                  </Button>
+                </div>
               </div>
-            </div>
-
-            <p className="px-1 py-2 text-gray-400 flex gap-1"><img src={iconImage} alt="" />{dr.address}</p>
-
-            <div className="btns mt-1 grid grid-cols-2 gap-3 p-1">
-
-              <Button sx={{
-                 borderRadius : "8px" ,
-                 color : "#145db8" ,
-                  borderColor : "#145db8",
-                  
-                "&:focus" : {
-                  outline : "none",
-                  boxShadow : "none"
-                },
-
-                "&:hover" :{
-                   borderColor : "#99a2ab" ,
-                   color : "#99a2ab" ,
-                   backgroundColor : "white",
-                }
-
-              }} variant="outlined">Cancel</Button>
-              <Button sx={{
-                borderRadius : "8px" ,
-                "&:focus" : {
-                  outline : "none" ,
-                  boxShadow : "none"
-                } ,
-                backgroundColor : "#145db8" ,
-                "&:hover" :{
-                   boxShadow : "none"
-                } ,
-                // padding : "5px",
-                boxShadow : "none" 
-              }} variant="contained">Reschedule</Button>
-            </div>
-
+            );
+          })
+        ) : (
+          <div className="col-span-full text-center text-gray-500 py-10">
+             No {status} Appointments
           </div>
-        ))}
-
+        )}
       </div>
 
+      {/* Confirmation Modal */}
+      <Dialog open={openConfirm} onClose={handleCloseConfirm}>
+        <DialogTitle>Are you sure you want to cancel this appointment?</DialogTitle>
+        <DialogContent>
+          <p>This action cannot be undone.</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirm}>No, Keep it</Button>
+          <Button onClick={handleConfirmCancel} variant="contained" color="error">
+            Yes, Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
-</div>
-  
-  
-  </>
-
-
-      
-  
+  );
 }

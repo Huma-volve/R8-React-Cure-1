@@ -2,12 +2,31 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],  
+  plugins: [react(), tailwindcss()],
   resolve: {
-  alias: {
-          "@": "/src",
+    alias: {
+      "@": "/src",
     },
   },
-});
+build: {
+  chunkSizeWarningLimit: 1000,
+},
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://round8-cure-php-team-two.huma-volve.com',
+        changeOrigin: true,
+        secure: true,
+        followRedirects: false,
+        configure: (proxy) => {
+          proxy.on('proxyRes', (proxyRes) => {
+            // Log the response for debugging
+            console.log('[Proxy]', proxyRes.statusCode, proxyRes.headers.location || '');
+          });
+        }
+      }
+    }
+  }
+
+})

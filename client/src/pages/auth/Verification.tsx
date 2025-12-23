@@ -1,10 +1,24 @@
 import { useState, useEffect, useRef } from 'react';
-
+import { getFullApiUrl } from '@/config';
+ 
 const Verification = () => {
   const [code, setCode] = useState(['', '', '', '']);
   const [timer, setTimer] = useState(55);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [userId, setUserId] = useState<string | null>(null);
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
+  // Get user_id from localStorage on mount
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('verification_user_id');
+    if (storedUserId) {
+      setUserId(storedUserId);
+    } else {
+      setError('No verification session found. Please sign up again.');
+    }
+  }, []);
 
   useEffect(() => {
     if (timer > 0) {
@@ -16,13 +30,13 @@ const Verification = () => {
   }, [timer]);
 
   const handleChange = (value: string, index: number) => {
-    if (!/^\d*$/.test(value)) return; 
+    if (!/^\d*$/.test(value)) return;
 
     const newCode = [...code];
-    newCode[index] = value.slice(-1); 
+    newCode[index] = value.slice(-1);
     setCode(newCode);
 
-   
+
     if (value && index < 3) {
       inputsRef.current[index + 1]?.focus();
     }
@@ -37,38 +51,95 @@ const Verification = () => {
   const handleResend = () => {
     setTimer(55);
     setCode(['', '', '', '']);
+    setError('');
     inputsRef.current[0]?.focus();
+  };
+
+  const handleVerify = async () => {
+    if (!userId) {
+      setError('No verification session found. Please sign up again.');
+      return;
+    }
+
+    const otp = code.join('');
+    if (otp.length !== 4) {
+      setError('Please enter the complete 4-digit code');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const response = await fetch(getFullApiUrl('/api/v1/auth/otp/verify'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          otp: otp,
+        }),
+        credentials: 'include',
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Verification failed');
+      }
+
+      setSuccess('OTP verified successfully!');
+      console.log('Verification response:', data);
+
+      // Clear the stored user_id
+      localStorage.removeItem('verification_user_id');
+
+      // Redirect to login page after short delay
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 1500);
+
+    } catch (err: any) {
+      setError(err.message || 'Failed to verify OTP');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="flex min-h-screen relative overflow-hidden">
-     
+
       <img
-        className="absolute top-0 right-0 w-full h-full  object-right md:w-237"
+        className="absolute top-0 right-0 w-full h-full  object-right md:w-[948px]"
         src="src/assets/wave bg.png"
         alt="wave bg"
       />
       <img
-        className="absolute top-0 right-0 w-full h-full  object-right md:w-237"
+        className="absolute top-0 right-0 w-full h-full  object-right md:w-[948px]"
         src="src/assets/border.png"
         alt="border"
       />
 
-      {/* أيقونة القلب */}
+      {/* Heart Icon */}
       <img
         src="src/assets/BsHeartPulse.png"
         alt="heart"
         className="absolute top-8 left-6 w-10 h-10 md:top-10 md:left-20 z-20"
       />
 
-  
+
       <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none px-4">
         <div
           className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 md:p-8 pointer-events-auto
                      animate-in fade-in zoom-in-95 duration-300 md:-translate-x-20 lg:-translate-x-32"
         >
           <div className="flex flex-col gap-8">
-            
+
             <div className="text-center">
               <h1 className="text-2xl md:text-3xl font-bold text-[#05162C] font-georgia">
                 Code Verification
@@ -78,12 +149,12 @@ const Verification = () => {
               </p>
             </div>
 
-            {/* 4 مربعات OTP */}
+            {/* 4 OTP input boxes */}
             <div className="flex justify-center gap-3 md:gap-5">
               {code.map((digit, index) => (
                 <input
                   key={index}
-                  ref={(el:any) => (inputsRef.current[index] = el)}
+                  ref={(el: any) => (inputsRef.current[index] = el)}
                   type="text"
                   inputMode="numeric"
                   maxLength={1}
@@ -113,16 +184,20 @@ const Verification = () => {
               )}
             </div>
 
-            {/* زر Verify */}
+            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+            {success && <p className="text-green-500 text-sm text-center">{success}</p>}
+
+            {/* Verify Button */}
             <button
-              disabled={code.some((d) => !d)}
-              className="cursor-pointer w-full py-3.5 rounded-lg font-medium transition
+              onClick={handleVerify}
+              disabled={code.some((d) => !d) || loading}
+              className="cursor-pointer w-full py-3.5 rounded-lg font-medium text-white transition
                          bg-blue-500 hover:bg-blue-600 text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
-              Verify
+              {loading ? 'Verifying...' : 'Verify'}
             </button>
 
-            {/* رجوع */}
+            {/* Back */}
             <p className="text-center text-sm text-gray-500">
               <a href="/signUp" className="text-blue-600 hover:underline font-medium">
                 ← Back to Sign Up

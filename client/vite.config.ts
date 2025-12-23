@@ -9,6 +9,9 @@ export default defineConfig({
       "@": "/src",
     },
   },
+build: {
+  chunkSizeWarningLimit: 1000,
+},
   server: {
     proxy: {
       '/api': {
@@ -25,4 +28,5 @@ export default defineConfig({
       }
     }
   }
+
 })

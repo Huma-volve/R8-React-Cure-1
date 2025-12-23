@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { getFullApiUrl } from '../config';
-
+ 
 const Verification = () => {
   const [code, setCode] = useState(['', '', '', '']);
   const [timer, setTimer] = useState(55);

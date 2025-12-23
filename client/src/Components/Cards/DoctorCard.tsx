@@ -3,43 +3,51 @@ import { Card as MUICard } from "@mui/material"
 import StarRateIcon from '@mui/icons-material/StarRate';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import d1 from '@/assets/images/d1.jpg';
 
 interface Doctor{
-  id?: number;
-  image: any
+  id: number;
+  image: string
   name: string
   specialty: string
-  hospital: string
+  hospital_name: string
   rating: number
-  startTime: string
-  endTime: string
+  startTime?: string
+  endTime?: string
+  is_favorite: boolean
   className?: string;
 }
 interface DoctorCardProps {
   doctor: Doctor;
-  onFavoriteToggle?: (isFavorited: boolean) => void
+   onFavoriteToggle?: (doctorId: number, isFavorited: boolean) => void;
 }
 
-export const DoctorCard = ({doctor,onFavoriteToggle }: DoctorCardProps) => {
-  const [isFavorited, setIsFavorited] = useState(true)
+export const DoctorCard = ({ doctor, onFavoriteToggle }: DoctorCardProps) => {
+  const [isFavorited, setIsFavorited] = useState<boolean>(
+    doctor.is_favorite
+  );
+
   const handleFavoriteToggle = () => {
-    const newState = !isFavorited
-    setIsFavorited(newState)
-    onFavoriteToggle?.(newState)
-  }
+    const newState = !isFavorited;
+    setIsFavorited(newState);
+
+    if (doctor.id) {
+      onFavoriteToggle?.(doctor.id, newState);
+    }
+  };
   return (
     <MUICard
-      className="rounded-xl! w-[550px] bg-white border  border-gray-200 hover:shadow-md transition-shadow"
+      className="rounded-xl! bg-white border  border-gray-200 hover:shadow-md transition-shadow"
       elevation={0}
     >
       <div className="">
-        <div className="flex items-start justify-around mb-1">
-          <div className="flex gap-4">
-              <img src={doctor.image || "/placeholder.svg"} alt={doctor.name} className="object-center w-22 h-24" />
+        <div className="flex items-start justify-between ">
+          <div className="flex space-x-15 ">
+              <img src={d1} alt="" className="  items-start w-25" />
             <div className="flex-1">
               <h3 className="text-lg font-semibold text-gray-900 mb-1">{doctor.name}</h3>
               <p className="text-sm text-gray-600 ">
-                {doctor.specialty} | {doctor.hospital}
+                {doctor.specialty} | {doctor.hospital_name}
               </p>
               <div className="flex items-center gap-3 p-2">
                 <div className="flex items-center gap-1">
@@ -57,7 +65,7 @@ export const DoctorCard = ({doctor,onFavoriteToggle }: DoctorCardProps) => {
           </div>
           <button
             onClick={handleFavoriteToggle}
-            className="shrink-0 p-2  transition-colors"
+            className="shrink-0 p-2 md:pr-1 pr-12 transition-colors"
             aria-label="Toggle favorite"
           >
             <FavoriteIcon

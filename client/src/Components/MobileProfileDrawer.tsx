@@ -16,6 +16,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import {Link} from "react-router-dom";
 
 type MobileProfileDrawerProps = {
   open: boolean;
@@ -92,6 +93,9 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
 
           {/*  settings icon */}
           <IconButton
+            component={Link}
+            to="/profile"
+            onClick={handleClose}
             sx={{
               width: 32,
               height: 32,
@@ -108,7 +112,7 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
         
         <List sx={{ mt: 3 }}>
 
-            <ListItemButton>
+            <ListItemButton >
             <ListItemIcon>
               <LocationOnOutlinedIcon fontSize="small" />
             </ListItemIcon>
@@ -118,7 +122,7 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
             />
             </ListItemButton>
 
-          <ListItemButton>
+          <ListItemButton component={Link} to="/payment" onClick={handleClose}>
             <ListItemIcon>
               <CreditCardIcon fontSize="small" />
             </ListItemIcon>
@@ -128,7 +132,7 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
             />
           </ListItemButton>
 
-          <ListItemButton>
+          <ListItemButton component={Link} to="/Favorite" onClick={handleClose}>
             <ListItemIcon>
               <FavoriteBorderIcon fontSize="small" />
             </ListItemIcon>
@@ -138,7 +142,7 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
             />
           </ListItemButton>
 
-          <ListItemButton>
+          <ListItemButton component={Link} to="/profile" onClick={handleClose}>
             <ListItemIcon>
               <SettingsOutlinedIcon fontSize="small" />
             </ListItemIcon>
@@ -148,7 +152,7 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
             />
           </ListItemButton>
 
-          <ListItemButton>
+          <ListItemButton component={Link} to="/privacy" onClick={handleClose}>
             <ListItemIcon>
               <ShieldOutlinedIcon fontSize="small" />
             </ListItemIcon>
@@ -158,7 +162,7 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
             />
           </ListItemButton>
 
-          <ListItemButton>
+          <ListItemButton component={Link} to="/" onClick={handleClose}>
             <ListItemIcon>
               <LogoutIcon fontSize="small" color="error" />
             </ListItemIcon>

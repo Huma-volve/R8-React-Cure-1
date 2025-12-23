@@ -1,79 +1,55 @@
-<<<<<<< HEAD
+//import { BrowserRouter } from 'react-router-dom'
+import Booking from '@/pages/Booking/Booking'
+// import { myStore } from './pages/Redux-Store/BokingStore/BokingStore'
+// import { Provider } from 'react-redux';
+// import Faqs from './pages/Faq-Page/Faq';
+import {  Route, Routes } from "react-router-dom";
+import Navbar from './Components/NavBar';
+import Footer from './Components/Footer';
+import HomePage from '@/pages/Appointmentpage/Homepage';
+import LogIn from "./pages/auth/LogIn"
+import SignUp from "./pages/auth/SignUp"
+import Verification from "./pages/auth/Verification"
+import PrivacyPolicy from "./pages/PrivacyPolicy"
+import Profile from "./pages/Profile"
+import PaymentPage from "./pages/PaymentPage";
+import ContactUs from "./Components/ContactUs";
+import DoctorsMap from "./Components/DoctorsMap";
+import DoctorDetails from "./pages/DoctorDetails";
 import AppointmentPage from '@/pages/Appointmentpage/Appointmentpage';
 import SearchDoctor from '@/pages/SearchPage/SearchDoctor';
 import Favorite from '@/pages/Favorite/EmptyFavorite/EmptyFavorite';
-import Navbar from '@/components/NavBar';
-import Footer from '@/components/Footer';;
-import { Route, Routes } from "react-router-dom"
+
+
 function App() {
   return (
     <>
       <Navbar />
-    <Routes>
-      <Route path="/SearchDoctor" element={<SearchDoctor/>}/>
-      <Route path="/Favorite" element={<Favorite/>}/>
-      <Route path="/Appointment" element={<AppointmentPage/>}/>
-    </Routes>
+      <main className="mt-35 lg:mt-30">
+      <Routes>
+        <Route path="/map" element={<DoctorsMap />} />
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/doctor" element={<DoctorDetails />} />
+        <Route path="/" element={<LogIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/verify" element={<Verification />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/SearchDoctor" element={<SearchDoctor />} />
+        <Route path="/Favorite" element={<Favorite />} />
+        <Route path="/doctors/:id" element={<AppointmentPage />} />
+        <Route path="/booking" element={<Booking />} />
+        {/* <Route path="/chat" element={<Chat />} />
+        <Route path="/faq" element={<Faq />} /> */}
+      </Routes>
+      </main>
+
+
       <Footer />
-
     </>
-      
   );
-=======
-
-import {  createBrowserRouter, RouterProvider } from 'react-router-dom'
-import './App.css'
-import { myStore } from './pages/Redux-Store/BokingStore/BokingStore'
-import { Provider } from 'react-redux';
-import Faqs from './pages/Faq-Page/Faq';
-import Layout from './pages/LAYOUT/Layout';
-import Chat from './pages/Chat-Page/Chat';
-import Booking from './pages/Booking/Booking';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
-function App() {
-
- const myRouter = createBrowserRouter([
-  // صفحات مستقلة
-  { path: "Booking", element: <Booking /> },
-  { path: "Faqs", element: <Faqs /> },
-
-  // Layout مع صفحات children
-  {
-    path: "chat",
-    element: <Layout />,
-    children: [
-      { index: true, element: <Chat /> },       // الصفحة الافتراضية عند /chat
-      { path: "allChat", element: <Chat /> },
-      { path: "/chat/:id/:name/:img", element: <Chat /> }
-    ]
-  },
-
-  // default route عند / يفتح Faqs
-  { path: "/", element: <Faqs /> }
-]);
-
-
-const queryClient = new QueryClient()
-
-
-
-
-  return (
-    <>
-
-    <QueryClientProvider client={queryClient}>
-      <Provider store={myStore}>
-         <RouterProvider router={myRouter}/>
-      </Provider>
-    </QueryClientProvider>
-
-
-
-     
-    </>
-  )
->>>>>>> 880d3a01f445a2d2727c0a9d0498490bf1b41161
 }
 
-export default App
+export default App;

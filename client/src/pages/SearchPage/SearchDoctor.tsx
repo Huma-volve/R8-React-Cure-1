@@ -1,7 +1,8 @@
-import { useState ,useEffect } from "react";
-import Specialist from "@/components/Cards/Specialist";
+import { useState, useEffect,useMemo } from "react";
+import Specialist from "@/Components/Cards/Specialist";
 import Button from '@mui/material/Button';
 import TuneIcon from "@mui/icons-material/Tune";
+import SearchSkeleton from "@/skelatons/SearchSkeleton";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -10,15 +11,19 @@ import { styled, alpha } from '@mui/material/styles';
 import Checkbox from '@mui/material/Checkbox';
 import InputBase from '@mui/material/InputBase';    
 import RouteIcon from '@mui/icons-material/Route';
-import DoctorCard from "@/components/Cards/DoctorCard";
-import AnimatedPagination from "@/components/Animation";
+import DoctorCard from "@/Components/Cards/DoctorCard";
+import AnimatedPagination from "@/Components/Animation";
 import { Bluetooth as Tooth, Heart, Stethoscope, Brain, User, Eye, Wind } from "lucide-react"
+import { useNavigate  } from "react-router-dom";
+import { getAllDoctors } from "@/api/auth";
+import useMediaQuery from "@mui/material/useMediaQuery";
+
 
 const Search = styled('div')(({ theme }) => ({
     border: '1px solid #ccc',
     position: 'relative',
     borderRadius: 10,
-    width:'80%',
+    width:'100%',
     height:52,
     backgroundColor: alpha(theme.palette.common.white, 0.15),
     '&:hover': {
@@ -26,10 +31,9 @@ const Search = styled('div')(({ theme }) => ({
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
-    // [theme.breakpoints.up('sm')]: {
-    //     marginLeft: theme.spacing(3),
-    //     width: '396px',
-    // },
+    [theme.breakpoints.up('md')]: {
+        width: '80%',
+    },
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -47,15 +51,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1.5, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '80%',
-    // [theme.breakpoints.up('md')]: {
-    //   width: '20ch',
-    // },
   },
 }));
+
 interface Specialist {
   id: string
   name: string
@@ -95,348 +96,143 @@ const specialists: Specialist[] = [
     icon: <Wind className="w-5 h-5" />,
   },
   {
-    id: "pulmonologist",
+    id: "pulmonologist2",
     name: "Pulmonologist",
     icon: <Wind className="w-5 h-5" />,
   },
   {
-    id: "pulmonologist",
+    id: "pulmonologist3",
     name: "Pulmonologist",
     icon: <Wind className="w-5 h-5" />,
   },
   {
-    id: "pulmonologist",
+    id: "pulmonologist4",
     name: "Pulmonologist",
     icon: <Wind className="w-5 h-5" />,
   },
   {
-    id: "pulmonologist",
+    id: "pulmonologist5",
     name: "Pulmonologist",
     icon: <Wind className="w-5 h-5" />,
   },
   {
-    id: "pulmonologist",
+    id: "pulmonologist6",
     name: "Pulmonologist",
     icon: <Wind className="w-5 h-5" />,
   },
   {
-    id: "pulmonologist",
+    id: "pulmonologist7",
     name: "Pulmonologist",
     icon: <Wind className="w-5 h-5" />,
   },
   {
-    id: "pulmonologist",
+    id: "pulmonologist8",
     name: "Pulmonologist",
     icon: <Wind className="w-5 h-5" />,
   },
   {
-    id: "pulmonologist",
+    id: "pulmonologist9",
     name: "Pulmonologist",
     icon: <Wind className="w-5 h-5" />,
   },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-  {
-    id: "pulmonologist",
-    name: "Pulmonologist",
-    icon: <Wind className="w-5 h-5" />,
-  },
-]
-export const SearchDoctor = () => {
-    const [selected, setSelected] = useState<string | null>(null)
+  
+];
 
-     const handleScroll = (direction: "left" | "right") => {
-    const container = document.getElementById("specialist-scroll")
-    if (container) {
-      const scrollAmount = 200
-      container.scrollBy({
-        left: direction === "right" ? scrollAmount : -scrollAmount,
-        behavior: "smooth",
-      })
-    }
-    }
+const getWorkingTimeRange = (times?: DoctorTimeSlot[]) => {
+  if (!times || times.length === 0) return null;
+
+  const sorted = [...times].sort((a, b) =>
+    a.start_time.localeCompare(b.start_time)
+  );
+
+  return {
+    start: sorted[0].start_time.slice(0, 5),
+    end: sorted[sorted.length - 1].end_time.slice(0, 5),
+  };
+};
+interface DoctorTimeSlot {
+  date: string;
+  start_time: string;
+  end_time: string;
+}
+interface DoctorsD{
+
+  id: number;
+  image: string
+  name: string
+  specialty: string
+  hospital_name: string
+  rating: number
+  times?: DoctorTimeSlot[];
+  is_favorite: boolean,
+  price:number  
+}
+function SearchDoctor() {
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
-    const handleToggle = () => {
-      setIsOpen(!isOpen); // toggle between true and false
-      };
-    const items = Array.from({ length: 30 }, (_, i) => `Item ${i + 1}`);
-    const itemsPerPage = 6;
-    const totalPages = Math.ceil(items.length / itemsPerPage);
-
-    const [page, setPage] = useState(1);
-    const startIndex = (page - 1) * itemsPerPage;
-    const pageData = items.slice(startIndex, startIndex + itemsPerPage);
+    const [selected, setSelected] = useState<string | null>(null);
     const [animating, setAnimating] = useState(false);
-    const [displayedItems, setDisplayedItems] = useState<string[]>([]);
-        useEffect(() => {
-        setAnimating(true); // start fade-out
-        const timeout = setTimeout(() => {
-        setDisplayedItems(items); // switch items after fade-out
-        setAnimating(false); // fade-in
-        }, 200); // fade-out duration (ms)
+    const [page, setPage] = useState(1);
+    const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
+    const [doctors, setdoctors] = useState<DoctorsD[]>([]);
+    const [loading, setLoading] = useState(true);
+    const isMobile = useMediaQuery("(max-width: 640px)");
+    const isTablet = useMediaQuery("(min-width: 641px) and (max-width: 1024px)");
+    const ITEMS_PER_PAGE = isMobile ? 4 : isTablet ? 6 : 9;
+    const totalPages = Math.ceil(doctors.length / ITEMS_PER_PAGE);
 
-    return () => clearTimeout(timeout);
-    }, [page]);
+    useEffect(() => {
+    getAllDoctors()
+      .then((res) => {
+        const list = Array.isArray(res?.data) ? res.data : [];
 
+        const mapped = list.map((doctor: DoctorsD) => {
+          const range = getWorkingTimeRange(doctor.times);
+
+          return {
+            ...doctor,
+            startTime: range?.start,
+            endTime: range?.end,
+          };
+        });
+
+        setdoctors(mapped);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+  const filteredDoctors = useMemo(() => {
+      if (!selectedSpecialty) return doctors;
+
+      return doctors.filter(
+        (doctor) => doctor.specialty === "Ophthalmology"
+      );
+    }, [doctors, selectedSpecialty]);
+  if (loading) return <SearchSkeleton/>;
+
+    const handleToggle = () => {
+        setAnimating(true);
+        setIsOpen(!isOpen);
+        setTimeout(() => setAnimating(false), 300);
+    };
+
+    const handleScroll = (direction: "left" | "right") => {
+        const scrollContainer = document.getElementById("specialist-scroll");
+        if (scrollContainer) {
+            const scrollAmount = direction === "left" ? -200 : 200;
+            scrollContainer.scrollBy({ left: scrollAmount, behavior: "smooth" });
+        }
+    };
+    const startIndex = (page - 1) * ITEMS_PER_PAGE; 
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const paginatedDoctors = doctors.slice(startIndex, endIndex);
     return (
     <> 
        <div className="flex-1 mt-30">    
-            {/*Search & filter  bar*/}      
-            <div className="pt-3 pl-15 flex items-center space-x-5 mb-6">
-                <div className="relative"> {/*Filter button*/}
+            {/*Search & filter bar*/}      
+            <div className="pt-3 px-4 md:pl-15 flex flex-col md:flex-row items-stretch md:items-center gap-3 md:space-x-5 mb-6">
+                {/* Filter button - Hidden on mobile */}
+                <div className="relative hidden md:block">
                     <Button
                         onClick={handleToggle}
                         sx={{ color:'#6D7379',borderColor:'#BBC1C7'}}
@@ -448,10 +244,9 @@ export const SearchDoctor = () => {
                             border-gray-300
                             text-gray-600
                             hover:bg-gray-100
-                            flex  gap-5
+                            flex gap-5
                             h-12
                             w-52
-                            
                         "
                         disableRipple
                         >
@@ -462,10 +257,12 @@ export const SearchDoctor = () => {
                         <div className="w-px h-12 bg-gray-300 mx-1"></div>
                         {isOpen ? <ChevronLeftIcon fontSize="medium"  sx={{ color:'##6D7379'}}/> : <ChevronRightIcon fontSize="medium"  sx={{ color:'##6D7379'}} />}
                     </Button>
+                    
+                    {/* Filter dropdown - Hidden on mobile */}
                     <div
                     className={`
-                    absolute top-20 left-0 h-[771px] w-60 bg-white z-20
-                    transition-all duration-300 ease-in-out0
+                    absolute top-20 left-0 h-192.75 w-60 bg-white z-20
+                    transition-all duration-300 ease-in-out
                     ${isOpen ? "-translate-x-10 opacity-100" : "-translate-x-full opacity-0"}
                     `}
                         >
@@ -507,120 +304,167 @@ export const SearchDoctor = () => {
                         )}
                     </div>       
                 </div>
-                <Search>
+                
+                {/* Search bar - Full width on mobile */}
+                <div className="flex-1 w-full md:w-auto">
+                    <Search>
                         <SearchIconWrapper>
-                        <SearchIcon />
+                            <SearchIcon />
                         </SearchIconWrapper>
                         <StyledInputBase
-                        placeholder="Search doctors . . ."
-                        inputProps={{ 'aria-label': 'search' }}
+                            placeholder="Search doctors . . ."
+                            inputProps={{ 'aria-label': 'search' }}
                         />
-                </Search>
-                <div>
-                    <Button sx={{ borderColor:'#BBC1C7', color:'#6D7379',borderRadius:3, width:150, height:52}} variant="outlined" startIcon={<RouteIcon />}>
-                    Map
+                    </Search>
+                </div>
+                
+                {/* Map button */}
+                <div className="w-full md:w-auto">
+                    <Button 
+                        sx={{ 
+                            borderColor:'#BBC1C7', 
+                            color:'#6D7379',
+                            borderRadius:3, 
+                            width: { xs: '100%', md: 150 }, 
+                            height:52
+                        }} 
+                        variant="outlined" 
+                        startIcon={<RouteIcon />}
+                    >
+                        Map
                     </Button>
                 </div>
             </div>
-            {/* transition div */}
+            
+            {/* Main content area with transition */}
             <div className={`
-                    h-full  transition-transform duration-300
-                    ${isOpen ? "translate-x-27 scale-x-88" : "translate-x-0"}`}>
+                h-full transition-transform duration-300
+                ${isOpen ? "md:translate-x-27 md:scale-x-88" : "translate-x-0"}
+            `}>
                 {/*Specialties*/}
-                <div className="pl-15">
+                <div className="px-4 md:pl-15">
                     <h2 className="text-xl font-semibold mb-4 text-gray-900">Choose Specialties</h2>
                     <div className="relative flex items-center">
                         <button
-                        onClick={() => handleScroll("left")}
-                        className="hidden md:flex absolute top-1 -left-4 z-10 w-8 h-8 items-center justify-center rounded-full bg-white border border-gray-300 hover:bg-gray-50 transition-all duration-200"
-                        aria-label="Scroll left"
+                            onClick={() => handleScroll("left")}
+                            className="hidden md:flex absolute top-1 -left-4 z-10 w-8 h-8 items-center justify-center rounded-full bg-white border border-gray-300 hover:bg-gray-50 transition-all duration-200"
+                            aria-label="Scroll left"
                         >
-                        <ChevronRightIcon className="w-4 h-4 rotate-180" />
+                            <ChevronRightIcon className="w-4 h-4 rotate-180" />
                         </button>
 
-                        <div id="specialist-scroll" className="flex gap-3 overflow-x-auto scrollbar-hide pb-2  no-scrollbar">
-                        {specialists.map((specialist) => (
-                            <button
-                            key={specialist.id}
-                            onClick={() => setSelected(selected === specialist.id ? null : specialist.id)}
-                            className={`
-                                flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap
-                                transition-all duration-300 ease-out
-                                border-2
-                                transform hover:scale-105
-                                ${
-                                selected === specialist.id
-                                    ? "border-blue-500 bg-blue-50 text-blue-600 shadow-md"
-                                    : "border-gray-300 bg-white text-gray-700 hover:border-gray-400"
-                                }
-                            `}
-                            >
-                            <span className={`transition-transform duration-300 ${selected === specialist.id ? "scale-110" : ""}`}>
-                                {specialist.icon}
-                            </span>
-                            <span className="text-sm font-medium">{specialist.name}</span>
-                            </button>
-                        ))}
+                        <div id="specialist-scroll" className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 no-scrollbar">
+                            {specialists.map((specialist) => (
+                                <button
+                                    key={specialist.id}
+                                    onClick={() => setSelected(selected === specialist.id ? null : specialist.id)}
+                                    className={`
+                                        flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap
+                                        transition-all duration-300 ease-out
+                                        border-2
+                                        transform hover:scale-105
+                                        ${
+                                        selected === specialist.id
+                                            ? "border-blue-500 bg-blue-50 text-blue-600 shadow-md"
+                                            : "border-gray-300 bg-white text-gray-700 hover:border-gray-400"
+                                        }
+                                    `}
+                                >
+                                    <span className={`transition-transform duration-300 ${selected === specialist.id ? "scale-110" : ""}`}>
+                                        {specialist.icon}
+                                    </span>
+                                    <span className="text-sm font-medium">{specialist.name}</span>
+                                </button>
+                            ))}
                         </div>
 
                         {/* Right scroll button */}
                         <button
-                        onClick={() => handleScroll("right")}
-                        className="hidden md:flex absolute top-1 right-0 z-10 w-8 h-8 items-center justify-center rounded-full bg-white border border-gray-300 hover:bg-gray-50 transition-all duration-200"
-                        aria-label="Scroll right"
+                            onClick={() => handleScroll("right")}
+                            className="hidden md:flex absolute top-1 right-0 z-10 w-8 h-8 items-center justify-center rounded-full bg-white border border-gray-300 hover:bg-gray-50 transition-all duration-200"
+                            aria-label="Scroll right"
                         >
-                        <ChevronRightIcon className="w-4 h-4" />
+                            <ChevronRightIcon className="w-4 h-4" />
                         </button>
                     </div>        
                 </div>
-                {/*Doctor details*/}
-                <div className="pt-7 pb-1 pl-10">
-                    <div className={`grid grid-cols-3 gap-6 p-5 mb-6 transition-all duration-300 ${
-                                        isOpen ? 'grid-cols-3 ' : 'grid-cols-3' + animating ? 'opacity-100 ease-in-out' : 'opacity-100 '}transform transition-all duration-300 ease-in-out`}>
-                             {/* {doctors.map((doctor) => ( */}
-                             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
-                                <div className="  border border-gray-100 shadow-xl ">
-                                    <DoctorCard key={i} doctor={{
-                                                    id: 1,
-                                                    image: "/doctor1.jpg",
-                                                    name: "Dr. John Doe",
-                                                    specialty: "Cardiologist",
-                                                    hospital: "City Hospital",
-                                                    rating: 4.5,
-                                                    startTime: "09:00 AM",
-                                                    endTime: "05:00 PM" ,}} />
-                                        <div className="flex justify-between p-2">
-                                            <div className="text-sm text-gray-600">
-                                                            Price<span className="text-xs">/hour</span>
-                                            </div>                                            
-                                            <div className="font-montserrat text-lg ml-2 text-red-400">$3583</div>
-                                        </div>
-                                    <Button variant="contained" sx={{ width:'100%'}}>
+                
+                {/*Doctor cards - Responsive grid*/}
+                <div className="pt-7 pb-1 px-4 md:pl-10">
+                    <div className={`
+                        grid 
+                        grid-cols-1 
+                        md:grid-cols-2 
+                        lg:grid-cols-3 
+                        gap-4 
+                        md:gap-6 
+                        p-2 
+                        md:p-5 
+                        mb-6 
+                        transition-all 
+                        duration-300 
+                        items-end
+                        ${animating ? 'opacity-100 ease-in-out' : 'opacity-100'}
+                        transform transition-all duration-300 ease-in-out
+                    `}>
+                              {filteredDoctors.length === 0 ? (
+                                     paginatedDoctors.map((doctor) => (
+                                  <div key={doctor.id} className=" border border-gray-100 shadow-xl rounded-lg overflow-hidden">
+                                    <DoctorCard doctor={doctor}/>
+                                    <div className="flex justify-between p-2">
+                                      <div className="text-sm text-gray-600">
+                                          Price<span className="text-xs">/hour</span>
+                                      </div>                                            
+                                      <div className="font-montserrat text-lg ml-2 text-red-400">{doctor.price}</div>
+                                    </div>
+                                    <Button   onClick={() => navigate(`/doctors/${doctor.id}`)}
+                                    variant="contained" 
+                                    sx={{ 
+                                        width:'100%',
+                                        borderRadius: 0,
+                                    }}
+                                    >
                                         Book Appointment
                                     </Button>
-                                </div>
-                                ))}
-                            {/*   ))}   */}
+                                  </div>
+                                ))
+                                ) : (
+                                    filteredDoctors.map((doctor) => (
+                                     <div key={doctor.id} className=" border border-gray-100 shadow-xl rounded-lg overflow-hidden">
+                                    <DoctorCard doctor={doctor}/>
+                                    <div className="flex justify-between p-2">
+                                      <div className="text-sm text-gray-600">
+                                          Price<span className="text-xs">/hour</span>
+                                      </div>                                            
+                                      <div className="font-montserrat text-lg ml-2 text-red-400">{doctor.price}</div>
+                                    </div>
+                                    <Button   onClick={() => navigate(`/doctors/${doctor.id}`)}
+                                    variant="contained" 
+                                    sx={{ 
+                                        width:'100%',
+                                        borderRadius: 0,
+                                    }}
+                                    >
+                                        Book Appointment
+                                    </Button>
+                                  </div>
+                                    )))}
+
+        
+
                     </div>
                 </div>
+                
                 {/*Pagination*/}
-                <div className="mb-10">
-                    {/* <button className="px-6 py-2 border rounded-lg hover:bg-gray-50">
-                    Previous page
-                    </button>
-                    <button className="px-6 py-2 border rounded-lg hover:bg-gray-50">
-                    Next Page
-                    </button> */}
-                    {/* // Animated pagination  */}
+                <div className="mb-10 w-screen">
                     <AnimatedPagination
                         currentPage={page}
-                        totalPages={totalPages}
+                        totalpages={totalPages}
                         onNext={() => setPage((p) => Math.min(p + 1, totalPages))}
                         onPrev={() => setPage((p) => Math.max(p - 1, 1))}
                     />
                 </div>
             </div>
-
         </div>
     </> 
     );

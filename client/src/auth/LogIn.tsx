@@ -133,7 +133,7 @@ const LogIn = () => {
         alt="wave bg" 
       />
       <img 
-        className="absolute top-0 right-0 w-full h-full object-right md:w-[948px] "
+        className="absolute top-0 right-0 w-full h-full object-right md:w-237 "
         src={border} 
         alt="border" 
       />
@@ -151,7 +151,7 @@ const LogIn = () => {
                      p-6 md:p-8 
                      pointer-events-auto
                      animate-in fade-in zoom-in-95 duration-300
-                     md:-translate-x-[200px] lg:-translate-x-[300px] xl:-translate-x-[500px]"
+                     md:-translate-x-50 lg:-translate-x-75 xl:-translate-x-125"
         >
           <div className="flex flex-col" style={{ gap: '32px' }}>
             <div className="flex flex-col text-center gap-y-4">

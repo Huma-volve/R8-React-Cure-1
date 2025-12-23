@@ -176,7 +176,7 @@ export default function Booking() {
                 <div className="flex items-center p-1">
                   <img
                     src={profileImage}
-                    className="w-[43px] h-[41px] rounded-full object-cover"
+                    className="w-10.75 h-10.25 rounded-full object-cover"
                     alt={dr.doctor.name}
                   />
                   <div className="ml-2">

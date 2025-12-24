@@ -8,6 +8,7 @@ import {
   Stack,
   useMediaQuery,
   Button,
+  Badge,
 } from "@mui/material";
 import { Toolbar, useTheme } from "@mui/material";
 import Slide from "@mui/material/Slide";
@@ -22,7 +23,9 @@ import testimage from "../assets/NavBarIcons/testimage.jpg";
 import BsHeartPulse from "../assets/NavBarIcons/BsHeartPulse.svg";
 //import Magnifer from "../assets/NavBarIcons/Magnifer.svg";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import NotificationDropdown from "./NotificationDropdown";
+import { useUnreadNotifications } from "../hooks/useNotifications";
 import { useState } from "react";
 import MobileProfileDrawer from "./MobileProfileDrawer";
 
@@ -34,6 +37,17 @@ function Navbar() {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [notificationAnchor, setNotificationAnchor] = useState<HTMLButtonElement | null>(null);
+  const { data: unreadNotifications } = useUnreadNotifications();
+  const unreadCount = unreadNotifications?.length || 0;
+
+  const handleNotificationClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setNotificationAnchor(event.currentTarget);
+  };
+
+  const handleNotificationClose = () => {
+    setNotificationAnchor(null);
+  };
 
   function handleMenuClick() {
     if (isMobile) {
@@ -88,8 +102,6 @@ function Navbar() {
 >
   <NavBarSearch onSelect={(v) => console.log("search:", v)} />
 </Box>
-
-
 
           {/* Right Side Icons Box */}
           <Box sx={{ order: { xs: 2, md: 3 } }}>
@@ -186,7 +198,8 @@ function Navbar() {
                   </IconButton>
 
                   {/* notification icon Button */}
-                  <IconButton
+                 <IconButton
+                    onClick={handleNotificationClick}
                     sx={{
                       border: 1,
                       borderRadius: "10px",
@@ -194,10 +207,24 @@ function Navbar() {
                       color: "#05162C",
                       bgcolor: "#F5F6F7",
                       display: { xs: "none", sm: "flex" },
+                      "&:hover": {
+                        bgcolor: "#E9EAEC",
+                      },
                     }}
                   >
-                    <NotificationsNoneIcon />
+                    <Badge badgeContent={unreadCount} color="error">
+                      {unreadCount > 0 ? (
+                        <NotificationsIcon />
+                      ) : (
+                        <NotificationsNoneIcon />
+                      )}
+                    </Badge>
                   </IconButton>
+                  <NotificationDropdown 
+                    anchorEl={notificationAnchor}
+                    onClose={handleNotificationClose}
+                    showIconButton={false}
+                  />                  
                 </Box>
 
                 {/* user Icon Button */}

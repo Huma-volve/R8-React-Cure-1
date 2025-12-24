@@ -4,6 +4,8 @@ import StarRateIcon from '@mui/icons-material/StarRate';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import d1 from '@/assets/images/d1.jpg';
+import { favoritesToggle } from "@/api/auth";
+import Snackbar from '@mui/material/Snackbar';
 
 interface Doctor{
   id: number;
@@ -19,20 +21,30 @@ interface Doctor{
 }
 interface DoctorCardProps {
   doctor: Doctor;
-   onFavoriteToggle?: (doctorId: number, isFavorited: boolean) => void;
 }
 
-export const DoctorCard = ({ doctor, onFavoriteToggle }: DoctorCardProps) => {
+export const DoctorCard = ({ doctor }: DoctorCardProps) => {
   const [isFavorited, setIsFavorited] = useState<boolean>(
     doctor.is_favorite
   );
+  const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  const handleFavoriteToggle = () => {
-    const newState = !isFavorited;
-    setIsFavorited(newState);
+  const handleToggleFavorite = async () => {
+    setLoading(true);
+    try {
+      // Call the toggle favorite API
+      const result =await favoritesToggle(doctor.id);
 
-    if (doctor.id) {
-      onFavoriteToggle?.(doctor.id, newState);
+      // Update local state
+      setIsFavorited((prev) => !prev);
+      setSnackbarMessage(result?.message);
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Failed to toggle favorite", error);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -64,10 +76,18 @@ export const DoctorCard = ({ doctor, onFavoriteToggle }: DoctorCardProps) => {
             </div>
           </div>
           <button
-            onClick={handleFavoriteToggle}
+            onClick={handleToggleFavorite}
+            disabled={loading}
             className="shrink-0 p-2 md:pr-1 pr-12 transition-colors"
             aria-label="Toggle favorite"
           >
+            <Snackbar
+                    open={snackbarOpen}
+                    autoHideDuration={4000}
+                    onClose={() => setSnackbarOpen(false)}
+                    message={snackbarMessage}
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                  />
             <FavoriteIcon
               sx={{ fontSize: 20 }}
               className={`${

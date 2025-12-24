@@ -397,9 +397,9 @@ if (loading) return <SearchSkeleton/>;
                                   <p className="text-gray-500 col-span-full text-center">No doctors found for the selected specialty.</p>
                                 ) : (
                                      paginatedDoctors.map((doctor) => (
-                                  <div key={doctor.id} onClick={() => navigate(`/doctors/${doctor.id}`)} className=" cursor-pointer border border-gray-100 shadow-xl rounded-lg overflow-hidden">
+                                  <div key={doctor.id} className=" cursor-pointer border border-gray-100 shadow-xl rounded-lg overflow-hidden">
                                     <DoctorCard doctor={doctor}/>
-                                    <div className="flex justify-between p-2">
+                                    <div  onClick={() => navigate(`/doctors/${doctor.id}`)} className="flex justify-between p-2">
                                       <div className="text-sm text-gray-600">
                                           Price<span className="text-xs">/hour</span>
                                       </div>                                            

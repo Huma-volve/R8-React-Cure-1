@@ -40,6 +40,7 @@ export function DateTimePicker() {
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [doctor, setDoctor] = useState<Doctor | null>(null);
 
   // Fetch doctor and group times by month/day
   useEffect(() => {
@@ -47,7 +48,7 @@ export function DateTimePicker() {
     getDoctorById("1")
       .then((res) => {
         const data: Doctor = res.data;
-
+        setDoctor(data);
         const grouped: TimesByMonth = {};
         if (data.times && Array.isArray(data.times)) {
           data.times.forEach(({ date, start_time, end_time }) => {
@@ -88,14 +89,19 @@ useEffect(() => {
     if (!selectedMonth || !selectedDay || !selectedTime) return;
 
     const date = `${selectedMonth}-${selectedDay}`; // "YYYY-MM-DD"
-    const time= selectedTime; // selected hour
-    if (!id) {
+    const time= dayjs(selectedTime, 'HH:mm:ss').format('HH:mm'); // selected hour
+    if (!doctor) {
+      console.error("Doctor is missing");
+      return; // or show an error
+    }
+
+    if (!doctor.id) {
       console.error("Doctor ID is missing");
       return; // or show an error
     }
     try {
       const bookingData = {
-      doctor_id: id,
+      doctor_id: doctor.id,
       date,
       time,
     };
@@ -105,6 +111,7 @@ useEffect(() => {
       setSnackbarOpen(true);
     } catch (error: any) {
       // Show error message
+      console.log(error);
       setSnackbarMessage(error.message);
       setSnackbarOpen(true);
     }
@@ -193,7 +200,7 @@ useEffect(() => {
         autoHideDuration={4000}
         onClose={() => setSnackbarOpen(false)}
         message={snackbarMessage}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
       />
       </div>
     </div>

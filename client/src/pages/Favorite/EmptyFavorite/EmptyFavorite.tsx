@@ -63,23 +63,6 @@ const EmptyFavorite: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleFavoriteToggle = async (
-    doctorId: number,
-    isFavorited: boolean
-  ) => {
-    try {
-      if (!isFavorited) {
-        // user unfavorited → remove from backend
-        // await removeFromFavorites(doctorId);
-        // remove from UI immediately
-        setFavorites((prev) =>
-          prev.filter((doctor) => doctor.id !== doctorId)
-        );
-      }
-    } catch (error) {
-      console.error("Failed to update favorite", error);
-    }
-  };
 
   if (loading) return <p className="flex h-screen justify-center items-center flex-col gap-5">Loading...</p>;
   if (favorites.length === 0) {
@@ -107,7 +90,7 @@ const EmptyFavorite: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 p-4 md:p-5  overflow-y-auto">
             {favorites.map((FavoriteItem) => (
 
-              <DoctorCard key={FavoriteItem.id} doctor={FavoriteItem} onFavoriteToggle={handleFavoriteToggle} />
+              <DoctorCard key={FavoriteItem.id} doctor={FavoriteItem} />
             ))}
           </div>
       </div>

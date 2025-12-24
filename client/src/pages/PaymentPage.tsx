@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import PaymentCard from "../Components/PaymentCard";
-import ConfirmModal from "../Components/ConfirmModal";
+import PaymentCard from "@/Components/PaymentCard";
+import ConfirmModal from "@/Components/ConfirmModal";
 import { Typography } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";

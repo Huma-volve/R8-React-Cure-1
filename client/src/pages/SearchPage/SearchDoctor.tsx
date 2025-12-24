@@ -46,11 +46,12 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
+  width:'100%',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1.5, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
-    width: '80%',
+    width: '100%',
   },
 }));
 
@@ -77,6 +78,7 @@ interface DoctorsD{
   is_favorite: boolean,
   price:number  
 }
+type SortType = "ratingDesc" | "priceAsc" | "priceDesc" | null;
 const getWorkingTimeRange = (times?: DoctorTimeSlot[]) => {
   if (!times || times.length === 0) return null;
 
@@ -95,23 +97,15 @@ function SearchDoctor() {
     const [isOpen, setIsOpen] = useState(false);
     const [animating, setAnimating] = useState(false);
     const [page, setPage] = useState(1);
-    const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
     const [doctors, setDoctors] = useState<DoctorsD[]>([]);
-    const [specialists, setSpecialists] = useState<Specialty[]>([]);
     const [loading, setLoading] = useState(true);
     const isMobile = useMediaQuery("(max-width: 640px)");
     const isTablet = useMediaQuery("(min-width: 641px) and (max-width: 1024px)");
-    const filteredDoctors = useMemo(() => {
-        if (!selectedSpecialty) return doctors;
-
-        return doctors.filter(
-          (doctor) =>  doctor.specialty === selectedSpecialty
-        );
-      }, [doctors, selectedSpecialty]);
-
-    const ITEMS_PER_PAGE = isMobile ? 4 : isTablet ? 6 : 9;
-    const totalPages = Math.ceil(filteredDoctors.length / ITEMS_PER_PAGE);
-  useEffect(() => {
+    const [specialists, setSpecialists] = useState<Specialty[]>([]);
+    const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
+    const [sortType, setSortType] = useState<SortType>(null);
+    const [searchText, setSearchText] = useState("");
+    useEffect(() => {
     const loadData = async () => {
       try {
         const [doctorsRes, specialtiesRes] = await Promise.all([
@@ -145,8 +139,43 @@ function SearchDoctor() {
   loadData();
 }, []);
 
+ const filteredDoctors = useMemo(() => {
+  let result = [...doctors];
 
-  if (loading) return <SearchSkeleton/>;
+  // 1️⃣ Filter by specialty
+  if (selectedSpecialty) {
+    result = result.filter(
+      d => d.specialty === selectedSpecialty
+    );
+  }
+
+  // 2️⃣ Live search (name + hospital)
+    if (searchText.trim()) {
+    const q = searchText.toLowerCase();
+
+    result = result.filter(d =>
+        (d.name ?? "").toLowerCase().includes(q) ||
+        (d.hospital_name ?? "").toLowerCase().includes(q)
+    );
+    }
+
+  // 3️⃣ Sort
+  switch (sortType) {
+    case "ratingDesc":
+      result.sort((a, b) => b.rating - a.rating);
+      break;
+
+    case "priceAsc":
+      result.sort((a, b) => a.price - b.price);
+      break;
+
+    case "priceDesc":
+      result.sort((a, b) => b.price - a.price);
+      break;
+  }
+
+  return result;
+}, [doctors, selectedSpecialty, searchText, sortType]);
 
     const handleToggle = () => {
         setAnimating(true);
@@ -161,9 +190,17 @@ function SearchDoctor() {
             scrollContainer.scrollBy({ left: scrollAmount, behavior: "smooth" });
         }
     };
+
+    const ITEMS_PER_PAGE = isMobile ? 4 : isTablet ? 6 : 9;
+    const totalPages = Math.ceil(filteredDoctors.length / ITEMS_PER_PAGE);
     const startIndex = (page - 1) * ITEMS_PER_PAGE; 
     const endIndex = startIndex + ITEMS_PER_PAGE;
     const paginatedDoctors = filteredDoctors.slice(startIndex, endIndex);
+    useEffect(() => {
+     setPage(1);
+    }, [selectedSpecialty, sortType]);
+if (loading) return <SearchSkeleton/>;
+
     return (
     <> 
        <div className="flex-1 mt-30">    
@@ -234,9 +271,17 @@ function SearchDoctor() {
 
                                 <h3 className="font-semibold mb-4">Sort<ArrowDownIcon/></h3>
                                 <div className="space-y-2 font-montserrat text-[14px] text-gray-600">
-                                    <Checkbox  /><span>Most recommended</span><br />
-                                    <Checkbox /><span>Price Low to high</span><br />
-                                    <Checkbox /><span>Price High to low</span><br />
+                                    <Checkbox checked={sortType === "ratingDesc"} 
+                                     onChange={() =>setSortType(sortType === "ratingDesc" ? null : "ratingDesc")}
+                                    /><span>Most recommended</span><br />
+
+                                    <Checkbox  checked={sortType === "priceAsc"} 
+                                     onChange={() =>setSortType(sortType === "priceAsc" ? null : "priceAsc")}
+                                     /><span>Price Low to high</span><br />
+
+                                    <Checkbox checked={sortType === "priceDesc"} 
+                                     onChange={() =>setSortType(sortType === "priceDesc" ? null : "priceDesc")}
+                                     /><span>Price High to low</span><br />
                                 </div>
                             </div>
                         )}
@@ -250,7 +295,9 @@ function SearchDoctor() {
                             <SearchIcon />
                         </SearchIconWrapper>
                         <StyledInputBase
-                            placeholder="Search doctors . . ."
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            placeholder="Search doctors or Hosbital . . ."
                             inputProps={{ 'aria-label': 'search' }}
                         />
                     </Search>

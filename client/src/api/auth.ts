@@ -8,6 +8,12 @@ interface BookingData {
   time: string; 
 
 }
+interface ReviewData {
+  doctor_id: string;
+  rating: number; 
+  comment: string; 
+
+}
 /**
  * ======================================================
  * CONFIGURATION
@@ -140,8 +146,9 @@ export const getReviews = async (doctorId: number) => {
   );
   return response.data;
 };
+
 /**
- * get Doctor Reviews by id 
+ * favoritesToggle
  **/
 
 export const favoritesToggle = async (doctorId: number) => {
@@ -153,6 +160,26 @@ export const favoritesToggle = async (doctorId: number) => {
 } catch (error) {
   throw error;
 }
+};
+/**
+ * Book Appointment
+ */
+export const addReview = async (data: ReviewData) => {
+  try {
+    const response = await api.post("/reviews/add", data);
+    return response.data;
+  } catch (error: any) {
+    // Throw a consistent error object
+    if (error.response && error.response.data) {
+      // Backend returned an error response
+      throw new Error(error.response.data.message || "Booking failed");
+    } else if (error.message) {
+      // Network or Axios error
+      throw new Error(error.message);
+    } else {
+      throw new Error("Booking failed");
+    }
+  }
 };
 
 /**

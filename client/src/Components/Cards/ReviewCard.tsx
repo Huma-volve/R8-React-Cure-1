@@ -1,29 +1,55 @@
 import { useState } from "react"
 import Star from '@mui/icons-material/StarRate';
+import { addReview } from "@/api/auth";
+import { useParams } from "react-router-dom";
 
-interface ReviewCardProps {
-  onSubmit?: (rating: number, review: string) => void
-}
-
-export function ReviewCard({ onSubmit }: ReviewCardProps) {
-  const [rating, setRating] = useState(0)
+export function ReviewCard() {
   const [review, setReview] = useState("")
   const [hoveredStar, setHoveredStar] = useState(0)
-
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
+  const displayRating = hoveredStar || rating
+  const { id } = useParams();
   const handleStarClick = (star: number) => {
-    setRating(star)
+   setRating(star)
   }
 
   const handleStarHover = (star: number) => {
     setHoveredStar(star)
   }
 
-  const displayRating = hoveredStar || rating
+  
 
-  const handleSubmit = () => {
-    onSubmit?.(rating, review)
+const handleSendReview = async () => {
+  if (!rating) {
+    alert("Please select a rating");
+    return;
   }
 
+  try {
+    setLoading(true);
+    if (!id) return;
+    await addReview({
+      doctor_id: id, // from props or useParams
+      rating,
+      comment,
+    });
+
+    // Optional success handling
+    setRating(0);
+    setComment("");
+    alert("Review submitted successfully");
+
+  } catch (error: any) {
+    console.error(error);
+    alert(
+      error.response?.data?.message || "Failed to submit review"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200 max-w-md w-full">
       {/* Your Rate Section */}
@@ -70,10 +96,11 @@ export function ReviewCard({ onSubmit }: ReviewCardProps) {
 
       {/* Send Review Button */}
       <button
-        onClick={handleSubmit}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors"
+      onClick={handleSendReview}
+      disabled={loading}        
+    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors"
       >
-        Send your review
+        {loading ? "Sending..." : "Send your review"}
       </button>
     </div>
   )

@@ -52,7 +52,7 @@ api.interceptors.request.use(
      * STEP 2 (PRODUCTION MODE):
      * Uncomment this and remove hardcoded token
      */
-    // const token = localStorage.getItem("auth_token");
+    // const token = localStorage.getItem('auth_token');
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

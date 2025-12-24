@@ -1,18 +1,17 @@
-import  { useState, useEffect } from "react";
-import PaymentCard from "@/Components/PaymentCard";
-import ConfirmModal from "@/Components/ConfirmModal";
+import { useState, useEffect } from "react";
+import PaymentCard from "../Components/PaymentCard";
+import ConfirmModal from "../Components/ConfirmModal";
 import { Typography } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setBookingId } from "../store/paymentSlice";
 import type { AppDispatch } from "../store";
 
-
 export default function PaymentPage() {
   const [searchParams] = useSearchParams();
   const dispatch = useDispatch<AppDispatch>();
   const [modalOpen, setModalOpen] = useState(false);
-  const [message,setMessage] = useState(
+  const [message, setMessage] = useState(
     "Your appointment with Dr. David Patel is confirmed for June 30, 2026, at 10:00 AM."
   );
 

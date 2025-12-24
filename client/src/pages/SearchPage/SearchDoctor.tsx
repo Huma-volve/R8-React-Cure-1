@@ -155,7 +155,8 @@ function SearchDoctor() {
 
     result = result.filter(d =>
         (d.name ?? "").toLowerCase().includes(q) ||
-        (d.hospital_name ?? "").toLowerCase().includes(q)
+        (d.hospital_name ?? "").toLowerCase().includes(q)||
+        (d.specialty ?? "").toLowerCase().includes(q)
     );
     }
 
@@ -198,7 +199,7 @@ function SearchDoctor() {
     const paginatedDoctors = filteredDoctors.slice(startIndex, endIndex);
     useEffect(() => {
      setPage(1);
-    }, [selectedSpecialty, sortType]);
+    }, [searchText,selectedSpecialty, sortType]);
 if (loading) return <SearchSkeleton/>;
 
     return (
@@ -396,7 +397,7 @@ if (loading) return <SearchSkeleton/>;
                                   <p className="text-gray-500 col-span-full text-center">No doctors found for the selected specialty.</p>
                                 ) : (
                                      paginatedDoctors.map((doctor) => (
-                                  <div key={doctor.id} className=" border border-gray-100 shadow-xl rounded-lg overflow-hidden">
+                                  <div key={doctor.id} onClick={() => navigate(`/doctors/${doctor.id}`)} className=" cursor-pointer border border-gray-100 shadow-xl rounded-lg overflow-hidden">
                                     <DoctorCard doctor={doctor}/>
                                     <div className="flex justify-between p-2">
                                       <div className="text-sm text-gray-600">
@@ -414,11 +415,7 @@ if (loading) return <SearchSkeleton/>;
                                         Book Appointment
                                     </Button>
                                   </div>
-                                ))
-                                    )}
-
-        
-
+                                )))}
                     </div>
                 </div>
                 
@@ -436,4 +433,5 @@ if (loading) return <SearchSkeleton/>;
     </> 
     );
 }
+
 export default SearchDoctor;

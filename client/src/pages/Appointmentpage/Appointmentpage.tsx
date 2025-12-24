@@ -17,24 +17,15 @@ import PopUp from '@/Components/Cards/PopUp';
 import Rating from '@mui/material/Rating';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { getDoctorById } from "@/api/auth";
+import Map from "@/Components/Cards/Map";
 
-// const getWorkingTimeRange = (times?: DoctorTimeSlot[]) => {
-//   if (!times || times.length === 0) return null;
 
-//   const sorted = [...times].sort((a, b) =>
-//     a.start_time.localeCompare(b.start_time)
-//   );
+interface DoctorTimeSlot {
+  date: string;
+  start_time: string;
+  end_time: string;
+}
 
-//   return {
-//     start: sorted[0].start_time.slice(0, 5),
-//     end: sorted[sorted.length - 1].end_time.slice(0, 5),
-//   };
-// };
-// interface DoctorTimeSlot {
-//   date: string;
-//   start_time: string;
-//   end_time: string;
-// }
 interface Specialty {
   id: number;
   name: string;
@@ -51,6 +42,10 @@ const normalizeReviews = (reviews?: ReviewsResponse): Review[] => {
   if (!reviews) return [];
   return Object.values(reviews);
 };
+interface Location {
+  lat: number;
+  lng: number;
+}
 interface Doctor{
 
   id: number
@@ -60,6 +55,8 @@ interface Doctor{
   hospital_name: string
   rating: number
   bio: string
+  location: Location;
+  times?: DoctorTimeSlot[];
   years_of_experience:number
   total_reviews: number
   total_patients: number
@@ -84,6 +81,7 @@ const handleFavoriteToggle = () => {
     return newValue;
   });
 };
+
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState(false);
   const [doctor, setDoctor] = useState<Doctor | null>(null);
@@ -92,11 +90,14 @@ const handleFavoriteToggle = () => {
     if (!id) return;
     getDoctorById("1")
       .then((res) => {
-      setDoctor(res.data);
-      setIsFavorited(res.data.is_favorite); 
+        const data: Doctor = res.data;
+       setDoctor(data);
+      setIsFavorited(data.is_favorite); 
     })
     .catch(console.error);
   }, [id]);
+
+
 
   if (!doctor) return <AppointmentSkeleton/>;
 
@@ -106,6 +107,7 @@ const reviews = normalizeReviews(doctor.reviews).slice(0, 2);
 
   return (
     <>
+    
     <div className="flex items-center sm:pt-10 px-10 py-2 gap-1 text-gray-600">
           <button onClick={() => navigate(-1)}>
             <KeyboardBackspaceIcon sx={{ fontSize: 30 }} />
@@ -252,6 +254,7 @@ const reviews = normalizeReviews(doctor.reviews).slice(0, 2);
           {/* Location section */}
           <div>
             <span className='font-[Georgia] text-lg md:text-xl text-black'>Location</span>
+            <Map latitude={doctor.location.lat} longitude={doctor.location.lng} />
           </div>
         </div> 
       </div>

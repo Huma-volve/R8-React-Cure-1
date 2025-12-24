@@ -1,6 +1,13 @@
 import axios from "axios";
 import type { AxiosInstance } from "axios";
 
+
+interface BookingData {
+  doctor_id: string;
+  date: string; 
+  time: string; 
+
+}
 /**
  * ======================================================
  * CONFIGURATION
@@ -124,7 +131,7 @@ export const getSpecialists = async () => {
 
 /**
  * get Doctor Reviews by id 
- */
+ **/
 
 export const getReviews = async (doctorId: number) => {
   const response = await api.get(
@@ -132,6 +139,27 @@ export const getReviews = async (doctorId: number) => {
 
   );
   return response.data;
+};
+
+/**
+ * Book Appointment
+ */
+export const bookAppointment = async (data: BookingData) => {
+  try {
+    const response = await axios.post("/appointments/book", data);
+    return response.data;
+  } catch (error: any) {
+    // Throw a consistent error object
+    if (error.response && error.response.data) {
+      // Backend returned an error response
+      throw new Error(error.response.data.message || "Booking failed");
+    } else if (error.message) {
+      // Network or Axios error
+      throw new Error(error.message);
+    } else {
+      throw new Error("Booking failed");
+    }
+  }
 };
 
 export default api;

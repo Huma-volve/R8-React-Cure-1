@@ -32,7 +32,7 @@ useEffect(() => {
   };
 }, [latitude, longitude]);
 
-  return <div id="map" style={{ width: "100%", height: "300px" }} />;
+  return <div id="map" style={{ zIndex: 0, width: "100%", height: "300px" }} />;
 };
 
 export default MapComponent;

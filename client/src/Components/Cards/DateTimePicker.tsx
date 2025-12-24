@@ -75,7 +75,17 @@ useEffect(() => {
     return;
   }
 
-  const days = Object.keys(timesByMonth[selectedMonth]); setAvailableDays(days); setSelectedDay(''); setAvailableHours([]); setSelectedTime(''); }, [selectedMonth, timesByMonth]);
+  const today = dayjs(); // current date
+  const days = Object.keys(timesByMonth[selectedMonth]).filter(day => {
+    const fullDate = dayjs(`${selectedMonth}-${day}`); // YYYY-MM-DD
+    return fullDate.isSame(today, 'day') || fullDate.isAfter(today, 'day'); // keep today and future
+  });
+
+  setAvailableDays(days);
+  setSelectedDay('');
+  setAvailableHours([]);
+  setSelectedTime('');
+}, [selectedMonth, timesByMonth]);
   // Update available hours when day changes
   useEffect(() => {
     if (!selectedMonth || !selectedDay || !timesByMonth[selectedMonth]?.[selectedDay]) {
@@ -85,11 +95,13 @@ useEffect(() => {
     }
     setAvailableHours(timesByMonth[selectedMonth][selectedDay]);
   }, [selectedMonth, selectedDay, timesByMonth]);
+  
   const handleBook = async () => {
     if (!selectedMonth || !selectedDay || !selectedTime) return;
 
     const date = `${selectedMonth}-${selectedDay}`; // "YYYY-MM-DD"
-    const time= dayjs(selectedTime, 'HH:mm:ss').format('HH:mm'); // selected hour
+    const time= dayjs(selectedTime,'HH:mm:ss').format('HH:mm'); // selected hour
+
     if (!doctor) {
       console.error("Doctor is missing");
       return; // or show an error
@@ -200,7 +212,7 @@ useEffect(() => {
         autoHideDuration={4000}
         onClose={() => setSnackbarOpen(false)}
         message={snackbarMessage}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       />
       </div>
     </div>

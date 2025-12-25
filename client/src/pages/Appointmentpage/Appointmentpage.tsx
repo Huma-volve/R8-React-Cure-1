@@ -206,7 +206,7 @@ const reviews = normalizeReviews(doctor.reviews).slice(0, 2);
               <p className='font-normal font-montserrat text-gray-800 text-xs md:text-[14px]'>{doctor.specialty.name}</p>
             </div>
             
-            <button className="border-0 rounded-full bg-amber-50 h-10 w-10 md:h-12 md:w-12 flex items-center justify-center">
+            <button  onClick={() => navigate((`/chat`))} className="border-0 rounded-full bg-amber-50 h-10 w-10 md:h-12 md:w-12 flex items-center justify-center">
               <ChatIcon className="text-xl md:text-2xl"/>
             </button>
           </div>

@@ -44,10 +44,9 @@ function App() {
         <Route path="/Favorite" element={<Favorite />} />
         <Route path="/doctors/:id" element={<AppointmentPage />} />
         <Route path="/booking" element={<Booking />} />
-
-         <Route path="/chat" element={<Layout />}>
-          <Route index element={<Chat />} />
-          <Route path="/chat/:id/:name/:img" element={<Chat />} /> 
+        <Route path="/chat" element={<Layout />}>
+        <Route index element={<Chat />} />
+        <Route path="/chat/:id/:name/:img" element={<Chat />} /> 
         </Route>
 
         <Route path="/faq" element={<Faqs />} /> 

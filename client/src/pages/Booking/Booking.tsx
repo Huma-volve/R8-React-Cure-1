@@ -15,15 +15,15 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import profileImage from "@/assets/profileImage.jpg";
-import iconImage from "@/assets/images/Icon.png";
+import profileImage from "../../assets/Images/644acebb39b684127cacceef34d2234b0b1622c9.jpg";
+import iconImage from "../../assets/Images/Icon.png";
 
 import Loading from "../Loding";
 import ErrorPage from "../ERROR-PAGE/ErrorPage";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Booking() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
 
@@ -176,7 +176,7 @@ export default function Booking() {
                 <div className="flex items-center p-1">
                   <img
                     src={profileImage}
-                    className="w-10.75 h-10.25 rounded-full object-cover"
+                    className="w-[43px] h-[41px] rounded-full object-cover"
                     alt={dr.doctor.name}
                   />
                   <div className="ml-2">
@@ -199,10 +199,14 @@ export default function Booking() {
                         dispatch(cancelAppointment(dr.id));
                       }
 
-                      // if (dr.status === "cancelled") {
-                      //   navigate("/Appointment");
-                      // }
+                      if (dr.status === "cancelled") {
+                        navigate(`/doctors/:${dr.id}`);
+                      }
 
+                      if (dr.status === "Completed") {
+                        navigate(`/doctors`);
+                      }
+//#########################################
 
                     }}
                   >

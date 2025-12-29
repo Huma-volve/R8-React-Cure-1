@@ -139,7 +139,7 @@ function Navbar() {
                   </Button>
                   <Button
                                       component={Link}
-                    to="/home" 
+                    to="/booking" 
                     sx={{
                       borderRadius: "10px",
                       textTransform: "none",
@@ -153,7 +153,7 @@ function Navbar() {
                   </Button>
                   <Button
                   component={Link}
-                    to="/home" 
+                    to="/chat" 
                     sx={{
                       borderRadius: "10px",
                       textTransform: "none",

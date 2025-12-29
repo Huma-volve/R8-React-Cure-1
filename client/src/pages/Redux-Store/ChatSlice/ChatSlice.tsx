@@ -40,12 +40,23 @@ type ChatState = {
   isError: boolean;
   isLoading: boolean;
   isSuccess: boolean;
+  currentRoomId: number | null;
+
 };
 
 type SendMessageArgs =
   | { chat_id: number; type: "text"; content: string }
   | { chat_id: number; type: "image"; content: File }
   | { chat_id: number; type: "audio"; content: File };
+
+
+  interface CreateChatResponse {
+  room_id: number;
+  user_id: number;
+  doctor_id: number;
+  last_message_time: string;
+}
+
 
 /* =========================
    LocalStorage Helpers
@@ -147,6 +158,20 @@ export const markAllMessagesRead = createAsyncThunk<{chatId : number }, number>(
 );
 
 
+
+export const createChat = createAsyncThunk< CreateChatResponse , number>("chatSlice/createChat", async (doctorId)=>{
+   const res = await axios.post("https://round8-cure-php-team-two.huma-volve.com/api/v1/user/chats" , {
+    doctor_id : doctorId
+   } , {
+    headers : {
+      Authorization: `Bearer ${token}`
+    }
+   })
+
+    return res.data.data
+})
+
+
 /* =========================
    Initial State
 ========================= */
@@ -165,7 +190,9 @@ const initialState: ChatState = {
   isError: false,
   isLoading: false,
   isSuccess: false,
-  messageId: null
+  messageId: null ,
+  currentRoomId :  null
+
 };
 
 /* =========================
@@ -338,6 +365,20 @@ const ChatSlice = createSlice({
         .addCase(markAllMessagesRead.rejected , (state)=>{
         state.isLoadingMessage = false;
         state.isErrorMessage = true;
+      })
+
+      builder.addCase(createChat.pending , (state )=>{
+        state.isErrorMessage = false
+        state.isLoadingMessage = true
+      })
+      .addCase(createChat.fulfilled , (state , action)=>{
+        state.isLoadingMessage = false;
+        state.isErrorMessage = false;
+        state.currentRoomId = action.payload.room_id;
+      })
+      .addCase(createChat.rejected , (state)=>{
+        state.isErrorMessage = true
+        state.isLoadingMessage = false
       })
   }
 

@@ -48,7 +48,6 @@ function App() {
         <Route index element={<Chat />} />
         <Route path="/chat/:id/:name/:img" element={<Chat />} /> 
         </Route>
-
         <Route path="/faq" element={<Faqs />} /> 
       </Routes>
       </main>

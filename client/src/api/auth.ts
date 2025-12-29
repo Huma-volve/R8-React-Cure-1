@@ -65,7 +65,7 @@ api.interceptors.request.use(
      * STEP 2 (PRODUCTION MODE):
      * Uncomment this and remove hardcoded token
      */
-
+    // const token = HARDCODED_TEST_TOKEN;
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

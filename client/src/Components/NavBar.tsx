@@ -232,11 +232,10 @@ function Navbar() {
                   name="Seif Mohamed"
                   address="129, El-Nasr Street, Cairo"
                   avatarSrc={testimage}
-                  onPaymentMethod={() => navigate("/payment")}
-      onFavorite={() => navigate("/favorite")}
-      onSettings={() => navigate("/profile")}
-      onPrivacy={() => navigate("/privacy")}
-      onLogout={()=> navigate("/login")}
+                  onFavorite={() => navigate("/favorite")}
+                  onSettings={() => navigate("/profile")}
+                  onPrivacy={() => navigate("/privacy")}
+                  onLogout={()=> navigate("/")}
                 />
               </Stack>
             </Box>

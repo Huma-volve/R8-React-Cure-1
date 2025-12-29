@@ -45,7 +45,7 @@ export function DateTimePicker() {
   // Fetch doctor and group times by month/day
   useEffect(() => {
     if (!id) return;
-    getDoctorById("1")
+    getDoctorById(id)
       .then((res) => {
         const data: Doctor = res.data;
         setDoctor(data);

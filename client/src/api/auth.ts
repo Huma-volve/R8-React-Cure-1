@@ -34,7 +34,7 @@ const API_BASE_URL = "https://round8-cure-php-team-two.huma-volve.com/api/v1/";
  *  - Get token from login API
  *  - Save it in localStorage
  */
-const HARDCODED_TEST_TOKEN = "7|MFmla0NmwKFUDNaJ3BqHYEpK4npbuG6yMHg6DM1Y082b2deb";
+// const HARDCODED_TEST_TOKEN = "7|MFmla0NmwKFUDNaJ3BqHYEpK4npbuG6yMHg6DM1Y082b2deb";
 
 /**
  * ======================================================
@@ -47,7 +47,7 @@ const api: AxiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
-
+    const token = localStorage.getItem('auth_token');
 /**
  * ======================================================
  * REQUEST INTERCEPTOR (AUTH HEADER)
@@ -59,13 +59,13 @@ api.interceptors.request.use(
      * STEP 1 (CURRENT - TEST MODE):
      * Uses hardcoded token
      */
-    const token = HARDCODED_TEST_TOKEN;
+
 
     /**
      * STEP 2 (PRODUCTION MODE):
      * Uncomment this and remove hardcoded token
      */
-    // const token = localStorage.getItem('auth_token');
+
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -96,7 +96,6 @@ api.interceptors.response.use(
  * AUTH API FUNCTIONS
  * ======================================================
  */
-  // localStorage.setItem("auth_token", response.data.token);
 
 /**
  * getFavorites 

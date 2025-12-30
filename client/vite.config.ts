@@ -9,9 +9,19 @@ export default defineConfig({
       "@": "/src",
     },
   },
-build: {
-  chunkSizeWarningLimit: 1000,
-},
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom', 'react-redux', '@reduxjs/toolkit'],
+          'mui-vendor': ['@mui/material', '@mui/icons-material', '@mui/x-date-pickers', '@emotion/react', '@emotion/styled'],
+          'utils-vendor': ['axios', 'date-fns', 'dayjs', 'formik', 'yup', 'lucide-react'],
+          'maps-vendor': ['leaflet', '@react-google-maps/api'],
+        },
+      },
+    },
+  },
   server: {
     proxy: {
       '/api': {

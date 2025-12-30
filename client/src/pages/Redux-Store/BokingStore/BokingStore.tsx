@@ -7,8 +7,8 @@ import ChatSlice from "../ChatSlice/ChatSlice"
 export const myStore = configureStore({
     reducer : {
      bookingSlice ,
-     ChatSlice
-    }
+     ChatSlice,  
+      }
 })
 
 

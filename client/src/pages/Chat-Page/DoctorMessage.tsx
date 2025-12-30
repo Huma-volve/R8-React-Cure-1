@@ -107,7 +107,7 @@ export default function DoctorMessage({ messages, idDr }: Props) {
           );
         })}
 
-        {/* {unreadMessages.map()} */}
     </div>
   );
 }
+

@@ -133,14 +133,6 @@ const navigate = useNavigate();
 
           {/* Menu */}
           <MenuList sx={{ p: 0, display: "flex", flexDirection: "column", gap: 1 }}>
-            <Row 
-              icon={<CreditCardOutlinedIcon fontSize="small" />}
-              label="Payment Method"
-              onClick={() => {
-                handleClose();
-                onPaymentMethod?.();
-              }}
-            />
             <Row
               icon={<FavoriteBorderOutlinedIcon fontSize="small" />}
               label="Favorite"

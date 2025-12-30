@@ -270,18 +270,19 @@ export default function NotificationDropdown({
                             </Stack>
                           }
                           secondary={
-                            <Box sx={{ mt: 0.5 }}>
+                            <span style={{ display: 'block', marginTop: '4px' }}>
                               <Typography
+                                component="span"
                                 variant="body2"
                                 color="text.secondary"
-                                sx={{ mb: 0.5 }}
+                                sx={{ mb: 0.5, display: 'block' }}
                               >
                                 {notification.message}
                               </Typography>
-                              <Typography variant="caption" color="text.secondary">
+                              <Typography component="span" variant="caption" color="text.secondary" sx={{ display: 'block' }}>
                                 {formatDate(notification.created_at)}
                               </Typography>
-                            </Box>
+                            </span>
                           }
                         />
                       </ListItem>

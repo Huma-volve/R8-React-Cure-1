@@ -17,14 +17,11 @@ import PopUp from '@/Components/Cards/PopUp';
 import Rating from '@mui/material/Rating';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { getDoctorById } from "@/api/auth";
-import Map from "@/Components/Cards/Map";
+import { useDispatch } from "react-redux";
+import { createChat } from "../Redux-Store/ChatSlice/ChatSlice";
+import type {  AppDispatch } from "@/store";
+import { favoritesToggle } from "@/api/auth";
 
-
-interface DoctorTimeSlot {
-  date: string;
-  start_time: string;
-  end_time: string;
-}
 
 interface Specialty {
   id: number;
@@ -42,10 +39,6 @@ const normalizeReviews = (reviews?: ReviewsResponse): Review[] => {
   if (!reviews) return [];
   return Object.values(reviews);
 };
-interface Location {
-  lat: number;
-  lng: number;
-}
 interface Doctor{
 
   id: number
@@ -55,8 +48,6 @@ interface Doctor{
   hospital_name: string
   rating: number
   bio: string
-  location: Location;
-  times?: DoctorTimeSlot[];
   years_of_experience:number
   total_reviews: number
   total_patients: number
@@ -65,49 +56,52 @@ interface Doctor{
   reviews?: ReviewsResponse
 }
 const AppointmentPage: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>()
   const { id } = useParams();
   const navigate = useNavigate();
-  const [isFavorited, setIsFavorited] = useState(false)
-const handleFavoriteToggle = () => {
-  setIsFavorited((prev) => {
-    const newValue = !prev;
-
-    console.log(
-      newValue
-        ? "Doctor added to favorites (UI only)"
-        : "Doctor removed from favorites (UI only)"
-    );
-
-    return newValue;
-  });
-};
-
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState(false);
   const [doctor, setDoctor] = useState<Doctor | null>(null);
+  const [isFavorited, setIsFavorited] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
  useEffect(() => {
     if (!id) return;
-    getDoctorById("1")
+    getDoctorById(id)
       .then((res) => {
-        const data: Doctor = res.data;
-       setDoctor(data);
-      setIsFavorited(data.is_favorite); 
+      setDoctor(res.data);
+      setIsFavorited(res.data.is_favorite); 
     })
     .catch(console.error);
   }, [id]);
 
-
-
+  const handleToggleFavorite = async (e: React.MouseEvent) => {
+      e.stopPropagation(); // Prevent navigation when clicking favorite button
+      setLoading(true);
+      try {
+        // Call the toggle favorite API
+        await favoritesToggle(id as string);
+        // Update local state
+        setIsFavorited((prev) => !prev);
+      } catch (error) {
+        console.error("Failed to toggle favorite", error);
+      } finally {
+        setLoading(false);
+      }
+    };
   if (!doctor) return <AppointmentSkeleton/>;
 
   
 const reviews = normalizeReviews(doctor.reviews).slice(0, 2);
 
 
+
+
+
+
+
   return (
     <>
-    
     <div className="flex items-center sm:pt-10 px-10 py-2 gap-1 text-gray-600">
           <button onClick={() => navigate(-1)}>
             <KeyboardBackspaceIcon sx={{ fontSize: 30 }} />
@@ -154,8 +148,10 @@ const reviews = normalizeReviews(doctor.reviews).slice(0, 2);
           {/* Review Cards - responsive grid */}
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4'>
             {/* Review Card 1 */}
-            {reviews.map((review, index) => (
-            <div key={index} className='w-full border border-gray-300 rounded-lg p-3'>
+            {reviews.map((review, index) => {
+              return <>
+              
+                 <div key={index} className='w-full border border-gray-300 rounded-lg p-3'>
               <div className='flex flex-row gap-3 md:gap-4'>
                 <img src={human} alt="" className='rounded-full w-12 h-12 md:w-15 md:h-15 object-cover bg-gray-400 shrink-0'/>
                 <div className='flex flex-row justify-between w-full'>
@@ -175,7 +171,10 @@ const reviews = normalizeReviews(doctor.reviews).slice(0, 2);
                 </p>
               </div>
             </div>
-                ))}
+              
+              
+              </>
+            })}
           </div>
         </div>
         
@@ -185,7 +184,8 @@ const reviews = normalizeReviews(doctor.reviews).slice(0, 2);
           {/* Doctor Header with favorite and chat buttons */}
           <div className='flex flex-row justify-between items-start p-2'>
             <button
-              onClick={handleFavoriteToggle}
+              onClick={handleToggleFavorite}
+              disabled={loading}
               className="relative transition-colors border-0 rounded-full bg-amber-50 h-10 w-10 md:h-12 md:w-12 flex items-center justify-center"
               aria-label="Toggle favorite"
             >
@@ -206,9 +206,25 @@ const reviews = normalizeReviews(doctor.reviews).slice(0, 2);
               <p className='font-normal font-montserrat text-gray-800 text-xs md:text-[14px]'>{doctor.specialty.name}</p>
             </div>
             
-            <button  onClick={() => navigate((`/chat`))} className="border-0 rounded-full bg-amber-50 h-10 w-10 md:h-12 md:w-12 flex items-center justify-center">
+
+
+            <button onClick={() => {
+             dispatch(createChat(doctor.id))
+              .unwrap()
+        .then((payload) => {
+
+          navigate(`/chat/${payload.room_id}/${encodeURIComponent(doctor.name)}/${encodeURIComponent(doctor.image)}`);
+        })
+        .catch((err) => {
+          console.error("Failed to create chat:", err);
+        });
+    }}  
+className="border-0 cursor-pointer rounded-full bg-amber-50 h-10 w-10 md:h-12 md:w-12 flex items-center justify-center">
               <ChatIcon className="text-xl md:text-2xl"/>
             </button>
+
+
+
           </div>
           
           {/* Stats section - responsive grid */}
@@ -254,7 +270,6 @@ const reviews = normalizeReviews(doctor.reviews).slice(0, 2);
           {/* Location section */}
           <div>
             <span className='font-[Georgia] text-lg md:text-xl text-black'>Location</span>
-            <Map latitude={doctor.location.lat} longitude={doctor.location.lng} />
           </div>
         </div> 
       </div>

@@ -37,7 +37,7 @@ function App() {
           <Route path="/map" element={<ProtectedRoute><DoctorsMap /></ProtectedRoute>} />
           <Route path="/payment" element={<ProtectedRoute><PaymentPage /></ProtectedRoute>} />
           <Route path="/contact" element={<ProtectedRoute><ContactUs /></ProtectedRoute>} />
-          <Route path="/doctor" element={<ProtectedRoute><DoctorDetails /></ProtectedRoute>} />
+          <Route path="/doctor/:id" element={<ProtectedRoute><DoctorDetails /></ProtectedRoute>} />
           <Route path="/privacy" element={<ProtectedRoute><PrivacyPolicy /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/SearchDoctor" element={<ProtectedRoute><SearchDoctor /></ProtectedRoute>} />

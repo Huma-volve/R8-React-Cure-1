@@ -6,9 +6,10 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import d1 from '@/assets/images/d1.jpg';
 import { favoritesToggle } from "@/api/auth";
 import Snackbar from '@mui/material/Snackbar';
+import { useNavigate } from "react-router-dom";
 
 interface Doctor{
-  id: number;
+  id: string | number;
   image: string
   name: string
   specialty: string
@@ -24,6 +25,7 @@ interface DoctorCardProps {
 }
 
 export const DoctorCard = ({ doctor }: DoctorCardProps) => {
+  const navigate = useNavigate();
   const [isFavorited, setIsFavorited] = useState<boolean>(
     doctor.is_favorite
   );
@@ -31,11 +33,12 @@ export const DoctorCard = ({ doctor }: DoctorCardProps) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  const handleToggleFavorite = async () => {
+  const handleToggleFavorite = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigation when clicking favorite button
     setLoading(true);
     try {
       // Call the toggle favorite API
-      const result =await favoritesToggle(doctor.id);
+      const result =await favoritesToggle(doctor.id as string);
 
       // Update local state
       setIsFavorited((prev) => !prev);
@@ -47,10 +50,15 @@ export const DoctorCard = ({ doctor }: DoctorCardProps) => {
       setLoading(false);
     }
   };
+
+  const handleCardClick = () => {
+    navigate(`/doctor/${doctor.id}`);
+  };
   return (
     <MUICard
-      className="rounded-xl! bg-white border  border-gray-200 hover:shadow-md transition-shadow"
+      className="rounded-xl! bg-white border  border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
       elevation={0}
+      onClick={handleCardClick}
     >
       <div className="">
         <div className="flex items-start justify-between ">

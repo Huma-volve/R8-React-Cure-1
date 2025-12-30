@@ -4,7 +4,7 @@ import type { AppDispatch } from "@/store";
 import { useEffect } from "react";
 import { getChatList } from "../Redux-Store/ChatSlice/ChatSlice";
 import { useNavigate } from "react-router-dom";
-import profileImage from "@/assets/profileImage.jpg";
+import profileImage from "../../assets/Images/644acebb39b684127cacceef34d2234b0b1622c9.jpg";
 
 export default function Chat() {
   const { chatList, allMessages, isLoadingList, isErrorList, msgUnread, search } = useSelector(
@@ -85,7 +85,7 @@ export default function Chat() {
                 onClick={() => handleChatClick(chat)}
               >
                 <div className="flex gap-3">
-                  <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
+                  <div className="w-12.5 h-12.5 rounded-full overflow-hidden">
                     <img 
                       src={profileImage} 
                       className="w-full h-full object-cover" 
@@ -94,7 +94,7 @@ export default function Chat() {
                   </div>
                   <div>
                     <h6 className="text-sm font-medium">{chat.doctor.doctor_name}</h6>
-                    <p className="text-gray-500 text-sm truncate max-w-[180px]">
+                    <p className="text-gray-500 text-sm truncate max-w-45">
                       {lastMessage
                         ? lastMessage.is_deleted
                           ? <span className="italic">تم حذف الرساله</span>
@@ -113,7 +113,7 @@ export default function Chat() {
                   {chatMessages.length > 0 ? (
                     <>
                       {chatMessages.filter(msg => !msg.is_deleted).length >= 1 ? (
-                        <span className="bg-green-600 text-white w-[21px] h-[21px] rounded-full flex items-center justify-center text-xs mx-auto mt-1">
+                        <span className="bg-green-600 text-white h-5.25 w-5.25 rounded-full flex items-center justify-center text-xs mx-auto mt-1">
                           {chatMessages.filter(msg => !msg.is_deleted).length}
                         </span>
                       ) : ""}

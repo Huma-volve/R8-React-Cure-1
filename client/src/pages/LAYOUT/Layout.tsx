@@ -33,7 +33,7 @@ export default function Layout() {
     } else {
       dispatch(setTitlePage("Favorite"));
     }
-  }, [myStore.msgUnread, dispatch]);
+  }, [ myStore.msgUnread , dispatch]);
 
   return (
     <div className="p-5 pt-14 ">

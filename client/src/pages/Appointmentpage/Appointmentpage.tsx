@@ -17,9 +17,9 @@ import PopUp from '@/Components/Cards/PopUp';
 import Rating from '@mui/material/Rating';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { getDoctorById } from "@/api/auth";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { createChat } from "../Redux-Store/ChatSlice/ChatSlice";
-import type { RootState, AppDispatch } from "@/store";
+import type {  AppDispatch } from "@/store";
 
 
 interface Specialty {
@@ -55,14 +55,6 @@ interface Doctor{
   reviews?: ReviewsResponse
 }
 const AppointmentPage: React.FC = () => {
-
-
-  const currentRoomId = useSelector((store : RootState )=>{
-    return store.ChatSlice?.currentRoomId ?? null;
-  })
-
-
-  console.log("currentRoomId" , currentRoomId);
 
   const dispatch = useDispatch<AppDispatch>()
   

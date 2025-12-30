@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Camera, User, Lock, LogOut, Loader2, CheckCircle2, AlertCircle, X, MapPin, Mail, Phone } from 'lucide-react';
-import { getFullApiUrl } from '../config';
+import { useAuth } from '@/context/AuthContext';
 
 interface UserData {
   id?: number;
@@ -17,6 +17,7 @@ interface UserData {
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { userData, updateUserData, login, logout } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // States
@@ -49,24 +50,25 @@ const Profile = () => {
       const urlUser = params.get('user');
 
       if (urlToken) {
-        localStorage.setItem('auth_token', urlToken);
-        localStorage.setItem('token_type', params.get('token_type') || 'Bearer');
+        // Use login from context instead of manual localStorage
+        const tokenType = params.get('token_type') || 'Bearer';
+        let decodedUser = {};
         if (urlUser) {
           try {
-            const decodedUser = JSON.parse(decodeURIComponent(urlUser));
-            localStorage.setItem('user_data', JSON.stringify(decodedUser));
+            decodedUser = JSON.parse(decodeURIComponent(urlUser));
           } catch (e) {
             console.error('Error parsing user data from URL', e);
           }
         }
+        login(urlToken, tokenType, decodedUser);
+
         // Clean URL after consuming parameters
         window.history.replaceState({}, document.title, window.location.pathname);
       }
 
-      const userData = localStorage.getItem('user_data');
       if (userData) {
         try {
-          const user: UserData = JSON.parse(userData);
+          const user: UserData = userData;
           const initialData = {
             fullName: user.name || '',
             email: user.email || '',
@@ -91,12 +93,12 @@ const Profile = () => {
           console.error('Failed to parse user data', err);
         }
       } else {
-        // Sample data for development
+        // Initialize with empty if no user data yet (or stick to sample if preferred, but context is source of truth)
         const sample = {
-          fullName: 'Ahmed',
-          email: 'ahmedelabras@gmail.com',
-          phoneNumber: '01208448554',
-          location: 'Cairo, Egypt',
+          fullName: '',
+          email: '',
+          phoneNumber: '',
+          location: '',
           day: '01',
           month: '01',
           year: '1990',
@@ -108,7 +110,7 @@ const Profile = () => {
     };
 
     loadData();
-  }, []);
+  }, [userData, login]); // Re-run if userData changes (e.g. initial load)
 
   // Auto-dismiss alerts
   useEffect(() => {
@@ -176,11 +178,9 @@ const Profile = () => {
     const tokenType = localStorage.getItem('token_type') || 'Bearer';
     const birthday = `${formData.year}-${formData.month}-${formData.day}`;
 
-    // Helper to update local storage
-    const updateLocal = () => {
-      const existing = JSON.parse(localStorage.getItem('user_data') || '{}');
-      const updated = {
-        ...existing,
+    // Helper to update local storage and context
+    const updateLocalAndContext = () => {
+      const updated: Partial<UserData> = {
         name: formData.fullName,
         phone: formData.phoneNumber,
         email: formData.email,
@@ -188,13 +188,15 @@ const Profile = () => {
         location: formData.location,
         image: profileImage
       };
-      localStorage.setItem('user_data', JSON.stringify(updated));
+
+      // Update Context (which updates localStorage internally)
+      updateUserData(updated);
       setOriginalData(formData);
     };
 
     if (!token) {
       setTimeout(() => {
-        updateLocal();
+        updateLocalAndContext();
         setSuccess('Success! Changes saved to your browser (Dev Mode).');
         setIsSaving(false);
       }, 800);
@@ -202,8 +204,8 @@ const Profile = () => {
     }
 
     try {
-      const response = await fetch(getFullApiUrl('/api/v1/auth/profile/update'), {
-        method: 'POST',
+      const response = await fetch('https://round8-cure-php-team-two.huma-volve.com/api/patient/profile', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -221,8 +223,8 @@ const Profile = () => {
       const data = await response.json();
 
       if (response.status === 401) {
-        localStorage.clear();
-        navigate('/login');
+        logout();
+        navigate('/');
         throw new Error('Session expired. Please login again.');
       }
 
@@ -230,7 +232,7 @@ const Profile = () => {
         throw new Error(data.message || 'Update failed');
       }
 
-      updateLocal();
+      updateLocalAndContext();
       setSuccess('Profile updated successfully!');
       // Update original data so "Save" button becomes disabled until new changes
       setOriginalData(formData);
@@ -250,8 +252,8 @@ const Profile = () => {
   };
 
   const handleLogout = () => {
-    localStorage.clear();
-    navigate('/login');
+    logout();
+    navigate('/');
   };
 
   if (isLoading) {

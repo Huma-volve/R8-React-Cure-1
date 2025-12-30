@@ -16,7 +16,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import {Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type MobileProfileDrawerProps = {
   open: boolean;
@@ -24,8 +24,20 @@ type MobileProfileDrawerProps = {
 };
 
 function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
+  const navigate = useNavigate();
+
   function handleClose() {
     onClose();
+  }
+
+  function handleLogout() {
+    // مسح جميع بيانات المصادقة قبل التوجيه
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('token_type');
+    localStorage.removeItem('user_data');
+    localStorage.removeItem('verification_user_id');
+    onClose();
+    navigate('/');
   }
 
   return (
@@ -109,10 +121,10 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
         </Box>
         {/* Rest of the pop up buttons*/}
         {/* Menu list */}
-        
+
         <List sx={{ mt: 3 }}>
 
-            <ListItemButton >
+          <ListItemButton >
             <ListItemIcon>
               <LocationOnOutlinedIcon fontSize="small" />
             </ListItemIcon>
@@ -120,7 +132,7 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
             <ChevronRightIcon
               sx={{ ml: "auto", fontSize: 18, color: "text.disabled" }}
             />
-            </ListItemButton>
+          </ListItemButton>
 
           <ListItemButton component={Link} to="/payment" onClick={handleClose}>
             <ListItemIcon>
@@ -162,7 +174,7 @@ function MobileProfileDrawer({ open, onClose }: MobileProfileDrawerProps) {
             />
           </ListItemButton>
 
-          <ListItemButton component={Link} to="/" onClick={handleClose}>
+          <ListItemButton onClick={handleLogout}>
             <ListItemIcon>
               <LogoutIcon fontSize="small" color="error" />
             </ListItemIcon>

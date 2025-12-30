@@ -131,12 +131,6 @@ const LogIn = () => {
         alt="border"
       />
 
-      <img
-        src="src/assets/BsHeartPulse.png"
-        alt="heart"
-        className="absolute top-8 left-6 w-10 h-10 md:top-10 md:left-20 z-20"
-      />
-
       <div className="absolute inset-0 flex items-center justify-center md:justify-end md:pr-12 lg:pr-32 z-10 pointer-events-none">
         <div
           className="bg-white rounded-2xl shadow-2xl 

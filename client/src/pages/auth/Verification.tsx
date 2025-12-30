@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { getFullApiUrl } from '@/config';
- 
+
 const Verification = () => {
   const [code, setCode] = useState(['', '', '', '']);
   const [timer, setTimer] = useState(55);
@@ -100,7 +100,7 @@ const Verification = () => {
 
       // Redirect to login page after short delay
       setTimeout(() => {
-        window.location.href = '/login';
+        window.location.href = '/';
       }, 1500);
 
     } catch (err: any) {
@@ -125,12 +125,7 @@ const Verification = () => {
         alt="border"
       />
 
-      {/* Heart Icon */}
-      <img
-        src="src/assets/BsHeartPulse.png"
-        alt="heart"
-        className="absolute top-8 left-6 w-10 h-10 md:top-10 md:left-20 z-20"
-      />
+
 
 
       <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none px-4">

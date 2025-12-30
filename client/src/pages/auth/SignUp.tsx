@@ -126,24 +126,16 @@ const SignUp = () => {
       <img className="absolute top-0 right-0 w-full h-full object-right md:w-237" src="src/assets/wave bg.png" alt="wave bg" />
       <img className="absolute top-0 right-0 w-full h-full object-right md:w-237" src="src/assets/border.png" alt="border" />
 
-      <img
-        src="src/assets/BsHeartPulse.png"
-        alt="heart"
-        className="absolute top-8 left-6 w-10 h-10 md:top-10 md:left-20 z-20"
-      />
-
-      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none px-4">
+      <div className="absolute inset-0 flex items-start justify-center z-10 pointer-events-none px-4 pt-4 pb-8 md:items-center md:pt-0">
         <div
           className="bg-white rounded-2xl shadow-2xl 
                     w-full max-w-md 
-                    h-[65vh] md:h-[80vh] lg:h-[75vh]  
-                    overflow-y-auto             
-                    p-6 md:p-8 lg:p-10            
+                    px-4 sm:p-6 md:p-8            
                     pointer-events-auto
                     animate-in fade-in zoom-in-95 duration-300
                     md:-translate-x-20 lg:-translate-x-32"
         >
-          <div className="flex flex-col gap-6 md:gap-8 h-full">
+          <div className="flex flex-col gap-6 md:gap-4 h-full">
             <div className="text-center -space-y-1">
               <h1 className="text-2xl md:text-3xl font-bold text-[#05162C]">Sign Up</h1>
               <p className="text-xs md:text-sm text-[#6D7379] mt-2">
@@ -151,79 +143,84 @@ const SignUp = () => {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-[#05162C] mb-1">Full Name</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="John Doe"
-                  className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none"
-                  required
-                />
+            <form onSubmit={handleSubmit} className="space-y-3">
+              {/* Row 1: Full Name + Email */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-[#05162C] mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="John Doe"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-[#05162C] mb-1">Email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="example@mail.com"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none"
+                    required
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-medium text-[#05162C] mb-1">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="example@mail.com"
-                  className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none"
-                  required
-                />
+              {/* Row 2: Password + Confirm Password */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="relative">
+                  <label className="block text-xs font-medium text-[#05162C] mb-1">Password</label>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter password"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg 
+                              focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                              transition outline-none pr-10"
+                    required
+                  />
+                  {password && (
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-2 top-7 text-gray-500 hover:text-gray-700 transition"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <label className="block text-xs font-medium text-[#05162C] mb-1">Confirm Password</label>
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={passwordConfirmation}
+                    onChange={(e) => setPasswordConfirmation(e.target.value)}
+                    placeholder="Confirm password"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg 
+                              focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                              transition outline-none pr-10"
+                    required
+                  />
+                  {passwordConfirmation && (
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-2 top-7 text-gray-500 hover:text-gray-700 transition"
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  )}
+                </div>
               </div>
 
-              <div className="relative">
-                <label className="block text-xs font-medium text-[#05162C] mb-1">Password</label>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-
-                  className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg 
-                            focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                            transition outline-none pr-12"
-                  required
-                />
-                {password && (
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 pt-6 text-gray-500 hover:text-gray-700 transition"
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                )}
-              </div>
-
-              <div className="relative">
-                <label className="block text-xs font-medium text-[#05162C] mb-1">Confirm Password</label>
-                <input
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  value={passwordConfirmation}
-                  onChange={(e) => setPasswordConfirmation(e.target.value)}
-                  placeholder="Confirm your password"
-
-                  className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg 
-                            focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                            transition outline-none pr-12"
-                  required
-                />
-                {passwordConfirmation && (
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 pt-6 text-gray-500 hover:text-gray-700 transition"
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                )}
-              </div>
-
+              {/* Row 3: Phone Number (full width) */}
               <div>
                 <label className="block text-xs font-medium text-[#05162C] mb-1">Phone Number</label>
                 <PhoneInput
@@ -232,7 +229,7 @@ const SignUp = () => {
                   value={phoneNumber}
                   onChange={(value) => setPhoneNumber(value || '')}
                   placeholder="Enter phone number"
-                  className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 transition"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 transition"
                   required
                 />
               </div>

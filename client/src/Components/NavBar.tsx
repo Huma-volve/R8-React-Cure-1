@@ -14,6 +14,7 @@ import { Toolbar, useTheme } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 
 //Icons And images
@@ -32,6 +33,7 @@ import MobileProfileDrawer from "./MobileProfileDrawer";
 
 function Navbar() {
   const navigate = useNavigate();
+  const { userData, logout } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navButtonsOpen, setNavButtonsOpen] = useState(false);
 
@@ -66,19 +68,19 @@ function Navbar() {
           bgcolor: "white",
         }}
       >
-<Toolbar
-  sx={{
-    display: "flex",
-    flexWrap: "wrap",
-    alignItems: "center",
-    justifyContent: "space-between",
-    columnGap: 2,
-    rowGap: 2,
-    px: { xs: 2, sm: 4, md: 8 },
-    pb: "24px",
-    pt: { xs: "24px", sm: "52px" },
-  }}
->
+        <Toolbar
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "space-between",
+            columnGap: 2,
+            rowGap: 2,
+            px: { xs: 2, sm: 4, md: 8 },
+            pb: "24px",
+            pt: { xs: "24px", sm: "52px" },
+          }}
+        >
           {/* Left Side HeartPulse Icon */}
           <Box component={Link} to="/home" sx={{ order: { xs: 1, sm: 1 } }}>
             <IconButton sx={{ width: "64px" }}>
@@ -86,22 +88,22 @@ function Navbar() {
             </IconButton>
           </Box>
           <Box
-  sx={{
-    order: { xs: 3, md: 2 },
-    flexBasis: { xs: "100%", md: "auto" },
-    flexGrow: 1,
-    mx: { md: "auto" },
-    display: "flex",
-    justifyContent: "center",
-    transition: "transform 400ms ease",
-    transform: {
-      xs: "none",
-      md: navButtonsOpen ? "translateX(-20px)" : "translateX(0)",
-    },
-  }}
->
-  <NavBarSearch onSelect={(v) => console.log("search:", v)} />
-</Box>
+            sx={{
+              order: { xs: 3, md: 2 },
+              flexBasis: { xs: "100%", md: "auto" },
+              flexGrow: 1,
+              mx: { md: "auto" },
+              display: "flex",
+              justifyContent: "center",
+              transition: "transform 400ms ease",
+              transform: {
+                xs: "none",
+                md: navButtonsOpen ? "translateX(-20px)" : "translateX(0)",
+              },
+            }}
+          >
+            <NavBarSearch onSelect={(v) => console.log("search:", v)} />
+          </Box>
 
           {/* Right Side Icons Box */}
           <Box sx={{ order: { xs: 2, md: 3 } }}>
@@ -124,7 +126,7 @@ function Navbar() {
                 >
                   <Button //Home Button
                     component={Link}
-                    to="/home" 
+                    to="/home"
                     variant="contained"
                     sx={{
                       borderRadius: "10px",
@@ -138,8 +140,8 @@ function Navbar() {
                     Home
                   </Button>
                   <Button
-                                      component={Link}
-                    to="/booking" 
+                    component={Link}
+                    to="/booking"
                     sx={{
                       borderRadius: "10px",
                       textTransform: "none",
@@ -152,8 +154,8 @@ function Navbar() {
                     Bookings
                   </Button>
                   <Button
-                  component={Link}
-                    to="/chat" 
+                    component={Link}
+                    to="/chat"
                     sx={{
                       borderRadius: "10px",
                       textTransform: "none",
@@ -198,7 +200,7 @@ function Navbar() {
                   </IconButton>
 
                   {/* notification icon Button */}
-                 <IconButton
+                  <IconButton
                     onClick={handleNotificationClick}
                     sx={{
                       border: 1,
@@ -220,23 +222,26 @@ function Navbar() {
                       )}
                     </Badge>
                   </IconButton>
-                  <NotificationDropdown 
+                  <NotificationDropdown
                     anchorEl={notificationAnchor}
                     onClose={handleNotificationClose}
                     showIconButton={false}
-                  />                  
+                  />
                 </Box>
 
                 {/* user Icon Button */}
                 <ProfilePopUp
-                  name="Seif Mohamed"
-                  address="129, El-Nasr Street, Cairo"
-                  avatarSrc={testimage}
+                  name={userData?.name || "Guest"}
+                  address={userData?.location || "Welcome back"}
+                  avatarSrc={userData?.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData?.name || 'Guest')}&background=3b82f6&color=fff`}
                   onPaymentMethod={() => navigate("/payment")}
-      onFavorite={() => navigate("/favorite")}
-      onSettings={() => navigate("/profile")}
-      onPrivacy={() => navigate("/privacy")}
-      onLogout={()=> navigate("/login")}
+                  onFavorite={() => navigate("/favorite")}
+                  onSettings={() => navigate("/profile")}
+                  onPrivacy={() => navigate("/privacy")}
+                  onLogout={() => {
+                    logout();
+                    navigate("/");
+                  }}
                 />
               </Stack>
             </Box>

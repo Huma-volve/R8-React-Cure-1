@@ -135,6 +135,89 @@ export const getSpecialists = async () => {
 };
 
 /**
+ * Get nearby doctors
+ */
+export interface NearbyDoctor {
+  id: number;
+  name: string;
+  image: string;
+  hospital_name: string;
+  specialty_id: number;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  specialty: {
+    id: number;
+    name: string;
+    icon: string | null;
+    created_at: string;
+    updated_at: string;
+  };
+  times: Array<{
+    id: number;
+    date: string;
+    start_time: string;
+    end_time: string;
+    doctor_id: number;
+    created_at: string;
+    updated_at: string;
+  }>;
+  reviews: any[];
+}
+
+export interface NearbyDoctorsResponse {
+  status: boolean;
+  message: string;
+  data: {
+    doctors_near_you: {
+      current_page: number;
+      data: NearbyDoctor[];
+      first_page_url: string;
+      from: number;
+      last_page: number;
+      last_page_url: string;
+      links: Array<{
+        url: string | null;
+        label: string;
+        page: number | null;
+        active: boolean;
+      }>;
+      next_page_url: string | null;
+      path: string;
+      per_page: number;
+      prev_page_url: string | null;
+      to: number;
+      total: number;
+    };
+  };
+}
+
+export const getNearbyDoctors = async (
+  page: number = 1
+): Promise<NearbyDoctorsResponse> => {
+  try {
+    const response = await api.get<NearbyDoctorsResponse>(
+      `/home/all-near-you-doctors`,
+      {
+        params: { page },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+      throw new Error(
+        error.response.data.message || "Failed to fetch nearby doctors"
+      );
+    } else if (error.message) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("Failed to fetch nearby doctors");
+    }
+  }
+};
+
+/**
  * get Doctor Reviews by id 
  **/
 
@@ -202,4 +285,140 @@ export const bookAppointment = async (data: BookingData) => {
   }
 };
 
+/**
+ * Create Stripe Payment Intent
+ */
+interface CreatePaymentIntentPayload {
+  booking_id: number;
+  amount?: number; // Optional, backend might calculate it
+}
+
+interface PaymentIntentResponse {
+  status: boolean;
+  message: string;
+  data: {
+    payment_intent_id: string;
+    client_secret: string;
+    payment_id: number;
+    publishableKey: string;
+  };
+}
+
+export const createPaymentIntent = async (
+  data: CreatePaymentIntentPayload
+): Promise<PaymentIntentResponse> => {
+  try {
+    const response = await api.post<PaymentIntentResponse>(
+      "/stripe/create-payment-intent",
+      data
+    );
+    return response.data;
+  } catch (error: any) {
+    // Throw a consistent error object
+    if (error.response && error.response.data) {
+      // Backend returned an error response
+      throw new Error(
+        error.response.data.message || "Failed to create payment intent"
+      );
+    } else if (error.message) {
+      // Network or Axios error
+      throw new Error(error.message);
+    } else {
+      throw new Error("Failed to create payment intent");
+    }
+  }
+};
+
+/**
+ * Confirm Stripe Payment
+ */
+interface ConfirmPaymentPayload {
+  payment_intent_id: string;
+  payment_method_id?: string; // Optional, if using saved payment method
+}
+
+interface ConfirmPaymentResponse {
+  status: boolean;
+  message: string;
+  data: {
+    stripe_status: string; // e.g., "requires_payment_method", "succeeded", etc.
+  };
+}
+
+export const confirmPayment = async (
+  data: ConfirmPaymentPayload
+): Promise<ConfirmPaymentResponse> => {
+  try {
+    const response = await api.post<ConfirmPaymentResponse>(
+      "/stripe/confirm-payment",
+      data
+    );
+    return response.data;
+  } catch (error: any) {
+    // Throw a consistent error object
+    if (error.response && error.response.data) {
+      // Backend returned an error response
+      throw new Error(
+        error.response.data.message || "Failed to confirm payment"
+      );
+    } else if (error.message) {
+      // Network or Axios error
+      throw new Error(error.message);
+    } else {
+      throw new Error("Failed to confirm payment");
+    }
+  }
+};
+
+/**
+ * Get Booking Details by ID
+ */
+interface BookingDetails {
+  id: number;
+  doctor_id: number;
+  doctor: {
+    name: string;
+    image?: string;
+    job: string;
+    price?: number;
+  };
+  date: string;
+  time: string;
+  status: string;
+  cancelStatus: string;
+  address: string;
+  can_cancel: boolean;
+}
+
+interface BookingDetailsResponse {
+  status: boolean;
+  message: string;
+  data: BookingDetails;
+}
+
+export const getBookingById = async (
+  bookingId: number
+): Promise<BookingDetailsResponse> => {
+  try {
+    const response = await api.get<BookingDetailsResponse>(
+      `/appointments/${bookingId}`
+    );
+    return response.data;
+  } catch (error: any) {
+    // Throw a consistent error object
+    if (error.response && error.response.data) {
+      throw new Error(
+        error.response.data.message || "Failed to get booking details"
+      );
+    } else if (error.message) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("Failed to get booking details");
+    }
+  }
+};
+
 export default api;
+
+// Re-export types for easier importing
+export type { NearbyDoctor, NearbyDoctorsResponse };

@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { createPaymentIntent, confirmPayment, getBookingById, getDoctorById } from "../api/auth";
 
 export type PaymentPayload = {
   booking_id: number;
@@ -13,6 +14,35 @@ export type SavedPaymentMethod = {
   exp_month: number; // Expiry month (1-12)
   exp_year: number; // Expiry year (e.g., 2025)
   is_default: boolean; // Whether this is the default payment method
+};
+
+export type CreatePaymentIntentPayload = {
+  booking_id: number;
+  amount?: number; // Optional, backend might calculate it
+};
+
+export type PaymentIntentResponse = {
+  status: boolean;
+  message: string;
+  data: {
+    payment_intent_id: string;
+    client_secret: string;
+    payment_id: number;
+    publishableKey: string;
+  };
+};
+
+export type ConfirmPaymentPayload = {
+  payment_intent_id: string;
+  payment_method_id?: string; // Optional, if using saved payment method
+};
+
+export type ConfirmPaymentResponse = {
+  status: boolean;
+  message: string;
+  data: {
+    stripe_status: string; // e.g., "requires_payment_method", "succeeded", etc.
+  };
 };
 
 // ---- Static / mock data instead of real API calls ----
@@ -47,6 +77,48 @@ async function getSavedPaymentMethodsMock(): Promise<SavedPaymentMethod[]> {
       is_default: false,
     },
   ];
+}
+
+/**
+ * Hook to create Stripe payment intent
+ */
+export function useCreatePaymentIntent() {
+  return useMutation({
+    mutationFn: (payload: CreatePaymentIntentPayload) =>
+      createPaymentIntent(payload),
+  });
+}
+
+/**
+ * Hook to confirm Stripe payment
+ */
+export function useConfirmPayment() {
+  return useMutation({
+    mutationFn: (payload: ConfirmPaymentPayload) =>
+      confirmPayment(payload),
+  });
+}
+
+/**
+ * Hook to get booking details by ID
+ */
+export function useBookingDetails(bookingId: number | undefined) {
+  return useQuery({
+    queryKey: ["bookingDetails", bookingId],
+    queryFn: () => getBookingById(bookingId!),
+    enabled: !!bookingId,
+  });
+}
+
+/**
+ * Hook to get doctor details by ID
+ */
+export function useDoctorDetails(doctorId: number | string | undefined) {
+  return useQuery({
+    queryKey: ["doctorDetails", doctorId],
+    queryFn: () => getDoctorById(String(doctorId!)),
+    enabled: !!doctorId,
+  });
 }
 
 export function useSendPayment() {

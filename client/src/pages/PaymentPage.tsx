@@ -6,6 +6,13 @@ import { useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setBookingId } from "../store/paymentSlice";
 import type { AppDispatch } from "../store";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+
+// Initialize Stripe with publishable key
+// You can get this from environment variable or from API response
+const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_51SbehEKP7rMANlwKO8w9gOkx330Ts4fLUPvyRGFQkbkNVACaa81M8rsJNn4cUj2WZMmUNhzyGneQftmjnIZQ937w00EuA98GFO";
+const stripePromise = loadStripe(stripePublishableKey);
 
 export default function PaymentPage() {
   const [searchParams] = useSearchParams();
@@ -47,7 +54,9 @@ export default function PaymentPage() {
 
         <div className="flex justify-center">
           <div className="w-full">
-            <PaymentCard onSuccess={handleSuccess} />
+            <Elements stripe={stripePromise}>
+              <PaymentCard onSuccess={handleSuccess} />
+            </Elements>
           </div>
         </div>
       </div>

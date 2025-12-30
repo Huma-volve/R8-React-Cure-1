@@ -116,12 +116,12 @@ const Verification = () => {
 
       <img
         className="absolute top-0 right-0 w-full h-full  object-right md:w-237"
-        src="src/assets/wave bg.png"
+        src="src/assets/images/wave bg.png"
         alt="wave bg"
       />
       <img
         className="absolute top-0 right-0 w-full h-full  object-right md:w-237"
-        src="src/assets/border.png"
+        src="src/assets/images/border.png"
         alt="border"
       />
 

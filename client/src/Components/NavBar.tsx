@@ -13,14 +13,13 @@ import {
 import { Toolbar, useTheme } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
 
 //Icons And images
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import testimage from "../assets/NavBarIcons/testimage.jpg";
 import BsHeartPulse from "../assets/NavBarIcons/BsHeartPulse.svg";
 //import Magnifer from "../assets/NavBarIcons/Magnifer.svg";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
@@ -33,7 +32,7 @@ import MobileProfileDrawer from "./MobileProfileDrawer";
 
 function Navbar() {
   const navigate = useNavigate();
-  const { userData, logout } = useAuth();
+  const { userData, logout, isAuthenticated } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navButtonsOpen, setNavButtonsOpen] = useState(false);
 
@@ -59,13 +58,16 @@ function Navbar() {
     }
   }
 
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/' || location.pathname === '/signup' || location.pathname === '/verify';
+
   return (
     <>
       <AppBar
         elevation={0}
         sx={{
           position: "fixed",
-          bgcolor: "white",
+          bgcolor: isAuthPage ? "transparent" : "white",
         }}
       >
         <Toolbar
@@ -102,149 +104,151 @@ function Navbar() {
               },
             }}
           >
-            <NavBarSearch onSelect={(v) => console.log("search:", v)} />
+            {isAuthenticated && <NavBarSearch onSelect={(v) => console.log("search:", v)} />}
           </Box>
 
           {/* Right Side Icons Box */}
           <Box sx={{ order: { xs: 2, md: 3 } }}>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              {/* 3 nav buttons from menu button  */}
-              <Slide
-                in={navButtonsOpen && !isMobile}
-                direction="left"
-                timeout={{ enter: 400, exit: 300 }}
-                mountOnEnter
-                unmountOnExit
-              >
-                <Stack
-                  direction="row"
-                  spacing={1.5}
-                  sx={{
-                    mr: 2,
-                    display: { xs: "none", sm: "flex" },
-                  }}
+            {isAuthenticated && (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                {/* 3 nav buttons from menu button  */}
+                <Slide
+                  in={navButtonsOpen && !isMobile}
+                  direction="left"
+                  timeout={{ enter: 400, exit: 300 }}
+                  mountOnEnter
+                  unmountOnExit
                 >
-                  <Button //Home Button
-                    component={Link}
-                    to="/home"
-                    variant="contained"
+                  <Stack
+                    direction="row"
+                    spacing={1.5}
                     sx={{
-                      borderRadius: "10px",
-                      textTransform: "none",
-                      bgcolor: "#F5F6F7",
-                      color: "text.primary",
-                      boxShadow: "none",
-                      "&:hover": { bgcolor: "#E9EAEC", boxShadow: "none" },
-                    }}
-                  >
-                    Home
-                  </Button>
-                  <Button
-                    component={Link}
-                    to="/booking"
-                    sx={{
-                      borderRadius: "10px",
-                      textTransform: "none",
-                      bgcolor: "#F5F6F7",
-                      color: "text.primary",
-                      boxShadow: "none",
-                      "&:hover": { bgcolor: "#E9EAEC", boxShadow: "none" },
-                    }}
-                  >
-                    Bookings
-                  </Button>
-                  <Button
-                    component={Link}
-                    to="/chat"
-                    sx={{
-                      borderRadius: "10px",
-                      textTransform: "none",
-                      bgcolor: "#F5F6F7",
-                      color: "text.primary",
-                      boxShadow: "none",
-                      "&:hover": { bgcolor: "#E9EAEC", boxShadow: "none" },
-                    }}
-                  >
-                    Chat
-                  </Button>
-                </Stack>
-              </Slide>
-
-              <Stack direction="row" spacing={{ xs: 2, sm: 4 }}>
-                {/* notification and nenu Icons Box */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: "16px",
-                    height: "40px",
-                    width: "96x",
-                  }}
-                >
-                  {/* Menu Icon Button */}
-                  <IconButton
-                    sx={{
-                      border: 1,
-                      borderRadius: "10px",
-                      borderColor: "transparent",
-                      color: "#05162C",
-                      bgcolor: "#F5F6F7",
-                      transition:
-                        "transform 200ms ease, background-color 200ms ease",
-                      transform:
-                        !isMobile && navButtonsOpen ? "rotate(90deg)" : "none",
-                    }}
-                    onClick={handleMenuClick}
-                  >
-                    {/* swap icon on desktop when nav open */}
-                    {!isMobile && navButtonsOpen ? <CloseIcon /> : <MenuIcon />}
-                  </IconButton>
-
-                  {/* notification icon Button */}
-                  <IconButton
-                    onClick={handleNotificationClick}
-                    sx={{
-                      border: 1,
-                      borderRadius: "10px",
-                      borderColor: "transparent",
-                      color: "#05162C",
-                      bgcolor: "#F5F6F7",
+                      mr: 2,
                       display: { xs: "none", sm: "flex" },
-                      "&:hover": {
-                        bgcolor: "#E9EAEC",
-                      },
                     }}
                   >
-                    <Badge badgeContent={unreadCount} color="error">
-                      {unreadCount > 0 ? (
-                        <NotificationsIcon />
-                      ) : (
-                        <NotificationsNoneIcon />
-                      )}
-                    </Badge>
-                  </IconButton>
-                  <NotificationDropdown
-                    anchorEl={notificationAnchor}
-                    onClose={handleNotificationClose}
-                    showIconButton={false}
-                  />
-                </Box>
+                    <Button //Home Button
+                      component={Link}
+                      to="/home"
+                      variant="contained"
+                      sx={{
+                        borderRadius: "10px",
+                        textTransform: "none",
+                        bgcolor: "#F5F6F7",
+                        color: "text.primary",
+                        boxShadow: "none",
+                        "&:hover": { bgcolor: "#E9EAEC", boxShadow: "none" },
+                      }}
+                    >
+                      Home
+                    </Button>
+                    <Button
+                      component={Link}
+                      to="/booking"
+                      sx={{
+                        borderRadius: "10px",
+                        textTransform: "none",
+                        bgcolor: "#F5F6F7",
+                        color: "text.primary",
+                        boxShadow: "none",
+                        "&:hover": { bgcolor: "#E9EAEC", boxShadow: "none" },
+                      }}
+                    >
+                      Bookings
+                    </Button>
+                    <Button
+                      component={Link}
+                      to="/chat"
+                      sx={{
+                        borderRadius: "10px",
+                        textTransform: "none",
+                        bgcolor: "#F5F6F7",
+                        color: "text.primary",
+                        boxShadow: "none",
+                        "&:hover": { bgcolor: "#E9EAEC", boxShadow: "none" },
+                      }}
+                    >
+                      Chat
+                    </Button>
+                  </Stack>
+                </Slide>
 
-                {/* user Icon Button */}
-                <ProfilePopUp
-                  name={userData?.name || "Guest"}
-                  address={userData?.location || "Welcome back"}
-                  avatarSrc={userData?.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData?.name || 'Guest')}&background=3b82f6&color=fff`}
-                  onPaymentMethod={() => navigate("/payment")}
-                  onFavorite={() => navigate("/favorite")}
-                  onSettings={() => navigate("/profile")}
-                  onPrivacy={() => navigate("/privacy")}
-                  onLogout={() => {
-                    logout();
-                    navigate("/");
-                  }}
-                />
-              </Stack>
-            </Box>
+                <Stack direction="row" spacing={{ xs: 2, sm: 4 }}>
+                  {/* notification and nenu Icons Box */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: "16px",
+                      height: "40px",
+                      width: "96x",
+                    }}
+                  >
+                    {/* Menu Icon Button */}
+                    <IconButton
+                      sx={{
+                        border: 1,
+                        borderRadius: "10px",
+                        borderColor: "transparent",
+                        color: "#05162C",
+                        bgcolor: "#F5F6F7",
+                        transition:
+                          "transform 200ms ease, background-color 200ms ease",
+                        transform:
+                          !isMobile && navButtonsOpen ? "rotate(90deg)" : "none",
+                      }}
+                      onClick={handleMenuClick}
+                    >
+                      {/* swap icon on desktop when nav open */}
+                      {!isMobile && navButtonsOpen ? <CloseIcon /> : <MenuIcon />}
+                    </IconButton>
+
+                    {/* notification icon Button */}
+                    <IconButton
+                      onClick={handleNotificationClick}
+                      sx={{
+                        border: 1,
+                        borderRadius: "10px",
+                        borderColor: "transparent",
+                        color: "#05162C",
+                        bgcolor: "#F5F6F7",
+                        display: { xs: "none", sm: "flex" },
+                        "&:hover": {
+                          bgcolor: "#E9EAEC",
+                        },
+                      }}
+                    >
+                      <Badge badgeContent={unreadCount} color="error">
+                        {unreadCount > 0 ? (
+                          <NotificationsIcon />
+                        ) : (
+                          <NotificationsNoneIcon />
+                        )}
+                      </Badge>
+                    </IconButton>
+                    <NotificationDropdown
+                      anchorEl={notificationAnchor}
+                      onClose={handleNotificationClose}
+                      showIconButton={false}
+                    />
+                  </Box>
+
+                  {/* user Icon Button */}
+                  <ProfilePopUp
+                    name={userData?.name || "Guest"}
+                    address={userData?.location || "Welcome back"}
+                    avatarSrc={userData?.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData?.name || 'Guest')}&background=3b82f6&color=fff`}
+                    onPaymentMethod={() => navigate("/payment")}
+                    onFavorite={() => navigate("/favorite")}
+                    onSettings={() => navigate("/profile")}
+                    onPrivacy={() => navigate("/privacy")}
+                    onLogout={() => {
+                      logout();
+                      navigate("/");
+                    }}
+                  />
+                </Stack>
+              </Box>
+            )}
           </Box>
         </Toolbar>
       </AppBar>

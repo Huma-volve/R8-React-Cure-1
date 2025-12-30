@@ -1,5 +1,5 @@
 import Booking from '@/pages/Booking/Booking'
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Navbar from './Components/NavBar';
 import Footer from './Components/Footer';
 import ProtectedRoute from './Components/ProtectedRoute';
@@ -22,10 +22,15 @@ import Layout from './pages/LAYOUT/Layout';
 
 
 function App() {
+  const location = useLocation();
+  // Define routes that need full screen (no top margin) i.e., Login
+  // You can add '/signup' or others here if they share the same design
+  const isAuthPage = location.pathname === '/' || location.pathname === '/signup' || location.pathname === '/verify';
+
   return (
     <>
       <Navbar />
-      <main className="mt-35 lg:mt-30">
+      <main className={isAuthPage ? "mt-0" : "mt-35 lg:mt-30"}>
         <Routes>
           {/* Public Routes - لا تحتاج تسجيل دخول */}
           <Route path="/" element={<LogIn />} />

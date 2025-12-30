@@ -123,8 +123,8 @@ const SignUp = () => {
 
   return (
     <div className="flex min-h-screen relative overflow-hidden">
-      <img className="absolute top-0 right-0 w-full h-full object-right md:w-237" src="src/assets/wave bg.png" alt="wave bg" />
-      <img className="absolute top-0 right-0 w-full h-full object-right md:w-237" src="src/assets/border.png" alt="border" />
+      <img className="absolute top-0 right-0 w-full h-full object-right md:w-237" src="src/assets/images/wave bg.png" alt="wave bg" />
+      <img className="absolute top-0 right-0 w-full h-full object-right md:w-237" src="src/assets/images/border.png" alt="border" />
 
       <div className="absolute inset-0 flex items-start justify-center z-10 pointer-events-none px-4 pt-4 pb-8 md:items-center md:pt-0">
         <div

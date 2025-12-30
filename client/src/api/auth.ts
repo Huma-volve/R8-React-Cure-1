@@ -233,7 +233,7 @@ export const getReviews = async (doctorId: number) => {
  * favoritesToggle
  **/
 
-export const favoritesToggle = async (doctorId: number) => {
+export const favoritesToggle = async (doctorId: string) => {
   try {
   const response = await api.post(
     `/favorites-toggle/${doctorId}`
@@ -420,5 +420,5 @@ export const getBookingById = async (
 
 export default api;
 
-// Re-export types for easier importing
-export type { NearbyDoctor, NearbyDoctorsResponse };
+// // Re-export types for easier importing
+// export type { NearbyDoctor, NearbyDoctorsResponse };

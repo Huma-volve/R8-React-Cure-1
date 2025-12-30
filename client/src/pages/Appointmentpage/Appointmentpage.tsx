@@ -20,6 +20,7 @@ import { getDoctorById } from "@/api/auth";
 import { useDispatch } from "react-redux";
 import { createChat } from "../Redux-Store/ChatSlice/ChatSlice";
 import type {  AppDispatch } from "@/store";
+import { favoritesToggle } from "@/api/auth";
 
 
 interface Specialty {
@@ -58,28 +59,11 @@ const AppointmentPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { id } = useParams();
   const navigate = useNavigate();
-  const [isFavorited, setIsFavorited] = useState(false)
-  const handleFavoriteToggle = () => {
-  setIsFavorited((prev) => {
-    const newValue = !prev;
-
-    console.log(
-      newValue
-        ? "Doctor added to favorites (UI only)"
-        : "Doctor removed from favorites (UI only)"
-    );
-
-    return newValue;
-  });
-};
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState(false);
   const [doctor, setDoctor] = useState<Doctor | null>(null);
-
-  
-
-
-
+  const [isFavorited, setIsFavorited] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
  useEffect(() => {
     if (!id) return;
@@ -91,6 +75,20 @@ const AppointmentPage: React.FC = () => {
     .catch(console.error);
   }, [id]);
 
+  const handleToggleFavorite = async (e: React.MouseEvent) => {
+      e.stopPropagation(); // Prevent navigation when clicking favorite button
+      setLoading(true);
+      try {
+        // Call the toggle favorite API
+        await favoritesToggle(id as string);
+        // Update local state
+        setIsFavorited((prev) => !prev);
+      } catch (error) {
+        console.error("Failed to toggle favorite", error);
+      } finally {
+        setLoading(false);
+      }
+    };
   if (!doctor) return <AppointmentSkeleton/>;
 
   
@@ -186,7 +184,8 @@ const reviews = normalizeReviews(doctor.reviews).slice(0, 2);
           {/* Doctor Header with favorite and chat buttons */}
           <div className='flex flex-row justify-between items-start p-2'>
             <button
-              onClick={handleFavoriteToggle}
+              onClick={handleToggleFavorite}
+              disabled={loading}
               className="relative transition-colors border-0 rounded-full bg-amber-50 h-10 w-10 md:h-12 md:w-12 flex items-center justify-center"
               aria-label="Toggle favorite"
             >

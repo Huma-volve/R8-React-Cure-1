@@ -9,7 +9,7 @@ import Snackbar from '@mui/material/Snackbar';
 import { useNavigate } from "react-router-dom";
 
 interface Doctor{
-  id: number;
+  id: string | number;
   image: string
   name: string
   specialty: string
@@ -38,7 +38,7 @@ export const DoctorCard = ({ doctor }: DoctorCardProps) => {
     setLoading(true);
     try {
       // Call the toggle favorite API
-      const result =await favoritesToggle(doctor.id);
+      const result =await favoritesToggle(doctor.id as string);
 
       // Update local state
       setIsFavorited((prev) => !prev);

@@ -314,6 +314,7 @@ if (loading) return <SearchSkeleton/>;
                             width: { xs: '100%', md: 150 }, 
                             height:52
                         }} 
+                        onClick={() => navigate('/map')}
                         variant="outlined" 
                         startIcon={<RouteIcon />}
                     >

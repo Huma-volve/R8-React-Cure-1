@@ -55,14 +55,11 @@ interface Doctor{
   reviews?: ReviewsResponse
 }
 const AppointmentPage: React.FC = () => {
-
   const dispatch = useDispatch<AppDispatch>()
-  
-
   const { id } = useParams();
   const navigate = useNavigate();
   const [isFavorited, setIsFavorited] = useState(false)
-const handleFavoriteToggle = () => {
+  const handleFavoriteToggle = () => {
   setIsFavorited((prev) => {
     const newValue = !prev;
 

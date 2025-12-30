@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import PaymentCard from "@/Components/PaymentCard";
 import ConfirmModal from "@/Components/ConfirmModal";
 import { Typography } from "@mui/material";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setBookingId } from "../store/paymentSlice";
 import type { AppDispatch } from "../store";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+
+
 
 // Initialize Stripe with publishable key
 // You can get this from environment variable or from API response
@@ -24,7 +26,7 @@ export default function PaymentPage() {
 
   // Get booking_id from URL params and store in Redux
   useEffect(() => {
-    const bookingIdParam = searchParams.get("booking_id");
+    const bookingIdParam = searchParams.get("bookingId");
     if (bookingIdParam) {
       const bookingId = parseInt(bookingIdParam, 10);
       if (!isNaN(bookingId)) {

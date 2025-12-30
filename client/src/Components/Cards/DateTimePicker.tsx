@@ -1,6 +1,6 @@
+import { useNavigate  } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
-// import { Link } from "react-router-dom";
 import Snackbar from '@mui/material/Snackbar';
 import { getDoctorById } from "@/api/auth";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -31,6 +31,7 @@ interface TimesByMonth {
 }
 
 export function DateTimePicker() {
+  const navigate = useNavigate();
   const { id } = useParams()
   const [timesByMonth, setTimesByMonth] = useState<TimesByMonth>({});
   const [selectedMonth, setSelectedMonth] = useState<string>(''); // "YYYY-MM"
@@ -117,16 +118,19 @@ useEffect(() => {
       date,
       time,
     };
-
-    const result = await bookAppointment(bookingData);
+    
+    let result = await bookAppointment(bookingData);
+    const bookingId = result.data.id;
      setSnackbarMessage(result.data?.message || "Booking successful!");
       setSnackbarOpen(true);
+      navigate(`/payment/?bookingId=${bookingId}`);
     } catch (error: any) {
       // Show error message
       console.log(error);
       setSnackbarMessage(error.message);
       setSnackbarOpen(true);
     }
+    
 };
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-4 md:p-6 shadow-sm">

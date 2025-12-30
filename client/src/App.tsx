@@ -31,7 +31,7 @@ function App() {
       <main className="mt-35 lg:mt-30">
       <Routes>
         <Route path="/map" element={<DoctorsMap />} />
-        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/payment/" element={<PaymentPage />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/doctor/:id" element={<DoctorDetails />} />
         <Route path="/" element={<LogIn />} />

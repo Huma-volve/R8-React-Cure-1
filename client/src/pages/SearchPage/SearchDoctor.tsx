@@ -405,15 +405,38 @@ if (loading) return <SearchSkeleton/>;
                                       </div>                                            
                                       <div className="font-montserrat text-lg ml-2 text-red-400">{doctor.price}</div>
                                     </div>
-                                    <Button   onClick={() => navigate(`/doctors/${doctor.id}`)}
-                                    variant="contained" 
-                                    sx={{ 
-                                        width:'100%',
-                                        borderRadius: 0,
-                                    }}
-                                    >
+                                    <div className="flex gap-2 p-2">
+                                      <Button
+                                        onClick={() => navigate(`/doctor/${doctor.id}`)}
+                                        variant="outlined"
+                                        sx={{
+                                          flex: 1,
+                                          borderRadius: 0,
+                                          borderColor: '#2d9cdb',
+                                          color: '#2d9cdb',
+                                          '&:hover': {
+                                            borderColor: '#1e7bb8',
+                                            backgroundColor: '#e0f2fe',
+                                          },
+                                        }}
+                                      >
+                                        View Details
+                                      </Button>
+                                      <Button
+                                        onClick={() => navigate(`/doctors/${doctor.id}`)}
+                                        variant="contained"
+                                        sx={{
+                                          flex: 1,
+                                          borderRadius: 0,
+                                          backgroundColor: '#2d9cdb',
+                                          '&:hover': {
+                                            backgroundColor: '#1e7bb8',
+                                          },
+                                        }}
+                                      >
                                         Book Appointment
-                                    </Button>
+                                      </Button>
+                                    </div>
                                   </div>
                                 )))}
                     </div>

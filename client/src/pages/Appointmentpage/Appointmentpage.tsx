@@ -18,9 +18,8 @@ import Rating from '@mui/material/Rating';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { getDoctorById } from "@/api/auth";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../Redux-Store/BokingStore/BokingStore";
 import { createChat } from "../Redux-Store/ChatSlice/ChatSlice";
-import type { AppDispatch } from "@/store";
+import type { RootState, AppDispatch } from "@/store";
 
 
 interface Specialty {
@@ -58,8 +57,8 @@ interface Doctor{
 const AppointmentPage: React.FC = () => {
 
 
-  const { currentRoomId } = useSelector((store : RootState )=>{
-    return store.ChatSlice
+  const currentRoomId = useSelector((store : RootState )=>{
+    return store.ChatSlice?.currentRoomId ?? null;
   })
 
 

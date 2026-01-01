@@ -72,6 +72,7 @@ export default function NotificationDropdown({
   const handleMarkAllAsRead = async () => {
     try {
       await markAllAsRead.mutateAsync();
+      // The query will automatically refetch after mutation due to invalidateQueries
     } catch (error) {
       console.error("Failed to mark all as read:", error);
     }
@@ -128,7 +129,9 @@ export default function NotificationDropdown({
     }
   };
 
-  const displayNotifications = allNotifications || [];
+  // Filter out read notifications - only show unread ones
+  // After marking all as read, read notifications will be filtered out
+  const displayNotifications = (allNotifications || []).filter((n) => !n.read_at);
 
   return (
     <>

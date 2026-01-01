@@ -1,7 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "../api/auth";
 
 export type Notification = {
-  id: string; // UUID from backend
+  id: string | number; // UUID or ID from backend
   title: string;
   message: string;
   read_at: string | null;
@@ -10,53 +11,55 @@ export type Notification = {
   data?: Record<string, any>;
 };
 
-// ---- Static / mock notifications instead of real API calls ----
-
-const MOCK_NOTIFICATIONS: Notification[] = [
-  {
-    id: "1",
-    title: "Appointment confirmed",
-    message: "Your appointment with Dr. Jessica Turner is confirmed.",
-    read_at: null,
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    title: "New message",
-    message: "You have a new message from the clinic.",
-    read_at: null,
-    created_at: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-  },
-  {
-    id: "3",
-    title: "Reminder",
-    message: "Don't forget your upcoming appointment tomorrow.",
-    read_at: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
-    created_at: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
-  },
-];
-
-async function getAllNotificationsMock(): Promise<Notification[]> {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return MOCK_NOTIFICATIONS;
+interface NotificationsResponse {
+  status: boolean;
+  message: string;
+  data: Notification[];
 }
 
-async function getUnreadNotificationsMock(): Promise<Notification[]> {
-  const all = await getAllNotificationsMock();
-  return all.filter((n) => !n.read_at);
+// ---- Real API calls ----
+
+async function getAllNotifications(): Promise<Notification[]> {
+  try {
+    const response = await api.get<NotificationsResponse>("/notifications");
+    if (response.data.status && response.data.data) {
+      return response.data.data;
+    }
+    return [];
+  } catch (error: any) {
+    console.error("Failed to fetch notifications:", error);
+    return [];
+  }
+}
+
+async function getUnreadNotifications(): Promise<Notification[]> {
+  try {
+    const response = await api.get<NotificationsResponse>("/notifications/unread");
+    if (response.data.status && response.data.data) {
+      return response.data.data;
+    }
+    return [];
+  } catch (error: any) {
+    console.error("Failed to fetch unread notifications:", error);
+    return [];
+  }
 }
 
 export function useNotifications() {
   return useQuery({
     queryKey: ["notifications"],
-    queryFn: getAllNotificationsMock,
+    queryFn: getAllNotifications,
+    refetchOnWindowFocus: true,
+    refetchInterval: 30000, // Refetch every 30 seconds
   });
 }
 
 export function useUnreadNotifications() {
   return useQuery({
     queryKey: ["notifications", "unread"],
-    queryFn: getUnreadNotificationsMock,
+    queryFn: getUnreadNotifications,
+    refetchOnWindowFocus: true,
+    refetchInterval: 30000, // Refetch every 30 seconds
   });
 }
 
@@ -64,17 +67,19 @@ export function useMarkNotificationAsRead() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      const current =
-        queryClient.getQueryData<Notification[]>(["notifications"]) || [];
-      const updated = current.map((n) =>
-        n.id === id ? { ...n, read_at: new Date().toISOString() } : n
-      );
-      queryClient.setQueryData(["notifications"], updated);
-      queryClient.setQueryData(
-        ["notifications", "unread"],
-        updated.filter((n) => !n.read_at)
-      );
+    mutationFn: async (id: string | number) => {
+      try {
+        const response = await api.post(`/notifications/${id}/read`);
+        if (response.data.status) {
+          // Invalidate and refetch notifications
+          await queryClient.invalidateQueries({ queryKey: ["notifications"] });
+          await queryClient.invalidateQueries({ queryKey: ["notifications", "unread"] });
+        }
+        return response.data;
+      } catch (error: any) {
+        console.error("Failed to mark notification as read:", error);
+        throw error;
+      }
     },
   });
 }
@@ -84,17 +89,18 @@ export function useMarkAllNotificationsAsRead() {
 
   return useMutation({
     mutationFn: async () => {
-      const current =
-        queryClient.getQueryData<Notification[]>(["notifications"]) || [];
-      const updated = current.map((n) => ({
-        ...n,
-        read_at: n.read_at || new Date().toISOString(),
-      }));
-      queryClient.setQueryData(["notifications"], updated);
-      queryClient.setQueryData(
-        ["notifications", "unread"],
-        updated.filter((n) => !n.read_at)
-      );
+      try {
+        const response = await api.post("/notifications/mark-all-read");
+        if (response.data.status) {
+          // Invalidate and refetch notifications to get updated data
+          await queryClient.invalidateQueries({ queryKey: ["notifications"] });
+          await queryClient.invalidateQueries({ queryKey: ["notifications", "unread"] });
+        }
+        return response.data;
+      } catch (error: any) {
+        console.error("Failed to mark all notifications as read:", error);
+        throw error;
+      }
     },
   });
 }

@@ -17,7 +17,7 @@ export type SavedPaymentMethod = {
 };
 
 export type CreatePaymentIntentPayload = {
-  booking_id: number;
+  appointment_id: number;
   amount?: number; // Optional, backend might calculate it
 };
 
@@ -34,7 +34,8 @@ export type PaymentIntentResponse = {
 
 export type ConfirmPaymentPayload = {
   payment_intent_id: string;
-  payment_method_id?: string; // Optional, if using saved payment method
+  appointment_id: number;
+  payment_method_id?: string; // Optional: payment method ID if using card payment
 };
 
 export type ConfirmPaymentResponse = {

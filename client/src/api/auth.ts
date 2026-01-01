@@ -289,7 +289,7 @@ export const bookAppointment = async (data: BookingData) => {
  * Create Stripe Payment Intent
  */
 interface CreatePaymentIntentPayload {
-  booking_id: number;
+  appointment_id: number;
   amount?: number; // Optional, backend might calculate it
 }
 
@@ -334,7 +334,8 @@ export const createPaymentIntent = async (
  */
 interface ConfirmPaymentPayload {
   payment_intent_id: string;
-  payment_method_id?: string; // Optional, if using saved payment method
+  appointment_id: number;
+  payment_method_id?: string; // Optional: payment method ID if using card payment
 }
 
 interface ConfirmPaymentResponse {
@@ -349,18 +350,37 @@ export const confirmPayment = async (
   data: ConfirmPaymentPayload
 ): Promise<ConfirmPaymentResponse> => {
   try {
+    console.log("Sending confirm payment request with data:", data);
     const response = await api.post<ConfirmPaymentResponse>(
       "/stripe/confirm-payment",
       data
     );
+    console.log("Confirm payment response:", response.data);
     return response.data;
   } catch (error: any) {
-    // Throw a consistent error object
+    console.error("Confirm payment error:", error);
+    console.error("Error response:", error.response);
+    console.error("Error response data:", error.response?.data);
+    
+    // Check if backend returned a response with status: false
     if (error.response && error.response.data) {
+      const responseData = error.response.data;
+      
+      // If backend returned status: false, it's not necessarily an HTTP error
+      // but the payment didn't complete successfully
+      if (responseData.status === false) {
+        const errorMessage = responseData.message || "Payment not completed";
+        const error = new Error(errorMessage);
+        (error as any).responseData = responseData;
+        throw error;
+      }
+      
       // Backend returned an error response
-      throw new Error(
-        error.response.data.message || "Failed to confirm payment"
-      );
+      const errorMessage = responseData.message 
+        || responseData.error 
+        || JSON.stringify(responseData)
+        || "Failed to confirm payment";
+      throw new Error(errorMessage);
     } else if (error.message) {
       // Network or Axios error
       throw new Error(error.message);
@@ -400,10 +420,27 @@ export const getBookingById = async (
   bookingId: number
 ): Promise<BookingDetailsResponse> => {
   try {
-    const response = await api.get<BookingDetailsResponse>(
-      `/appointments/${bookingId}`
+    // Fetch all appointments using GET and find the one with matching ID
+    const response = await api.get<{ data: BookingDetails[] }>(
+      `/appointments/my-bookings`
     );
-    return response.data;
+    
+    if (!response.data || !response.data.data) {
+      throw new Error("Failed to fetch appointments");
+    }
+    
+    // Find the appointment with matching ID
+    const appointment = response.data.data.find((apt: BookingDetails) => apt.id === bookingId);
+    
+    if (!appointment) {
+      throw new Error(`Appointment with ID ${bookingId} not found`);
+    }
+    
+    return {
+      status: true,
+      message: "Appointment found",
+      data: appointment,
+    };
   } catch (error: any) {
     // Throw a consistent error object
     if (error.response && error.response.data) {

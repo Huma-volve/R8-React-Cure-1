@@ -3,11 +3,13 @@ import PaymentCard from "@/Components/PaymentCard";
 import ConfirmModal from "@/Components/ConfirmModal";
 import { Typography } from "@mui/material";
 import { useParams, useSearchParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setBookingId } from "../store/paymentSlice";
-import type { AppDispatch } from "../store";
+import type { AppDispatch, RootState } from "../store";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import { useBookingDetails, useDoctorDetails } from "../hooks/usePayment";
+import dayjs from 'dayjs';
 
 
 
@@ -20,26 +22,49 @@ export default function PaymentPage() {
   const [searchParams] = useSearchParams();
   const dispatch = useDispatch<AppDispatch>();
   const [modalOpen, setModalOpen] = useState(false);
-  const [message, setMessage] = useState(
-    "Your appointment with Dr. David Patel is confirmed for June 30, 2026, at 10:00 AM."
-  );
+  const [message, setMessage] = useState("");
 
   // Get booking_id from URL params and store in Redux
+  const bookingId = useSelector((state: RootState) => state.payment.booking_id);
+  
   useEffect(() => {
     const bookingIdParam = searchParams.get("bookingId");
     if (bookingIdParam) {
-      const bookingId = parseInt(bookingIdParam, 10);
-      if (!isNaN(bookingId)) {
-        dispatch(setBookingId(bookingId));
+      const id = parseInt(bookingIdParam, 10);
+      if (!isNaN(id)) {
+        dispatch(setBookingId(id));
       }
     }
   }, [searchParams, dispatch]);
 
+  // Fetch booking and doctor details for dynamic message
+  const { data: bookingData } = useBookingDetails(bookingId);
+  const appointment = bookingData?.data;
+  const doctorId = appointment?.doctor_id;
+  const { data: doctorData } = useDoctorDetails(doctorId);
+  const doctor = doctorData?.data;
+
+  // Generate dynamic confirmation message
+  const generateConfirmationMessage = () => {
+    if (!appointment) return "Your appointment is confirmed.";
+    
+    const doctorName = appointment.doctor?.name || doctor?.name || "the doctor";
+    const date = appointment.date ? dayjs(appointment.date).format('MMMM D, YYYY') : '';
+    const time = appointment.time ? dayjs(appointment.time, 'HH:mm').format('h:mm A') : '';
+    
+    if (date && time) {
+      return `Your appointment with ${doctorName} is confirmed for ${date}, at ${time}.`;
+    } else if (date) {
+      return `Your appointment with ${doctorName} is confirmed for ${date}.`;
+    } else {
+      return `Your appointment with ${doctorName} is confirmed.`;
+    }
+  };
+
   function handleSuccess(msg?: string) {
     console.log("handleSuccess called, opening modal");
     setMessage(
-      msg ||
-        "Your appointment with Dr. David Patel is confirmed for June 30, 2026, at 10:00 AM."
+      msg || generateConfirmationMessage()
     );
     setModalOpen(true);
     console.log("modalOpen set to:", true);

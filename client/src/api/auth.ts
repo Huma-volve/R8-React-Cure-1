@@ -163,7 +163,7 @@ export interface NearbyDoctor {
     created_at: string;
     updated_at: string;
   }>;
-  reviews: any[];
+  reviews: unknown[];
 }
 
 export interface NearbyDoctorsResponse {
@@ -204,13 +204,14 @@ export const getNearbyDoctors = async (
       }
     );
     return response.data;
-  } catch (error: any) {
-    if (error.response && error.response.data) {
+  } catch (error: unknown) {
+    const axiosError = error as { response?: { data?: { message?: string } }; message?: string };
+    if (axiosError.response?.data) {
       throw new Error(
-        error.response.data.message || "Failed to fetch nearby doctors"
+        axiosError.response.data.message || "Failed to fetch nearby doctors"
       );
-    } else if (error.message) {
-      throw new Error(error.message);
+    } else if (axiosError.message) {
+      throw new Error(axiosError.message);
     } else {
       throw new Error("Failed to fetch nearby doctors");
     }
@@ -234,14 +235,10 @@ export const getReviews = async (doctorId: number) => {
  **/
 
 export const favoritesToggle = async (doctorId: string) => {
-  try {
   const response = await api.post(
     `/favorites-toggle/${doctorId}`
   );
   return response.data;
-} catch (error) {
-  throw error;
-}
 };
 /**
  * Book Appointment
@@ -250,14 +247,15 @@ export const addReview = async (data: ReviewData) => {
   try {
     const response = await api.post("/reviews/add", data);
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Throw a consistent error object
-    if (error.response && error.response.data) {
+    const axiosError = error as { response?: { data?: { message?: string } }; message?: string };
+    if (axiosError.response?.data) {
       // Backend returned an error response
-      throw new Error(error.response.data.message || "Booking failed");
-    } else if (error.message) {
+      throw new Error(axiosError.response.data.message || "Booking failed");
+    } else if (axiosError.message) {
       // Network or Axios error
-      throw new Error(error.message);
+      throw new Error(axiosError.message);
     } else {
       throw new Error("Booking failed");
     }
@@ -271,14 +269,15 @@ export const bookAppointment = async (data: BookingData) => {
   try {
     const response = await api.post("/appointments/book", data);
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Throw a consistent error object
-    if (error.response && error.response.data) {
+    const axiosError = error as { response?: { data?: { message?: string } }; message?: string };
+    if (axiosError.response?.data) {
       // Backend returned an error response
-      throw new Error(error.response.data.message || "Booking failed");
-    } else if (error.message) {
+      throw new Error(axiosError.response.data.message || "Booking failed");
+    } else if (axiosError.message) {
       // Network or Axios error
-      throw new Error(error.message);
+      throw new Error(axiosError.message);
     } else {
       throw new Error("Booking failed");
     }
@@ -313,16 +312,17 @@ export const createPaymentIntent = async (
       data
     );
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Throw a consistent error object
-    if (error.response && error.response.data) {
+    const axiosError = error as { response?: { data?: { message?: string } }; message?: string };
+    if (axiosError.response?.data) {
       // Backend returned an error response
       throw new Error(
-        error.response.data.message || "Failed to create payment intent"
+        axiosError.response.data.message || "Failed to create payment intent"
       );
-    } else if (error.message) {
+    } else if (axiosError.message) {
       // Network or Axios error
-      throw new Error(error.message);
+      throw new Error(axiosError.message);
     } else {
       throw new Error("Failed to create payment intent");
     }
@@ -350,29 +350,25 @@ export const confirmPayment = async (
   data: ConfirmPaymentPayload
 ): Promise<ConfirmPaymentResponse> => {
   try {
-    console.log("Sending confirm payment request with data:", data);
     const response = await api.post<ConfirmPaymentResponse>(
       "/stripe/confirm-payment",
       data
     );
-    console.log("Confirm payment response:", response.data);
     return response.data;
-  } catch (error: any) {
-    console.error("Confirm payment error:", error);
-    console.error("Error response:", error.response);
-    console.error("Error response data:", error.response?.data);
-    
+  } catch (error: unknown) {
     // Check if backend returned a response with status: false
-    if (error.response && error.response.data) {
-      const responseData = error.response.data;
+    const axiosError = error as { response?: { data?: { status?: boolean; message?: string; error?: string } }; message?: string };
+    
+    if (axiosError.response?.data) {
+      const responseData = axiosError.response.data;
       
       // If backend returned status: false, it's not necessarily an HTTP error
       // but the payment didn't complete successfully
       if (responseData.status === false) {
         const errorMessage = responseData.message || "Payment not completed";
-        const error = new Error(errorMessage);
-        (error as any).responseData = responseData;
-        throw error;
+        const paymentError = new Error(errorMessage) as Error & { responseData?: unknown };
+        paymentError.responseData = responseData;
+        throw paymentError;
       }
       
       // Backend returned an error response
@@ -381,9 +377,9 @@ export const confirmPayment = async (
         || JSON.stringify(responseData)
         || "Failed to confirm payment";
       throw new Error(errorMessage);
-    } else if (error.message) {
+    } else if (axiosError.message) {
       // Network or Axios error
-      throw new Error(error.message);
+      throw new Error(axiosError.message);
     } else {
       throw new Error("Failed to confirm payment");
     }
@@ -441,14 +437,15 @@ export const getBookingById = async (
       message: "Appointment found",
       data: appointment,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Throw a consistent error object
-    if (error.response && error.response.data) {
+    const axiosError = error as { response?: { data?: { message?: string } }; message?: string };
+    if (axiosError.response?.data) {
       throw new Error(
-        error.response.data.message || "Failed to get booking details"
+        axiosError.response.data.message || "Failed to get booking details"
       );
-    } else if (error.message) {
-      throw new Error(error.message);
+    } else if (axiosError.message) {
+      throw new Error(axiosError.message);
     } else {
       throw new Error("Failed to get booking details");
     }

@@ -414,16 +414,29 @@ export default function PaymentCard({ onSuccess }: Props) {
                       throw new Error("Please enter your card details first.");
                     }
                     try {
+                      // Validate card element is complete before creating payment method
+                      const cardElement = elements.getElement(CardElement);
+                      if (!cardElement) {
+                        throw new Error("Card element not found. Please enter your card details.");
+                      }
+                      
+                      // Create payment method
                       paymentMethodId = await createStripePaymentMethod(
                         stripe,
                         elements,
-                        values.name
+                        values.name || "Customer"
                       );
                       
                       if (!paymentMethodId || !paymentMethodId.startsWith("pm_")) {
                         throw new Error("Failed to create payment method. Please check your card details and try again.");
                       }
                     } catch (pmError: unknown) {
+                      // Handle Stripe-specific errors
+                      if (pmError && typeof pmError === 'object' && 'message' in pmError) {
+                        const stripeError = pmError as { message?: string; code?: string };
+                        const errorMessage = stripeError.message || "Failed to create payment method. Please check your card details and try again.";
+                        throw new Error(errorMessage);
+                      }
                       const errorMessage = pmError instanceof Error ? pmError.message : "Failed to create payment method. Please check your card details and try again.";
                       throw new Error(errorMessage);
                     }
@@ -447,7 +460,7 @@ export default function PaymentCard({ onSuccess }: Props) {
                 }
                 
                 const confirmPayload: ConfirmPaymentPayload = {
-                  payment_intent_id: payment_intent_id,
+                  payment_intent_id: payment_intent_id.trim(),
                   appointment_id: appointment_id,
                 };
                 
@@ -457,22 +470,37 @@ export default function PaymentCard({ onSuccess }: Props) {
                   if (!paymentMethodId || !paymentMethodId.startsWith("pm_")) {
                     throw new Error("Payment method is required. Please check your card details and try again.");
                   }
-                  confirmPayload.payment_method_id = paymentMethodId;
+                  confirmPayload.payment_method_id = paymentMethodId.trim();
                 } else if (paymentMethodId && paymentMethodId.startsWith("pm_")) {
                   // For other payment methods, add if available
-                  confirmPayload.payment_method_id = paymentMethodId;
+                  confirmPayload.payment_method_id = paymentMethodId.trim();
+                }
+                
+                // Final validation before sending
+                if (!confirmPayload.payment_intent_id || confirmPayload.payment_intent_id.length === 0) {
+                  throw new Error("Payment intent ID cannot be empty");
+                }
+                if (!confirmPayload.appointment_id || isNaN(confirmPayload.appointment_id) || confirmPayload.appointment_id <= 0) {
+                  throw new Error("Invalid appointment ID");
+                }
+                if (selectedMethod === "card" && (!confirmPayload.payment_method_id || !confirmPayload.payment_method_id.startsWith("pm_"))) {
+                  throw new Error("Valid payment method is required for card payments");
                 }
                 
                 let confirmResponse;
                 try {
                   confirmResponse = await confirmPaymentMutation.mutateAsync(confirmPayload);
                 } catch (confirmError: unknown) {
-                  // Handle case where backend returns status: false
-                  const error = confirmError as Error & { responseData?: unknown };
+                  // Handle case where backend returns status: false or 400 Bad Request
+                  const error = confirmError as Error & { responseData?: unknown; requestData?: ConfirmPaymentPayload };
                   
                   // Check if error has responseData (from our custom error handling)
                   if (error.responseData) {
-                    const responseData = error.responseData as { data?: { stripe_status?: string }; message?: string };
+                    const responseData = error.responseData as { 
+                      data?: { stripe_status?: string; errors?: Record<string, string[]> }; 
+                      message?: string;
+                      error?: string;
+                    };
                     
                     // Check if there's a stripe_status in the response
                     if (responseData.data?.stripe_status) {
@@ -487,16 +515,28 @@ export default function PaymentCard({ onSuccess }: Props) {
                       } else {
                         alert(`Payment status: ${status}. ${responseData.message || "Please try again."}`);
                       }
+                    } else if (responseData.data?.errors) {
+                      // Handle validation errors from backend
+                      const validationErrors = Object.entries(responseData.data.errors)
+                        .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(", ") : messages}`)
+                        .join("\n");
+                      alert(`Validation errors:\n${validationErrors}`);
                     } else {
-                      // Show the error message from backend
-                      const errorMsg = responseData.message || "Payment not completed";
-                      alert(`${errorMsg}. Please check your card details and try again.`);
+                      // Show the error message from backend with request data for debugging
+                      const errorMsg = responseData.message || responseData.error || "Payment not completed";
+                      const requestInfo = error.requestData 
+                        ? `\n\nSent data:\nPayment Intent: ${error.requestData.payment_intent_id}\nAppointment ID: ${error.requestData.appointment_id}\nPayment Method: ${error.requestData.payment_method_id || "Not provided"}`
+                        : "";
+                      alert(`${errorMsg}${requestInfo}\n\nPlease check your card details and try again.`);
                     }
                     return;
                   }
                   
-                  // If it's a regular error, show the message
-                  alert(error.message || "Failed to confirm payment. Please try again.");
+                  // If it's a regular error, show the message (may include full error details)
+                  const errorMessage = error.message || "Failed to confirm payment. Please try again.";
+                  // Show first 500 characters to avoid very long alerts
+                  const displayMessage = errorMessage.length > 500 ? errorMessage.substring(0, 500) + "..." : errorMessage;
+                  alert(displayMessage);
                   return;
                 }
 

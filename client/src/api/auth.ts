@@ -357,18 +357,55 @@ export const confirmPayment = async (
     return response.data;
   } catch (error: unknown) {
     // Check if backend returned a response with status: false
-    const axiosError = error as { response?: { data?: { status?: boolean; message?: string; error?: string } }; message?: string };
+    const axiosError = error as { 
+      response?: { 
+        status?: number;
+        data?: { 
+          status?: boolean; 
+          message?: string; 
+          error?: string;
+          errors?: Record<string, string[]>;
+        }; 
+      }; 
+      message?: string;
+    };
     
     if (axiosError.response?.data) {
       const responseData = axiosError.response.data;
+      const statusCode = axiosError.response.status;
       
       // If backend returned status: false, it's not necessarily an HTTP error
       // but the payment didn't complete successfully
       if (responseData.status === false) {
         const errorMessage = responseData.message || "Payment not completed";
-        const paymentError = new Error(errorMessage) as Error & { responseData?: unknown };
+        const paymentError = new Error(errorMessage) as Error & { responseData?: unknown; requestData?: ConfirmPaymentPayload };
         paymentError.responseData = responseData;
+        paymentError.requestData = data;
         throw paymentError;
+      }
+      
+      // Handle 400 Bad Request with validation errors
+      if (statusCode === 400) {
+        let errorMessage = responseData.message || "Invalid payment data";
+        
+        // If there are validation errors, include them
+        if (responseData.errors) {
+          const errorDetails = Object.entries(responseData.errors)
+            .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(", ") : messages}`)
+            .join("; ");
+          errorMessage = `${errorMessage}. ${errorDetails}`;
+        } else if (responseData.error) {
+          errorMessage = responseData.error;
+        }
+        
+        // Include full response data for debugging
+        const fullErrorDetails = `Sent data: ${JSON.stringify(data, null, 2)}. Backend response: ${JSON.stringify(responseData, null, 2)}`;
+        errorMessage = `${errorMessage}\n\n${fullErrorDetails}`;
+        
+        const badRequestError = new Error(errorMessage) as Error & { responseData?: unknown; requestData?: ConfirmPaymentPayload };
+        badRequestError.responseData = responseData;
+        badRequestError.requestData = data;
+        throw badRequestError;
       }
       
       // Backend returned an error response

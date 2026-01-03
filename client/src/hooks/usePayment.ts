@@ -19,6 +19,8 @@ export type SavedPaymentMethod = {
 export type CreatePaymentIntentPayload = {
   appointment_id: number;
   amount?: number; // Optional, backend might calculate it
+  payment_method?: string; // Payment method type: "card", "paypal", "applepay"
+  payment_method_id?: string; // Stripe payment method ID (required for card payments)
 };
 
 export type PaymentIntentResponse = {
@@ -36,6 +38,7 @@ export type ConfirmPaymentPayload = {
   payment_intent_id: string;
   appointment_id: number;
   payment_method_id?: string; // Optional: payment method ID if using card payment
+  return_url: string; // Required for redirect-based payment methods (PayPal, etc.)
 };
 
 export type ConfirmPaymentResponse = {

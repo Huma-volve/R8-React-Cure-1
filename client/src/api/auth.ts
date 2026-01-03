@@ -290,6 +290,8 @@ export const bookAppointment = async (data: BookingData) => {
 interface CreatePaymentIntentPayload {
   appointment_id: number;
   amount?: number; // Optional, backend might calculate it
+  payment_method?: string; // Payment method type: "card", "paypal", "applepay"
+  payment_method_id?: string; // Stripe payment method ID (required for card payments)
 }
 
 interface PaymentIntentResponse {
@@ -307,6 +309,9 @@ export const createPaymentIntent = async (
   data: CreatePaymentIntentPayload
 ): Promise<PaymentIntentResponse> => {
   try {
+    // Log the payload being sent (for debugging - remove in production)
+    console.log("Sending payment intent request:", JSON.stringify(data, null, 2));
+    
     const response = await api.post<PaymentIntentResponse>(
       "/stripe/create-payment-intent",
       data
@@ -336,6 +341,7 @@ interface ConfirmPaymentPayload {
   payment_intent_id: string;
   appointment_id: number;
   payment_method_id?: string; // Optional: payment method ID if using card payment
+  return_url: string; // Required for redirect-based payment methods (PayPal, etc.)
 }
 
 interface ConfirmPaymentResponse {

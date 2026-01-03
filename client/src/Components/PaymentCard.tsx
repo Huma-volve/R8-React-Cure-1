@@ -17,20 +17,15 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { 
-  useSendPayment, 
   useSavedPaymentMethods,
   useCreatePaymentIntent,
-  useConfirmPayment,
   useBookingDetails,
-  useDoctorDetails,
-  type ConfirmPaymentPayload
+  useDoctorDetails
 } from "../hooks/usePayment";
 import { useDispatch, useSelector } from "react-redux";
 import { setMethod } from "../store/paymentSlice";
 import type { AppDispatch, RootState } from "../store";
-import { loadStripe } from "@stripe/stripe-js";
-import { useState, useEffect } from "react";
-import EditIcon from "@mui/icons-material/Edit";
+import { } from "react";
 import { CardElement, useStripe, useElements} from "@stripe/react-stripe-js";
 import {Link} from "react-router-dom";
 import dayjs from 'dayjs';
@@ -81,7 +76,7 @@ async function createStripePaymentMethod(
       throw new Error("Card element not found");
     }
 
-    const { paymentMethod, error } = await stripe.createPaymentMethod({
+    const { paymentMethod, error: stripeError } = await stripe.createPaymentMethod({
       type: "card",
       card: cardElement,
       billing_details: {
@@ -89,8 +84,8 @@ async function createStripePaymentMethod(
       },
     });
 
-    if (error) {
-      throw error;
+    if (stripeError) {
+      throw stripeError;
     }
 
     if (!paymentMethod) {
@@ -98,17 +93,15 @@ async function createStripePaymentMethod(
     }
 
     return paymentMethod.id;
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 }
 
 export default function PaymentCard({ onSuccess }: Props) {
   const stripe = useStripe();
   const elements = useElements();
-  const mutation = useSendPayment();
   const createPaymentIntentMutation = useCreatePaymentIntent();
-  const confirmPaymentMutation = useConfirmPayment();
   const { data: savedPaymentMethods, isLoading: isLoadingSavedMethods } =
     useSavedPaymentMethods();
   const dispatch = useDispatch<AppDispatch>();
@@ -118,17 +111,15 @@ export default function PaymentCard({ onSuccess }: Props) {
   const bookingId = useSelector(
     (state: RootState) => state.payment.booking_id
   );
-  const [isCreatingPaymentMethod, setIsCreatingPaymentMethod] = useState(false);
-  const [showAddCardForm, setShowAddCardForm] = useState(false);
 
   // Fetch booking details to get doctor_id and appointment info
-  const { data: bookingData, isLoading: isLoadingBooking, error: bookingError } = useBookingDetails(bookingId);
+  const { data: bookingData, isLoading: isLoadingBooking } = useBookingDetails(bookingId);
   const appointment = bookingData?.data;
   // Try to get doctor_id from different possible locations in the appointment data
-  const doctorId = appointment?.doctor_id || (appointment?.doctor as any)?.id || appointment?.doctor?.id;
+  const doctorId = appointment?.doctor_id || (appointment?.doctor as { id?: number })?.id;
   
   // Fetch doctor details to get price and doctor info
-  const { data: doctorData, isLoading: isLoadingDoctor, error: doctorError } = useDoctorDetails(doctorId);
+  const { data: doctorData, isLoading: isLoadingDoctor } = useDoctorDetails(doctorId);
   const doctor = doctorData?.data;
   
   // Use doctor data from appointment first, then from doctor API, then defaults
@@ -152,7 +143,16 @@ export default function PaymentCard({ onSuccess }: Props) {
     || getPriceValue((doctor as any)?.consultation_fee)
     || null; // Get price from appointment data, no static default
   const doctorName = appointment?.doctor?.name || doctor?.name || "Dr. David Patel"; // Default name
-  const doctorImage = appointment?.doctor?.image || doctor?.image;
+  // Get doctor image with fallback to avoid broken images
+  const getDoctorImage = () => {
+    const image = appointment?.doctor?.image || doctor?.image;
+    // If image is from via.placeholder.com or is invalid, use fallback
+    if (!image || image.includes('via.placeholder.com') || image.includes('ERR_NAME_NOT_RESOLVED')) {
+      return "https://i.pravatar.cc/120?img=32";
+    }
+    return image;
+  };
+  const doctorImage = getDoctorImage();
   const doctorJob = appointment?.doctor?.job || doctor?.specialty?.name || "Doctor";
   
   
@@ -166,16 +166,6 @@ export default function PaymentCard({ onSuccess }: Props) {
     return `${dayName}, ${monthDay} • ${time}`;
   };
 
-  // Get default saved payment method
-  const defaultSavedMethod = savedPaymentMethods?.find((method) => method.is_default) || savedPaymentMethods?.[0];
-  const hasSavedCard = !!defaultSavedMethod;
-
-  // Auto-show card form when card payment method is selected
-  useEffect(() => {
-    if (selectedMethod === "card") {
-      setShowAddCardForm(true);
-    }
-  }, [selectedMethod]);
 
   // Validation removed since inputs are hidden per request.
   const PaymentSchema = Yup.object();
@@ -200,7 +190,14 @@ export default function PaymentCard({ onSuccess }: Props) {
         <CardContent sx={{ p: 3, pb: 4 }}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Avatar
-              src={doctorImage || "https://i.pravatar.cc/120?img=32"}
+              src={doctorImage}
+              onError={(e) => {
+                // Fallback to default avatar if image fails to load
+                const target = e.target as HTMLImageElement;
+                if (target.src !== "https://i.pravatar.cc/120?img=32") {
+                  target.src = "https://i.pravatar.cc/120?img=32";
+                }
+              }}
               sx={{ width: 56, height: 56 }}
             />
             <div>
@@ -366,7 +363,6 @@ export default function PaymentCard({ onSuccess }: Props) {
             validationSchema={PaymentSchema}
             onSubmit={async (values) => {
               try {
-                setIsCreatingPaymentMethod(true);
 
                 // Get appointment_id from appointment data (more reliable than bookingId from Redux)
                 // Use appointment.id if available, otherwise fall back to bookingId
@@ -377,196 +373,119 @@ export default function PaymentCard({ onSuccess }: Props) {
                   return;
                 }
 
+                // Validate payment method is selected
+                if (!selectedMethod) {
+                  alert("Please select a payment method.");
+                  return;
+                }
+
                 // Step 1: Create payment intent
                 // Validate that price exists from appointment
                 if (!doctorPrice || doctorPrice <= 0) {
                   alert("Price information is missing. Please contact support.");
                   return;
                 }
-                
-                const paymentIntentResponse = await createPaymentIntentMutation.mutateAsync({
+
+                // Prepare payment intent payload
+                // Note: Backend may require payment_method_id for all payment methods
+                const paymentIntentPayload: {
+                  appointment_id: number;
+                  amount: number;
+                  payment_method: string;
+                  payment_method_id?: string;
+                } = {
                   appointment_id: appointment_id,
                   amount: doctorPrice * 100, // Convert to cents (e.g., 350$ = 35000 cents)
-                });
+                  payment_method: selectedMethod, // "card", "paypal", or "applepay"
+                };
+
+                // Debug: Log the payload (remove in production)
+                console.log("Payment Intent Payload before payment method creation:", paymentIntentPayload);
+
+                // If card payment is selected, create Stripe payment method first
+                if (selectedMethod === "card") {
+                  if (!stripe || !elements) {
+                    alert("Payment system is not ready. Please wait a moment and try again.");
+                    return;
+                  }
+
+                  try {
+                    const paymentMethodId = await createStripePaymentMethod(
+                      stripe,
+                      elements,
+                      values.name || "Customer"
+                    );
+                    paymentIntentPayload.payment_method_id = paymentMethodId;
+                  } catch (error: unknown) {
+                    const errorMessage = error instanceof Error ? error.message : "Failed to process card details. Please check your card information.";
+                    alert(errorMessage);
+                    return;
+                  }
+                } else {
+                  // For PayPal and Apple Pay, payment_method_id is not required from Stripe
+                  // But if backend requires it, it should be handled on backend side
+                  // We only send payment_method for non-card methods
+                }
+                
+                // Debug: Log the final payload (remove in production)
+                console.log("Final Payment Intent Payload:", JSON.stringify(paymentIntentPayload, null, 2));
+                
+                const paymentIntentResponse = await createPaymentIntentMutation.mutateAsync(paymentIntentPayload);
 
                 if (!paymentIntentResponse.status) {
                   throw new Error(paymentIntentResponse.message || "Failed to create payment intent");
                 }
 
-                const { payment_intent_id, client_secret } = paymentIntentResponse.data;
+                // Step 2: Confirm payment using Stripe directly in frontend
+                const { client_secret } = paymentIntentResponse.data;
 
-                // Step 2: Create or get payment method (only for card payments)
-                let paymentMethodId: string | undefined;
-                
-                if (selectedMethod === "card") {
-                  // Always create/get payment method for card payments
-                  if (hasSavedCard && defaultSavedMethod) {
-                    // Use saved payment method token
-                    paymentMethodId = defaultSavedMethod.provider_token;
-                  } else {
-                    // Create new Stripe payment method from card details
-                    if (!stripe || !elements) {
-                      throw new Error("Stripe is not initialized. Please wait a moment and try again.");
-                    }
-                    // Check if CardElement is available (user has added a new card)
-                    const cardElement = elements.getElement(CardElement);
-                    if (!cardElement) {
-                      throw new Error("Please enter your card details first.");
-                    }
-                    try {
-                      // Validate card element is complete before creating payment method
-                      const cardElement = elements.getElement(CardElement);
-                      if (!cardElement) {
-                        throw new Error("Card element not found. Please enter your card details.");
-                      }
-                      
-                      // Create payment method
-                      paymentMethodId = await createStripePaymentMethod(
-                        stripe,
-                        elements,
-                        values.name || "Customer"
-                      );
-                      
-                      if (!paymentMethodId || !paymentMethodId.startsWith("pm_")) {
-                        throw new Error("Failed to create payment method. Please check your card details and try again.");
-                      }
-                    } catch (pmError: unknown) {
-                      // Handle Stripe-specific errors
-                      if (pmError && typeof pmError === 'object' && 'message' in pmError) {
-                        const stripeError = pmError as { message?: string; code?: string };
-                        const errorMessage = stripeError.message || "Failed to create payment method. Please check your card details and try again.";
-                        throw new Error(errorMessage);
-                      }
-                      const errorMessage = pmError instanceof Error ? pmError.message : "Failed to create payment method. Please check your card details and try again.";
-                      throw new Error(errorMessage);
-                    }
-                  }
-                  
-                  // Validate payment method ID
-                  if (!paymentMethodId || !paymentMethodId.startsWith("pm_")) {
-                    throw new Error("Invalid payment method. Please check your card details and try again.");
-                  }
+                if (!client_secret) {
+                  throw new Error("Client secret is missing from payment intent response");
                 }
 
-                // Step 3: Confirm payment with backend (backend will handle Stripe confirmation)
-                // We don't need to confirm with Stripe directly - the backend will do it
-                
-                // Validate required fields
-                if (!payment_intent_id) {
-                  throw new Error("Payment intent ID is missing");
-                }
-                if (!appointment_id) {
-                  throw new Error("Appointment ID is missing");
-                }
-                
-                const confirmPayload: ConfirmPaymentPayload = {
-                  payment_intent_id: payment_intent_id.trim(),
-                  appointment_id: appointment_id,
-                };
-                
-                // Add payment_method_id if it exists and is valid
-                // For card payments, payment_method_id is required
-                if (selectedMethod === "card") {
-                  if (!paymentMethodId || !paymentMethodId.startsWith("pm_")) {
-                    throw new Error("Payment method is required. Please check your card details and try again.");
-                  }
-                  confirmPayload.payment_method_id = paymentMethodId.trim();
-                } else if (paymentMethodId && paymentMethodId.startsWith("pm_")) {
-                  // For other payment methods, add if available
-                  confirmPayload.payment_method_id = paymentMethodId.trim();
-                }
-                
-                // Final validation before sending
-                if (!confirmPayload.payment_intent_id || confirmPayload.payment_intent_id.length === 0) {
-                  throw new Error("Payment intent ID cannot be empty");
-                }
-                if (!confirmPayload.appointment_id || isNaN(confirmPayload.appointment_id) || confirmPayload.appointment_id <= 0) {
-                  throw new Error("Invalid appointment ID");
-                }
-                if (selectedMethod === "card" && (!confirmPayload.payment_method_id || !confirmPayload.payment_method_id.startsWith("pm_"))) {
-                  throw new Error("Valid payment method is required for card payments");
-                }
-                
-                let confirmResponse;
-                try {
-                  confirmResponse = await confirmPaymentMutation.mutateAsync(confirmPayload);
-                } catch (confirmError: unknown) {
-                  // Handle case where backend returns status: false or 400 Bad Request
-                  const error = confirmError as Error & { responseData?: unknown; requestData?: ConfirmPaymentPayload };
-                  
-                  // Check if error has responseData (from our custom error handling)
-                  if (error.responseData) {
-                    const responseData = error.responseData as { 
-                      data?: { stripe_status?: string; errors?: Record<string, string[]> }; 
-                      message?: string;
-                      error?: string;
-                    };
-                    
-                    // Check if there's a stripe_status in the response
-                    if (responseData.data?.stripe_status) {
-                      const status = responseData.data.stripe_status;
-                      
-                      if (status === "requires_payment_method") {
-                        alert("Payment method is required. Please check your card details and try again.");
-                      } else if (status === "requires_confirmation") {
-                        alert("Payment requires confirmation. Please try again.");
-                      } else if (status === "requires_action") {
-                        alert("Payment requires additional action. Please complete the authentication.");
-                      } else {
-                        alert(`Payment status: ${status}. ${responseData.message || "Please try again."}`);
-                      }
-                    } else if (responseData.data?.errors) {
-                      // Handle validation errors from backend
-                      const validationErrors = Object.entries(responseData.data.errors)
-                        .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(", ") : messages}`)
-                        .join("\n");
-                      alert(`Validation errors:\n${validationErrors}`);
-                    } else {
-                      // Show the error message from backend with request data for debugging
-                      const errorMsg = responseData.message || responseData.error || "Payment not completed";
-                      const requestInfo = error.requestData 
-                        ? `\n\nSent data:\nPayment Intent: ${error.requestData.payment_intent_id}\nAppointment ID: ${error.requestData.appointment_id}\nPayment Method: ${error.requestData.payment_method_id || "Not provided"}`
-                        : "";
-                      alert(`${errorMsg}${requestInfo}\n\nPlease check your card details and try again.`);
-                    }
-                    return;
-                  }
-                  
-                  // If it's a regular error, show the message (may include full error details)
-                  const errorMessage = error.message || "Failed to confirm payment. Please try again.";
-                  // Show first 500 characters to avoid very long alerts
-                  const displayMessage = errorMessage.length > 500 ? errorMessage.substring(0, 500) + "..." : errorMessage;
-                  alert(displayMessage);
-                  return;
+                if (!stripe) {
+                  throw new Error("Stripe not initialized");
                 }
 
-                if (confirmResponse.status && confirmResponse.data.stripe_status === "succeeded") {
-                  // Payment succeeded - generate dynamic message
-                  const date = appointment?.date ? dayjs(appointment.date).format('MMMM D, YYYY') : '';
-                  const time = appointment?.time ? dayjs(appointment.time, 'HH:mm').format('h:mm A') : '';
-                  let successMessage = `Your appointment with ${doctorName} is confirmed.`;
-                  if (date && time) {
-                    successMessage = `Your appointment with ${doctorName} is confirmed for ${date}, at ${time}.`;
-                  } else if (date) {
-                    successMessage = `Your appointment with ${doctorName} is confirmed for ${date}.`;
+                // For card payments, use confirmCardPayment with payment_method_id
+                // This keeps the user on the same page (no redirect)
+                if (selectedMethod === "card" && paymentIntentPayload.payment_method_id) {
+                  const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(
+                    client_secret,
+                    {
+                      payment_method: paymentIntentPayload.payment_method_id,
+                    }
+                  );
+
+                  if (confirmError) {
+                    throw new Error(confirmError.message || "Payment confirmation failed");
                   }
-                  onSuccess?.(successMessage);
+
+                  // Check payment intent status
+                  if (paymentIntent && paymentIntent.status === "succeeded") {
+                    // Payment confirmed successfully
+                    const date = appointment?.date ? dayjs(appointment.date).format('MMMM D, YYYY') : '';
+                    const time = appointment?.time ? dayjs(appointment.time, 'HH:mm').format('h:mm A') : '';
+                    let successMessage = `Payment confirmed successfully for your appointment with ${doctorName}.`;
+                    if (date && time) {
+                      successMessage = `Payment confirmed successfully for your appointment with ${doctorName} on ${date}, at ${time}.`;
+                    } else if (date) {
+                      successMessage = `Payment confirmed successfully for your appointment with ${doctorName} on ${date}.`;
+                    }
+                    onSuccess?.(successMessage);
+                  } else if (paymentIntent) {
+                    // Payment intent exists but status is not succeeded
+                    throw new Error(`Payment status: ${paymentIntent.status}. Payment confirmation is pending.`);
+                  }
                 } else {
-                  // Payment requires additional action
-                  const status = confirmResponse.data.stripe_status;
-                  if (status === "requires_payment_method") {
-                    alert("Payment method is required. Please check your card details.");
-                  } else if (status === "requires_confirmation") {
-                    alert("Payment requires confirmation. Please try again.");
-                  } else {
-                    alert(`Payment status: ${status}. Please try again.`);
-                  }
+                  // For non-card payments (PayPal, Apple Pay), we need to use confirmPayment
+                  // But since we don't have PaymentElement, we'll need to handle this differently
+                  // For now, throw an error for non-card payments
+                  throw new Error("Card payment is required. Other payment methods are not supported in this flow.");
                 }
               } catch (error: unknown) {
                 const errorMessage = error instanceof Error ? error.message : "Failed to process payment. Please try again.";
                 alert(errorMessage);
-              } finally {
-                setIsCreatingPaymentMethod(false);
               }
             }}
           >
@@ -613,15 +532,13 @@ export default function PaymentCard({ onSuccess }: Props) {
                       onClick={() => submitForm()}
                       disabled={
                         createPaymentIntentMutation.isPending || 
-                        confirmPaymentMutation.isPending || 
-                        isCreatingPaymentMethod ||
                         isLoadingBooking ||
-                        isLoadingDoctor
+                        isLoadingDoctor ||
+                        !stripe ||
+                        !elements
                       }
                     >
                       {createPaymentIntentMutation.isPending || 
-                       confirmPaymentMutation.isPending || 
-                       isCreatingPaymentMethod ||
                        isLoadingBooking ||
                        isLoadingDoctor
                         ? "Processing..."
